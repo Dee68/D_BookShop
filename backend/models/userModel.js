@@ -1,13 +1,13 @@
 const db = require('../config/db');
 
 exports.createUser = (user) => {
-    const { name, email, password } = user;
+    const { name, email, password, role } = user;
 
     return new Promise((resolve, reject) => {
         db.run(
-            `INSERT INTO users (name, email, password)
-             VALUES (?, ?, ?)`,
-            [name, email, password],
+            `INSERT INTO users (name, email, password, role)
+             VALUES (?, ?, ?, ?)`,
+            [name, email, password, role],
             function (err) {
                 if (err) reject(err);
                 else resolve({ id: this.lastID });

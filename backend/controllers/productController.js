@@ -20,7 +20,7 @@ exports.createProduct = async (req, res) => {
             images
         });
 
-        res.status(201).json(result);
+        res.status(201).json({message: "Product created",productId: result.id});
 
     } catch (error) {
         res.status(500).json({ error: error.message });
