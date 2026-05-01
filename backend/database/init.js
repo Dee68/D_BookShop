@@ -48,11 +48,12 @@ CREATE TABLE IF NOT EXISTS users (
 db.run(`
 CREATE TABLE IF NOT EXISTS orders (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER,
-    total REAL,
+    user_id INTEGER NOT NULL,
+    total REAL NOT NULL,
+    status TEXT DEFAULT 'pending',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id)
-)
+);
 `);
 
 // Order Items
@@ -62,7 +63,7 @@ CREATE TABLE IF NOT EXISTS order_items (
     order_id INTEGER,
     product_id INTEGER,
     quantity INTEGER,
-    price REAL,
+    price REAL NOT NULL,
     FOREIGN KEY (order_id) REFERENCES orders(id),
     FOREIGN KEY (product_id) REFERENCES products(id)
 )

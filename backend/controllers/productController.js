@@ -52,13 +52,15 @@ exports.getProduct = async (req, res) => {
 
 exports.updateProduct = async (req, res) => {
     try {
-        const result = await Product.updateProduct(req.params.id, req.body);
-
+        
+        const images = req.files?.map(file => `/images/${file.filename}`) || [];
+        const result = await Product.updateProduct(req.params.id, req.body,images);
         if (result.changes === 0) {
             return res.status(404).json({ error: "Product not found" });
         }
 
         res.json({ message: "Product updated" });
+
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

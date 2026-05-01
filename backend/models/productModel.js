@@ -102,7 +102,48 @@ exports.getProductById = (id) => {
     });
 };
 
-exports.updateProduct = (id, product) => {
+exports.getProductByIdSimple = (id) => {
+    return new Promise((resolve, reject) => {
+        db.get(
+            `SELECT * FROM products WHERE id = ?`,
+            [id],
+            (err, row) => {
+                if (err) reject(err);
+                else resolve(row);
+            }
+        );
+    });
+};
+exports.restoreStock = (product_id, quantity) => {
+    return new Promise((resolve, reject) => {
+        db.run(
+            `UPDATE products
+             SET stock = stock + ?
+             WHERE id = ?`,
+            [quantity, product_id],
+            function (err) {
+                if (err) reject(err);
+                else resolve();
+            }
+        );
+    });
+};
+exports.reduceStock = (product_id, quantity) => {
+    return new Promise((resolve, reject) => {
+        db.run(
+            `UPDATE products
+             SET stock = stock - ?
+             WHERE id = ?`,
+            [quantity, product_id],
+            function (err) {
+                if (err) reject(err);
+                else resolve();
+            }
+        );
+    });
+};
+
+exports.updateProduct = (id, product, images) => {
     const { title, author, price, category_id, stock } = product;
 
     return new Promise((resolve, reject) => {
@@ -112,8 +153,28 @@ exports.updateProduct = (id, product) => {
              WHERE id=?`,
             [title, author, price, category_id, stock, id],
             function (err) {
-                if (err) reject(err);
-                else resolve({ changes: this.changes });
+                if (err) return reject(err);
+
+                // OPTIONAL: replace images
+                if (images && images.length > 0) {
+
+                    // delete old images
+                    db.run(`DELETE FROM product_images WHERE product_id = ?`, [id]);
+
+                    // insert new images
+                    const stmt = db.prepare(
+                        `INSERT INTO product_images (product_id, image_url)
+                         VALUES (?, ?)`
+                    );
+
+                    images.forEach(img => {
+                        stmt.run(id, img);
+                    });
+
+                    stmt.finalize();
+                }
+
+                resolve({ changes: this.changes });
             }
         );
     });

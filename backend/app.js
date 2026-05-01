@@ -30,4 +30,8 @@ const productRoutes = require('./routes/productRoutes');
 
 app.use('/api/products', productRoutes);
 
+const orderRoutes = require('./routes/orderRoutes');
+
+app.use('/api/orders', orderRoutes);
+
 module.exports = app;

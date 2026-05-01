@@ -11,6 +11,7 @@ A simple full-stack bookshop backend built with Node.js, Express, and SQLite.
 - SQLite3
 - dotenv
 - REST API
+- Multer (file uploads)
 
 ## 📁 Project Structure
 
@@ -81,3 +82,42 @@ npm run dev
 | DELETE | `/api/products/:id`| Delete a product |
 
 ````
+
+
+````
+
+### Orders
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/orders` | Create a new order (transactional) |
+| GET | `/api/orders/:user_id` | Get all orders for a user |
+| PUT | `/api/orders/:id/cancel` | Cancel an order (restores stock) |
+| DELETE | `/api/orders/:id` | Delete an order (optional/admin) |
+
+````
+
+````
+### Users
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/users` | Get all users |
+| GET | `/api/users/:id` | Get user by ID |
+| POST | `/api/users/register` | Create a new user |
+| POST | `/api/users/login` | Login user |
+| DELETE | `/api/users/:id` | Delete a user |
+
+````
+````
+
+## 🔐 Business Rules
+- Stock is reduced when an order is created
+- Stock is restored when an order is cancelled
+- Orders are transactional (safe against partial failure)
+- Images are stored separately and linked via product_images table
+
+````
+````
+## 🧪 Testing Tool
+Postman
