@@ -56,7 +56,7 @@ npm run dev
 ```
 ## 📡 API Endpoints
 ```
-
+````
 ### Categories
 
 | Method | Endpoint | Description |
@@ -67,3 +67,17 @@ npm run dev
 | PUT | `/api/categories/:id` | Update a category |
 | DELETE | `/api/categories/:id` | Delete a category |
 ```
+
+```
+
+### Products
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/products` | Get all products |
+| GET | `/api/products/:id`| Get product by ID |
+| POST | `/api/products` | Create a new product |
+|PUT | `/api/products/:id`| Update a product |
+| DELETE | `/api/products/:id`| Delete a product |
+
+````

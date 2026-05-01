@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS products (
 )
 `);
 
-// Product Images (NEW)
+// Product Images
 db.run(`
 CREATE TABLE IF NOT EXISTS product_images (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -39,7 +39,8 @@ db.run(`
 CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT,
-    email TEXT UNIQUE
+    email TEXT UNIQUE,
+    password TEXT NOT NULL
 )
 `);
 
