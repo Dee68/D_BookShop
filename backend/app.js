@@ -2,17 +2,21 @@ const express = require('express');
 const cors = require('cors');
 
 const app = express();
+//const path = require('path');
 
 // middleware
 app.use(cors());
 app.use(express.json());
 app.use('/images', express.static('frontend/assets/images'));
+
 app.use((err, req, res, next) => {
     if (err.code === 'LIMIT_FILE_SIZE') {
         return res.status(400).json({ error: 'File too large (max 2MB)' });
     }
     res.status(500).json({ error: err.message });
 });
+
+
 // test route
 app.get('/', (req, res) => {
     res.send('D-BookShop API is running...');
@@ -33,5 +37,10 @@ app.use('/api/products', productRoutes);
 const orderRoutes = require('./routes/orderRoutes');
 
 app.use('/api/orders', orderRoutes);
+
+const adminRoutes = require('./routes/adminRoutes');
+
+app.use('/api/admin', adminRoutes);
+
 
 module.exports = app;

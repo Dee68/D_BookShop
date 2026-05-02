@@ -27,6 +27,19 @@ exports.createOrder = (user_id, items, total) => {
     });
 };
 
+exports.updateOrderStatus = (orderId, status) => {
+    return new Promise((resolve, reject) => {
+        db.run(
+            `UPDATE orders SET status = ? WHERE id = ?`,
+            [status, orderId],
+            function (err) {
+                if (err) reject(err);
+                else resolve({ changes: this.changes });
+            }
+        );
+    });
+};
+
 exports.getOrderItems = (order_id) => {
     return new Promise((resolve, reject) => {
         db.all(
@@ -89,5 +102,31 @@ exports.getOrdersByUser = (user_id) => {
 
             resolve(Object.values(orders));
         });
+    });
+};
+
+exports.getOrderById = (id) => {
+    return new Promise((resolve, reject) => {
+        db.get(
+            `SELECT * FROM orders WHERE id = ?`,
+            [id],
+            (err, row) => {
+                if (err) reject(err);
+                else resolve(row);
+            }
+        );
+    });
+};
+
+exports.getAllOrders = () => {
+    return new Promise((resolve, reject) => {
+        db.all(
+            `SELECT * FROM orders`,
+            [],
+            (err, rows) => {
+                if (err) reject(err);
+                else resolve(rows);
+            }
+        );
     });
 };

@@ -32,18 +32,45 @@ exports.createProduct = (product) => {
     });
 };
 
-exports.getAllProducts = () => {
-    return new Promise((resolve, reject) => {
-        const sql = `
-        SELECT p.*, pi.image_url
-        FROM products p
-        LEFT JOIN product_images pi ON p.id = pi.product_id
-        `;
+exports.getFilteredProducts = (filters) => {
+    const { search, category, minPrice, maxPrice, limit, offset } = filters;
 
-        db.all(sql, [], (err, rows) => {
+    let sql = `
+    SELECT p.*, pi.image_url
+    FROM products p
+    LEFT JOIN product_images pi ON p.id = pi.product_id
+    WHERE 1=1
+    `;
+
+    const params = [];
+
+    if (search) {
+        sql += ` AND (p.title LIKE ? OR p.author LIKE ?)`;
+        params.push(`%${search}%`, `%${search}%`);
+    }
+
+    if (category) {
+        sql += ` AND p.category_id = ?`;
+        params.push(category);
+    }
+
+    if (minPrice) {
+        sql += ` AND p.price >= ?`;
+        params.push(minPrice);
+    }
+
+    if (maxPrice) {
+        sql += ` AND p.price <= ?`;
+        params.push(maxPrice);
+    }
+
+    sql += ` ORDER BY p.id DESC LIMIT ? OFFSET ?`;
+    params.push(limit, offset);
+
+    return new Promise((resolve, reject) => {
+        db.all(sql, params, (err, rows) => {
             if (err) return reject(err);
 
-            // Group images per product
             const products = {};
 
             rows.forEach(row => {
@@ -190,5 +217,39 @@ exports.deleteProduct = (id) => {
                 else resolve({ changes: this.changes });
             }
         );
+    });
+};
+
+exports.countFilteredProducts = (filters) => {
+    const { search, category, minPrice, maxPrice } = filters;
+
+    let sql = `SELECT COUNT(DISTINCT p.id) as count FROM products p WHERE 1=1`;
+    const params = [];
+
+    if (search) {
+        sql += ` AND (p.title LIKE ? OR p.author LIKE ?)`;
+        params.push(`%${search}%`, `%${search}%`);
+    }
+
+    if (category) {
+        sql += ` AND p.category_id = ?`;
+        params.push(category);
+    }
+
+    if (minPrice) {
+        sql += ` AND p.price >= ?`;
+        params.push(minPrice);
+    }
+
+    if (maxPrice) {
+        sql += ` AND p.price <= ?`;
+        params.push(maxPrice);
+    }
+
+    return new Promise((resolve, reject) => {
+        db.get(sql, params, (err, row) => {
+            if (err) reject(err);
+            else resolve(row.count);
+        });
     });
 };

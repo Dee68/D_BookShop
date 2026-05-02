@@ -7,7 +7,12 @@ const trx = require('../config/dbTransactions');
 
 exports.createOrder = async (req, res) => {
     try {
-        const { user_id, items } = req.body;
+        const { items } = req.body;
+        const user_id = req.user.id;
+
+        if (!items || !Array.isArray(items) || items.length === 0) {
+            return res.status(400).json({ error: "Items must be a non-empty array" });
+        }
 
         await trx.beginTransaction();
 
@@ -15,7 +20,6 @@ exports.createOrder = async (req, res) => {
         const validatedItems = [];
 
         for (const item of items) {
-
             const product = await Product.getProductByIdSimple(item.product_id);
 
             if (!product) {
@@ -47,7 +51,10 @@ exports.createOrder = async (req, res) => {
 
         await trx.commit();
 
-        res.status(201).json(result);
+        res.status(201).json({
+            message: "Order created",
+            orderId: result.orderId
+        });
 
     } catch (error) {
         await trx.rollback();
@@ -59,24 +66,25 @@ exports.cancelOrder = async (req, res) => {
     try {
         const orderId = req.params.id;
 
-        // 1. get order items
-        const items = await Order.getOrderItems(orderId);
+        const order = await Order.getOrderById(orderId);
 
-        if (!items || items.length === 0) {
-            return res.status(404).json({ error: "Order not found or empty" });
+        if (!order) {
+            return res.status(404).json({ error: "Order not found" });
         }
 
-        // 2. restore stock
+        // Ownership check
+        if (req.user.role !== 'admin' && order.user_id !== req.user.id) {
+            return res.status(403).json({ error: "Forbidden" });
+        }
+
+        // restore stock
+        const items = await Order.getOrderItems(orderId);
+
         for (const item of items) {
             await Product.restoreStock(item.product_id, item.quantity);
         }
 
-        // 3. mark order as cancelled
         const result = await Order.cancelOrder(orderId);
-
-        if (result.changes === 0) {
-            return res.status(404).json({ error: "Order not found" });
-        }
 
         res.json({ message: "Order cancelled and stock restored" });
 
@@ -84,11 +92,20 @@ exports.cancelOrder = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
-
-exports.getUserOrders = async (req, res) => {
+exports.getOrders = async (req, res) => {
     try {
-        const orders = await Order.getOrdersByUser(req.params.user_id);
+        let orders;
+
+        if (req.user.role === 'admin') {
+            // admin => get all orders
+            orders = await Order.getAllOrders();
+        } else {
+            // customer => only their own
+            orders = await Order.getOrdersByUser(req.user.id);
+        }
+
         res.json(orders);
+
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

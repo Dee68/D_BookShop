@@ -1,4 +1,15 @@
 const db = require('../config/db');
+// const RESET_DB = process.env.RESET_DB === "true";
+// if (RESET_DB) {
+//     db.serialize(() => {
+//         db.run(`DROP TABLE IF EXISTS order_items`);
+//         db.run(`DROP TABLE IF EXISTS orders`);
+//         db.run(`DROP TABLE IF EXISTS product_images`);
+//         db.run(`DROP TABLE IF EXISTS products`);
+//         db.run(`DROP TABLE IF EXISTS categories`);
+//         db.run(`DROP TABLE IF EXISTS users`);
+//     });
+// }
 
 // Enable foreign keys
 db.run(`PRAGMA foreign_keys = ON`);

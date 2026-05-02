@@ -1,17 +1,33 @@
 # 📚 D-BookShop
 
-A simple full-stack bookshop backend built with Node.js, Express, and SQLite.
+## This is a full-stack Bookshop Management System built with:
+
+- ### Frontend: React (Vite)
+- ### Backend: Node.js + Express
+- ### Database: SQLite
+- ### Authentication: JWT
+- ### File Uploads: Multer
+- ### Architecture: REST API
 
 ---
 
 ## 🚀 Tech Stack
 
+### Frontend
+- React (Vite)
+- JavaScript (ES6+)
+- Fetch API
+- Basic CSS (custom styling)
+
+### Backend
 - Node.js
 - Express.js
 - SQLite3
 - dotenv
 - REST API
 - Multer (file uploads)
+- bcrypt (password hashing)
+- JWT (Authentication)
 
 ## 📁 Project Structure
 
@@ -20,27 +36,22 @@ D-BookShop/
 │
 ├── backend/
 │   ├── config/
-│   │   └── db.js
-│   ├── controllers/
-│   │   └── categoryController.js
 │   ├── models/
-│   │   └── categoryModel.js
+│   ├── controllers/
 │   ├── routes/
-│   │   └── categoryRoutes.js
+│   ├── middleware/
 │   ├── database/
-│   │   └── bookshop.db
-│   ├── app.js
 │   └── server.js
 │
 ├── frontend/
-│   ├── css/
-│   ├── js/
-│   ├── pages/
-│   └── assets/
+│   ├── src/
+│   │   ├── api/
+│   │   ├── auth/
+│   │   ├── layout/
+│   │   ├── pages/
+│   │   └── App.jsx
+│   └── index.html
 │
-├── .env
-├── .gitignore
-├── package.json
 └── README.md
 ```
 

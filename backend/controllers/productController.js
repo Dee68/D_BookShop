@@ -1,4 +1,8 @@
 const Product = require('../models/productModel');
+const { deleteFile } = require('../utils/fileHelper');
+const { getPagination } = require('../utils/pagination');
+
+
 
 exports.createProduct = async (req, res) => {
     try {
@@ -29,8 +33,30 @@ exports.createProduct = async (req, res) => {
 
 exports.getProducts = async (req, res) => {
     try {
-        const products = await Product.getAllProducts();
-        res.json(products);
+        const { page, limit, offset } = getPagination(req);
+
+        const filters = {
+            search: req.query.search,
+            category: req.query.category,
+            minPrice: req.query.minPrice,
+            maxPrice: req.query.maxPrice,
+            limit,
+            offset
+        };
+
+        const products = await Product.getFilteredProducts(filters);
+        const total = await Product.countFilteredProducts(filters);
+
+        res.json({
+            data: products,
+            pagination: {
+                total,
+                page,
+                limit,
+                totalPages: Math.ceil(total / limit)
+            }
+        });
+
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -52,11 +78,25 @@ exports.getProduct = async (req, res) => {
 
 exports.updateProduct = async (req, res) => {
     try {
-        
-        const images = req.files?.map(file => `/images/${file.filename}`) || [];
-        const result = await Product.updateProduct(req.params.id, req.body,images);
-        if (result.changes === 0) {
+        const id = req.params.id;
+
+        // get existing product images
+        const existingProduct = await Product.getProductById(id);
+
+        if (!existingProduct) {
             return res.status(404).json({ error: "Product not found" });
+        }
+
+        const newImages = req.files?.map(file => `/images/${file.filename}`) || [];
+
+        // update DB
+        const result = await Product.updateProduct(id, req.body, newImages);
+
+        // delete old images ONLY if new ones uploaded
+        if (newImages.length > 0) {
+            existingProduct.images.forEach(img => {
+                deleteFile(img);
+            });
         }
 
         res.json({ message: "Product updated" });
@@ -68,14 +108,25 @@ exports.updateProduct = async (req, res) => {
 
 exports.deleteProduct = async (req, res) => {
     try {
-        const result = await Product.deleteProduct(req.params.id);
+        const id = req.params.id;
 
-        if (result.changes === 0) {
+        const product = await Product.getProductById(id);
+
+        if (!product) {
             return res.status(404).json({ error: "Product not found" });
         }
 
+        // delete images from disk
+        product.images.forEach(img => {
+            deleteFile(img);
+        });
+
+        await Product.deleteProduct(id);
+
         res.json({ message: "Product deleted" });
+
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
+

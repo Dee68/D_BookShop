@@ -37,3 +37,16 @@ exports.getUserByEmail = (email) => {
         );
     });
 };
+
+exports.updateUserRole = (id, role) => {
+    return new Promise((resolve, reject) => {
+        db.run(
+            `UPDATE users SET role = ? WHERE id = ?`,
+            [role, id],
+            function (err) {
+                if (err) reject(err);
+                else resolve({ changes: this.changes });
+            }
+        );
+    });
+};
