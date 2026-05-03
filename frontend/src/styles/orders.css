@@ -1,0 +1,87 @@
+.orders-container {
+    padding: 20px;
+}
+
+.order-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.order-id {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.order-status {
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    text-transform: capitalize;
+}
+
+/* status colors */
+.status-pending {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status-shipped {
+    background: #cce5ff;
+    color: #004085;
+}
+
+.status-delivered {
+    background: #d4edda;
+    color: #155724;
+}
+
+.order-user {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+.order-items {
+    margin: 10px 0;
+    padding-left: 0px;
+    list-style: none;
+}
+
+/* .order-items li {
+    margin-bottom: 5px;
+} */
+ .order-items li {
+    padding: 6px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.order-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.order-total {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.status-select {
+    padding: 5px;
+    border-radius: 6px;
+}
+.order-card:hover {
+    transform: translateY(-2px);
+    transition: 0.2s ease;
+}

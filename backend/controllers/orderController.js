@@ -110,3 +110,36 @@ exports.getOrders = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+
+exports.getAllOrders = async (req, res) => {
+    try {
+        const orders = await Order.getAllOrders();
+        res.json(orders);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+exports.updateStatus = async (req, res) => {
+    try {
+        const { status } = req.body;
+        const orderId = req.params.id;
+
+        const order = await Order.getOrderById(orderId); // add this if not existing
+
+        if (!order) {
+            return res.status(404).json({ error: "Order not found" });
+        }
+
+        const result = await Order.updateOrderStatus(
+            orderId,
+            status,
+            order.status
+        );
+
+        res.json(result);
+
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+};

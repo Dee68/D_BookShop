@@ -9,8 +9,8 @@ async function seedOrders() {
         for (const user_id of users) {
 
             const items = [
-                { product_id: 1, quantity: 2 },
-                { product_id: 2, quantity: 1 }
+                { product_id: 6, quantity: 2 },
+                { product_id: 7, quantity: 1 }
             ];
 
             let total = 0;

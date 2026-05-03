@@ -1,5 +1,11 @@
 const db = require('../config/db');
 
+const allowedTransitions = {
+    pending: ["shipped"],
+    shipped: ["delivered"],
+    delivered: []
+};
+
 exports.createOrder = (user_id, items, total) => {
     return new Promise((resolve, reject) => {
         db.run(
@@ -27,14 +33,25 @@ exports.createOrder = (user_id, items, total) => {
     });
 };
 
-exports.updateOrderStatus = (orderId, status) => {
+exports.updateOrderStatus = (id, newStatus, currentStatus) => {
     return new Promise((resolve, reject) => {
+
+        const allowedTransitions = {
+            pending: ["shipped"],
+            shipped: ["delivered"],
+            delivered: []
+        };
+
+        if (!allowedTransitions[currentStatus]?.includes(newStatus)) {
+            return reject(new Error("Invalid status transition"));
+        }
+
         db.run(
             `UPDATE orders SET status = ? WHERE id = ?`,
-            [status, orderId],
+            [newStatus, id],
             function (err) {
-                if (err) reject(err);
-                else resolve({ changes: this.changes });
+                if (err) return reject(err);
+                resolve({ changes: this.changes });
             }
         );
     });
@@ -120,13 +137,56 @@ exports.getOrderById = (id) => {
 
 exports.getAllOrders = () => {
     return new Promise((resolve, reject) => {
-        db.all(
-            `SELECT * FROM orders`,
-            [],
-            (err, rows) => {
-                if (err) reject(err);
-                else resolve(rows);
-            }
-        );
+        const sql = `
+        SELECT 
+            o.id as order_id,
+            o.total,
+            o.status,
+            o.created_at,
+            u.name as user_name,
+            u.email,
+            oi.product_id,
+            oi.quantity,
+            oi.price,
+            p.title
+        FROM orders o
+        JOIN users u ON o.user_id = u.id
+        LEFT JOIN order_items oi ON o.id = oi.order_id
+        LEFT JOIN products p ON oi.product_id = p.id
+        ORDER BY o.id DESC
+        `;
+
+        db.all(sql, [], (err, rows) => {
+            if (err) return reject(err);
+
+            const orders = {};
+
+            rows.forEach(row => {
+                if (!orders[row.order_id]) {
+                    orders[row.order_id] = {
+                        id: row.order_id,
+                        total: row.total,
+                        status: row.status,
+                        created_at: row.created_at,
+                        user: {
+                            name: row.user_name,
+                            email: row.email
+                        },
+                        items: []
+                    };
+                }
+
+                if (row.product_id) {
+                    orders[row.order_id].items.push({
+                        product_id: row.product_id,
+                        title: row.title,
+                        quantity: row.quantity,
+                        price: row.price
+                    });
+                }
+            });
+
+            resolve(Object.values(orders));
+        });
     });
 };

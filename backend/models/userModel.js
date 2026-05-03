@@ -18,7 +18,7 @@ exports.createUser = (user) => {
 
 exports.getAllUsers = () => {
     return new Promise((resolve, reject) => {
-        db.all(`SELECT id, name, email FROM users`, [], (err, rows) => {
+        db.all(`SELECT id, name, email, role FROM users`, [], (err, rows) => {
             if (err) reject(err);
             else resolve(rows);
         });
@@ -43,6 +43,19 @@ exports.updateUserRole = (id, role) => {
         db.run(
             `UPDATE users SET role = ? WHERE id = ?`,
             [role, id],
+            function (err) {
+                if (err) reject(err);
+                else resolve({ changes: this.changes });
+            }
+        );
+    });
+};
+
+exports.deleteUser = (id) => {
+    return new Promise((resolve, reject) => {
+        db.run(
+            `DELETE FROM users WHERE id = ?`,
+            [id],
             function (err) {
                 if (err) reject(err);
                 else resolve({ changes: this.changes });

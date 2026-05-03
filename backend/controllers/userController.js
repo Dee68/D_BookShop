@@ -60,3 +60,25 @@ exports.getAllUsers = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+
+exports.updateUserRole = async (req, res) => {
+    try {
+        const { role } = req.body;
+        const { id } = req.params;
+
+        const result = await User.updateUserRole(id, role);
+
+        res.json(result);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+exports.deleteUser = async (req, res) => {
+    try {
+        const result = await User.deleteUser(req.params.id);
+        res.json(result);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};

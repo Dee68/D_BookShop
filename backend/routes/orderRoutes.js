@@ -5,8 +5,9 @@ const { auth, requireAdmin } = require('../middleware/authMiddleware');
 
 router.post('/', auth, controller.createOrder);
 router.get('/', auth, controller.getOrders);
-//router.get('/:user_id', controller.getUserOrders);
+router.get('/', auth, requireAdmin, controller.getAllOrders);
 router.put('/:id/cancel', auth, controller.cancelOrder);
+router.patch("/:id/status", auth, requireAdmin, controller.updateStatus);
 //router.delete('/:id', controller.deleteOrder); 
 
 module.exports = router;
