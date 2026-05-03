@@ -2,19 +2,12 @@ const express = require('express');
 const cors = require('cors');
 
 const app = express();
-//const path = require('path');
+const path = require('path');
 
 // middleware
 app.use(cors());
 app.use(express.json());
-app.use('/images', express.static('frontend/assets/images'));
-
-app.use((err, req, res, next) => {
-    if (err.code === 'LIMIT_FILE_SIZE') {
-        return res.status(400).json({ error: 'File too large (max 2MB)' });
-    }
-    res.status(500).json({ error: err.message });
-});
+app.use('/images', express.static(path.join(__dirname,"uploads/images")));
 
 
 // test route
@@ -41,6 +34,14 @@ app.use('/api/orders', orderRoutes);
 const adminRoutes = require('./routes/adminRoutes');
 
 app.use('/api/admin', adminRoutes);
+
+app.use((err, req, res, next) => {
+    if (err.code === 'LIMIT_FILE_SIZE') {
+        return res.status(400).json({ error: 'File too large (max 5MB)' });
+    }
+    res.status(500).json({ error: err.message });
+});
+
 
 
 module.exports = app;

@@ -1,14 +1,20 @@
 const multer = require('multer');
+const fs = require("fs");
+
 const path = require('path');
 
+const uploadPath = path.join(__dirname, "../uploads/images");
+
+if (!fs.existsSync(uploadPath)) {
+    fs.mkdirSync(uploadPath, { recursive: true });
+}
 // storage config
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'frontend/assets/images/');
+        cb(null, uploadPath);
     },
     filename: (req, file, cb) => {
-        const uniqueName = Date.now() + path.extname(file.originalname);
-        cb(null, uniqueName);
+        cb(null, Date.now() + "-" + file.originalname);
     }
 });
 
@@ -25,7 +31,7 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({
     storage,
     fileFilter,
-    limits: { fileSize: 2 * 1024 * 1024 } // 2MB per file
+    limits: { fileSize: 5 * 1024 * 1024, files: 5 } // 5MB per file
 });
 
 

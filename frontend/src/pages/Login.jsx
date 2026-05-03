@@ -19,7 +19,7 @@ export default function Login({ onLogin }) {
             login(res.token);
             onLogin();
         } else {
-            alert("Login failed");
+            alert(res.error || "Login failed");
         }
     }
 

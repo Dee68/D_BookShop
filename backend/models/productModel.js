@@ -1,5 +1,30 @@
 const db = require('../config/db');
 
+function replaceImages(id, images) {
+    return new Promise((resolve, reject) => {
+        db.serialize(() => {
+            db.run(`DELETE FROM product_images WHERE product_id = ?`, [id], (err) => {
+                if (err) return reject(err);
+
+                const stmt = db.prepare(
+                    `INSERT INTO product_images (product_id, image_url)
+                     VALUES (?, ?)`
+                );
+
+                images.forEach(img => {
+                    stmt.run(id, img);
+                });
+
+                stmt.finalize(err => {
+                    if (err) reject(err);
+                    else resolve();
+                });
+            });
+        });
+    });
+};
+exports.replaceImages = replaceImages;
+
 exports.createProduct = (product) => {
     const { title, author, price, category_id, stock, images } = product;
 
@@ -184,21 +209,7 @@ exports.updateProduct = (id, product, images) => {
 
                 // OPTIONAL: replace images
                 if (images && images.length > 0) {
-
-                    // delete old images
-                    db.run(`DELETE FROM product_images WHERE product_id = ?`, [id]);
-
-                    // insert new images
-                    const stmt = db.prepare(
-                        `INSERT INTO product_images (product_id, image_url)
-                         VALUES (?, ?)`
-                    );
-
-                    images.forEach(img => {
-                        stmt.run(id, img);
-                    });
-
-                    stmt.finalize();
+                  replaceImages(id, images).then(()=>{resolve({changes:this.changes});}).catch(reject);
                 }
 
                 resolve({ changes: this.changes });

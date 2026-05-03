@@ -1,13 +1,21 @@
-import { useState } from "react";
+import { useState, useEffect, useContext } from "react";
 import Login from "./pages/Login";
 import AdminLayout from "./layout/AdminLayout";
+import { AuthContext } from "./auth/AuthContext";
 
 export default function App() {
-    const [isAuth, setIsAuth] = useState(!!localStorage.getItem("token"));
+    const { token } = useContext(AuthContext);
+    const [loading, setLoading] = useState(true);
 
-    if (!isAuth) {
-        return <Login onLogin={() => setIsAuth(true)} />;
+    useEffect(() => {
+        setLoading(false);
+    }, []);
+
+    if (loading) return <div>Loading...</div>;
+
+    if (!token) {
+        return <Login onLogin={() => {}} />;
     }
 
-    return <AdminLayout onLogout={() => setIsAuth(false)} />;
+    return <AdminLayout />;
 }

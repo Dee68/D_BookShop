@@ -12,3 +12,16 @@ export async function apiRequest(endpoint, method = "GET", body, token) {
 
     return res.json();
 }
+
+export async function apiUpload(endpoint, formData, token) {
+    const res = await fetch("http://localhost:3000/api" + endpoint, {
+        method: "POST",
+        headers: {
+            Authorization: `Bearer ${token}`
+            //DO NOT set Content-Type (browser sets it for FormData)
+        },
+        body: formData
+    });
+
+    return res.json();
+}

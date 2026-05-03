@@ -1,14 +1,35 @@
 import { useEffect, useState } from "react";
 import { apiRequest } from "../api/client";
+import ProductForm from "../components/ProductForm";
+
+
+
 
 export default function Products() {
     const [products, setProducts] = useState([]);
     const [search, setSearch] = useState("");
     const [page, setPage] = useState(1);
     const [limit] = useState(5);
+    const [editingProduct, setEditingProduct] = useState(null);
 
     const token = localStorage.getItem("token");
 
+    function resetForm() {
+        setForm({
+            title: "",
+            author: "",
+            price: "",
+            category_id: "",
+            stock: ""
+        });
+
+        setImages([]);
+        setPreview([]);
+
+        if (fileRef.current) {
+            fileRef.current.value = "";
+        }
+    }
     async function fetchProducts() {
         const res = await apiRequest(
             `/products?search=${search}&page=${page}&limit=${limit}`,
@@ -43,7 +64,11 @@ export default function Products() {
                 }}
                 style={{ padding: 8, marginBottom: 10, width: "100%" }}
             />
-
+ <ProductForm 
+    onCreated={fetchProducts}
+    editingProduct={editingProduct}
+    clearEdit={() => setEditingProduct(null)}
+     />
             {/* TABLE */}
             <table width="100%" cellPadding="10">
                 <thead>
@@ -66,6 +91,9 @@ export default function Products() {
                             <td>
                                 <button onClick={() => deleteProduct(p.id)}>
                                     Delete
+                                </button>
+                                <button onClick={() => setEditingProduct(p)}>
+                                    Edit
                                 </button>
                             </td>
                         </tr>

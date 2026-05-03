@@ -100,6 +100,7 @@ exports.updateProduct = async (req, res) => {
         }
 
         res.json({ message: "Product updated" });
+        console.log("FILES RECEIVED:", req.files?.length);
 
     } catch (error) {
         res.status(500).json({ error: error.message });
