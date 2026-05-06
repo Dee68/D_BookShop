@@ -8,8 +8,9 @@ export default function Orders() {
 
     const statusFlow = {
         pending: ["pending", "shipped"],
-        shipped: ["shipped", "delivered"],
-        delivered: ["delivered"]
+        shipped: ["shipped", "delivered","cancelled"],
+        delivered: ["delivered"],
+        cancelled: ["cancelled"]
     };
 
     async function loadOrders() {

@@ -14,8 +14,6 @@ exports.createOrder = async (req, res) => {
             return res.status(400).json({ error: "Items must be a non-empty array" });
         }
 
-        await trx.beginTransaction();
-
         let total = 0;
         const validatedItems = [];
 
@@ -23,12 +21,10 @@ exports.createOrder = async (req, res) => {
             const product = await Product.getProductByIdSimple(item.product_id);
 
             if (!product) {
-                await trx.rollback();
                 return res.status(400).json({ error: "Product not found" });
             }
 
             if (product.stock < item.quantity) {
-                await trx.rollback();
                 return res.status(400).json({
                     error: `Insufficient stock for ${product.title}`
                 });
@@ -45,23 +41,15 @@ exports.createOrder = async (req, res) => {
 
         const result = await Order.createOrder(user_id, validatedItems, total);
 
-        for (const item of validatedItems) {
-            await Product.reduceStock(item.product_id, item.quantity);
-        }
-
-        await trx.commit();
-
         res.status(201).json({
             message: "Order created",
             orderId: result.orderId
         });
 
     } catch (error) {
-        await trx.rollback();
         res.status(500).json({ error: error.message });
     }
 };
-
 exports.cancelOrder = async (req, res) => {
     try {
         const orderId = req.params.id;
@@ -125,10 +113,15 @@ exports.updateStatus = async (req, res) => {
         const { status } = req.body;
         const orderId = req.params.id;
 
-        const order = await Order.getOrderById(orderId); // add this if not existing
+        const order = await Order.getOrderById(orderId);
 
         if (!order) {
             return res.status(404).json({ error: "Order not found" });
+        }
+
+        // restore stock if cancelling
+        if (status === "cancelled" && order.status !== "cancelled") {
+            await Order.restoreOrderStock(orderId);
         }
 
         const result = await Order.updateOrderStatus(

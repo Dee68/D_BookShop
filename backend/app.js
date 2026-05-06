@@ -7,7 +7,10 @@ const path = require('path');
 // middleware
 app.use(cors());
 app.use(express.json());
-app.use('/images', express.static(path.join(__dirname,"uploads/images")));
+//app.use('/images', express.static(path.join(process.cwd(),"uploads/images")));
+app.use('/images', express.static(path.resolve(__dirname,"uploads/images")));
+
+console.log("Serving images from:", path.join(__dirname,"uploads/images"));
 
 
 // test route

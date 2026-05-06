@@ -130,5 +130,27 @@ npm run dev
 
 ````
 ````
-## 🧪 Testing Tool
-Postman
+## 🧪 API Testing (Postman)
+
+A full Postman collection is included for testing all API endpoints.
+
+### 📁 Location
+`/docs/postman/BookShop_API.postman_collection.json`
+
+### ▶️ How to use
+
+1. Open Postman
+2. Click **Import**
+3. Select the JSON file
+4. Set environment variables:
+
+| Variable   | Value                     |
+|------------|--------------------------|
+| base_url   | http://localhost:3000     |
+| token      | (auto-filled after login) |
+
+### 🔐 Authentication
+
+- Run `Login` request first
+- Token is automatically saved using Postman scripts
+- All protected routes use: Authorization: Bearer {{token}}

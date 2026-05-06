@@ -3,36 +3,67 @@ const db = require('../config/db');
 const allowedTransitions = {
     pending: ["shipped"],
     shipped: ["delivered"],
-    delivered: []
+    delivered: [],
+    cancelled: []
 };
 
 exports.createOrder = (user_id, items, total) => {
     return new Promise((resolve, reject) => {
-        db.run(
-            `INSERT INTO orders (user_id, total) VALUES (?, ?)`,
-            [user_id, total],
-            function (err) {
-                if (err) return reject(err);
 
-                const orderId = this.lastID;
+        db.serialize(() => {
+            db.run("BEGIN TRANSACTION");
 
-                const stmt = db.prepare(
-                    `INSERT INTO order_items (order_id, product_id, quantity, price)
-                     VALUES (?, ?, ?, ?)`
-                );
+            db.run(
+                `INSERT INTO orders (user_id, total, status)
+                 VALUES (?, ?, 'pending')`,
+                [user_id, total],
+                function (err) {
+                    if (err) {
+                        db.run("ROLLBACK");
+                        return reject(err);
+                    }
 
-                items.forEach(item => {
-                    stmt.run(orderId, item.product_id, item.quantity, item.price);
-                });
+                    const orderId = this.lastID;
 
-                stmt.finalize();
+                    const stmt = db.prepare(
+                        `INSERT INTO order_items (order_id, product_id, quantity, price)
+                         VALUES (?, ?, ?, ?)`
+                    );
 
-                resolve({ orderId });
-            }
-        );
+                    let failed = false;
+
+                    items.forEach(item => {
+
+                        stmt.run(orderId, item.product_id, item.quantity, item.price);
+
+                        db.run(
+                            `UPDATE products
+                             SET stock = stock - ?
+                             WHERE id = ?
+                             AND stock >= ?`,
+                            [item.quantity, item.product_id, item.quantity],
+                            function (err) {
+                                if (err || this.changes === 0) {
+                                    failed = true;
+                                }
+                            }
+                        );
+                    });
+
+                    stmt.finalize(err => {
+                        if (err || failed) {
+                            db.run("ROLLBACK");
+                            return reject(new Error("Stock issue, order cancelled"));
+                        }
+
+                        db.run("COMMIT");
+                        resolve({ orderId });
+                    });
+                }
+            );
+        });
     });
 };
-
 exports.updateOrderStatus = (id, newStatus, currentStatus) => {
     return new Promise((resolve, reject) => {
 
@@ -188,5 +219,31 @@ exports.getAllOrders = () => {
 
             resolve(Object.values(orders));
         });
+    });
+};
+
+exports.restoreOrderStock = (orderId) => {
+    return new Promise((resolve, reject) => {
+
+        db.all(
+            `SELECT product_id, quantity FROM order_items WHERE order_id = ?`,
+            [orderId],
+            (err, items) => {
+                if (err) return reject(err);
+
+                const stmt = db.prepare(
+                    `UPDATE products SET stock = stock + ? WHERE id = ?`
+                );
+
+                items.forEach(item => {
+                    stmt.run(item.quantity, item.product_id);
+                });
+
+                stmt.finalize(err => {
+                    if (err) reject(err);
+                    else resolve();
+                });
+            }
+        );
     });
 };

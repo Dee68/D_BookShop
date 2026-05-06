@@ -4,10 +4,16 @@ import './index.css'
 import "./styles/global.css";
 import App from './App.jsx'
 import AuthProvider from "./auth/AuthContext";
+import { BrowserRouter } from "react-router-dom";
+import { CartProvider } from './context/CartContext.jsx';
 
 
 createRoot(document.getElementById('root')).render(
   <AuthProvider>
-    <App />
+    <BrowserRouter>
+      <CartProvider>
+        <App />
+      </CartProvider>
+    </BrowserRouter>
   </AuthProvider>,
 )
