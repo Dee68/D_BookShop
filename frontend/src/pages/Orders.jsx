@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import "../styles/orders.css";
+import { useNavigate } from "react-router-dom";
 
 
 export default function Orders() {
     const [orders, setOrders] = useState([]);
     const token = localStorage.getItem("token");
+    const navigate = useNavigate();
 
     const statusFlow = {
         pending: ["pending", "shipped"],
@@ -55,7 +57,7 @@ export default function Orders() {
     <h2>Orders</h2>
 
     {orders.map(order => (
-        <div key={order.id} className="order-card">
+        <div key={order.id} className="order-card" onClick={() => navigate(`/admin/orders/${order.id}`)}>
 
             {/* HEADER */}
             <div className="order-header">

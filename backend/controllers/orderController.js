@@ -136,3 +136,25 @@ exports.updateStatus = async (req, res) => {
         res.status(400).json({ error: err.message });
     }
 };
+
+exports.getOrderById = async (req, res) => {
+    try {
+        const order = await Order.getOrderById(req.params.id);
+
+        if (!order) {
+            return res.status(404).json({ error: "Order not found" });
+        }
+
+        if (
+            req.user.role !== "admin" &&
+            order.user_id !== req.user.id
+        ) {
+            return res.status(403).json({ error: "Forbidden" });
+        }
+
+        res.json(order);
+
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};

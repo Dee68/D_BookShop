@@ -12,6 +12,7 @@ import { AuthContext } from "./auth/AuthContext";
 import Home from "./pages/HomePage";
 import Checkout from "./pages/Checkout";
 import ProtectedRoute  from "./components/ProtectedRoute";
+import OrderDetails from "./pages/OrderDetails";
 
 export default function App() {
     const { token } = useContext(AuthContext);
@@ -40,6 +41,7 @@ export default function App() {
                 {/* LOGIN */}
                 <Route path="/login" element={<Login />} />
                 <Route path="/checkout" element={<Checkout />} />
+                
 
                 {/* ADMIN (protected UI still controlled inside layout) */}
                 <Route
@@ -56,6 +58,7 @@ export default function App() {
                 <Route path="categories" element={<Categories />} />
                 <Route path="users" element={<Users />} />
                 <Route path="orders" element={<Orders />} />
+                <Route path="orders/:id" element={<OrderDetails />} />
                 
                 </Route>
 

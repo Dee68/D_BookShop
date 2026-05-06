@@ -155,17 +155,97 @@ exports.getOrdersByUser = (user_id) => {
 
 exports.getOrderById = (id) => {
     return new Promise((resolve, reject) => {
-        db.get(
-            `SELECT * FROM orders WHERE id = ?`,
-            [id],
-            (err, row) => {
-                if (err) reject(err);
-                else resolve(row);
+
+        const sql = `
+        SELECT 
+            o.id as order_id,
+            o.total,
+            o.status,
+            o.created_at,
+            u.name as user_name,
+            u.email,
+            oi.product_id,
+            oi.quantity,
+            oi.price,
+            p.title
+        FROM orders o
+        JOIN users u ON o.user_id = u.id
+        LEFT JOIN order_items oi ON o.id = oi.order_id
+        LEFT JOIN products p ON oi.product_id = p.id
+        WHERE o.id = ?
+        `;
+
+        db.all(sql, [id], (err, rows) => {
+            if (err) return reject(err);
+            if (!rows.length) return resolve(null);
+
+            // Base order object
+            const order = {
+                id: rows[0].order_id,
+                total: rows[0].total,
+                status: rows[0].status,
+                created_at: rows[0].created_at,
+                user: {
+                    name: rows[0].user_name,
+                    email: rows[0].email
+                },
+                itemsMap: {}
+            };
+
+            // Build items (NO images yet)
+            rows.forEach(row => {
+                if (!row.product_id) return;
+
+                if (!order.itemsMap[row.product_id]) {
+                    order.itemsMap[row.product_id] = {
+                        product_id: row.product_id,
+                        title: row.title,
+                        quantity: row.quantity,
+                        price: row.price,
+                        image: null
+                    };
+                }
+            });
+
+            // Now fetch images separately (CLEAN SOLUTION)
+            const productIds = Object.keys(order.itemsMap);
+
+            if (productIds.length === 0) {
+                order.items = [];
+                delete order.itemsMap;
+                return resolve(order);
             }
-        );
+
+            const placeholders = productIds.map(() => '?').join(',');
+
+            db.all(
+                `SELECT product_id, image_url 
+                 FROM product_images 
+                 WHERE product_id IN (${placeholders})`,
+                productIds,
+                (imgErr, images) => {
+                    if (imgErr) return reject(imgErr);
+
+                    // attach ONLY first image per product
+                    images.forEach(img => {
+                        if (
+                            order.itemsMap[img.product_id] &&
+                            !order.itemsMap[img.product_id].image
+                        ) {
+                            order.itemsMap[img.product_id].image = img.image_url;
+                        }
+                    });
+
+                    // convert to array for frontend
+                    order.items = Object.values(order.itemsMap);
+                    delete order.itemsMap;
+
+                    resolve(order);
+                }
+            );
+        });
     });
 };
-
 exports.getAllOrders = () => {
     return new Promise((resolve, reject) => {
         const sql = `
