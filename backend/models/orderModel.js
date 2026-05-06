@@ -116,11 +116,22 @@ exports.cancelOrder = (order_id) => {
 
 exports.getOrdersByUser = (user_id) => {
     return new Promise((resolve, reject) => {
+
         const sql = `
-        SELECT o.*, oi.product_id, oi.quantity, oi.price
+        SELECT 
+            o.id,
+            o.total,
+            o.status,
+            o.created_at,
+            oi.product_id,
+            oi.quantity,
+            oi.price,
+            p.title
         FROM orders o
         LEFT JOIN order_items oi ON o.id = oi.order_id
+        LEFT JOIN products p ON oi.product_id = p.id
         WHERE o.user_id = ?
+        ORDER BY o.id DESC
         `;
 
         db.all(sql, [user_id], (err, rows) => {
@@ -129,12 +140,13 @@ exports.getOrdersByUser = (user_id) => {
             const orders = {};
 
             rows.forEach(row => {
+
                 if (!orders[row.id]) {
                     orders[row.id] = {
                         id: row.id,
-                        user_id: row.user_id,
                         total: row.total,
                         status: row.status,
+                        created_at: row.created_at, 
                         items: []
                     };
                 }
@@ -142,6 +154,7 @@ exports.getOrdersByUser = (user_id) => {
                 if (row.product_id) {
                     orders[row.id].items.push({
                         product_id: row.product_id,
+                        title: row.title,        
                         quantity: row.quantity,
                         price: row.price
                     });

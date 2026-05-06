@@ -1,73 +1,66 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { CartContext } from "../context/CartContext";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export default function Checkout() {
-    const { cart, setCart } = useContext(CartContext);
 
-    const [loading, setLoading] = useState(false);
-
+    const { cart, total, clearCart } = useContext(CartContext);
     const token = localStorage.getItem("token");
-
-    const total = cart.reduce(
-        (sum, item) => sum + item.price * item.qty,
-        0
-    );
+    const navigate = useNavigate();
 
     async function placeOrder() {
-        setLoading(true);
 
         const items = cart.map(item => ({
             product_id: item.id,
-            quantity: item.qty
+            quantity: item.quantity
         }));
 
-        const res = await fetch("http://localhost:3000/api/orders", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`
-            },
-            body: JSON.stringify({ items })
-        });
+        try {
+            const res = await fetch("http://localhost:3000/api/orders", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`
+                },
+                body: JSON.stringify({ items })
+            });
 
-        const data = await res.json();
+            const data = await res.json();
 
-        setLoading(false);
+            if (!res.ok) {
+                throw new Error(data.error || "Order failed");
+            }
 
-        if (res.ok) {
-            alert("Order placed successfully!");
+            // CLEAR CART
+            clearCart();
+            toast.success("Order placed successfully!");
+            // REDIRECT TO SUCCESS PAGE
+            navigate(`/order-success/${data.orderId}`);
 
-            setCart([]); // clear cart
-        } else {
-            alert(data.error || "Order failed");
+        } catch (err) {
+           // alert(err.message);
+           toast.error(error.message || "Something went wrong");
         }
     }
 
     return (
         <div className="checkout">
+
             <h2>Checkout</h2>
 
-            {cart.length === 0 ? (
-                <p>Your cart is empty</p>
-            ) : (
-                <>
-                    {cart.map(item => (
-                        <div key={item.id} className="checkout-item">
-                            <p>{item.title}</p>
-                            <p>{item.qty} × €{item.price}</p>
-                        </div>
-                    ))}
+            {cart.map(item => (
+                <div key={item.id}>
+                    {item.title} × {item.quantity}
+                </div>
+            ))}
 
-                    <h3>Total: €{total.toFixed(2)}</h3>
+            <h3>Total: €{total.toFixed(2)}</h3>
 
-                    <button
-                        onClick={placeOrder}
-                        disabled={loading}
-                    >
-                        {loading ? "Processing..." : "Place Order"}
-                    </button>
-                </>
-            )}
+            <button onClick={placeOrder}>
+                Place Order
+            </button>
+
         </div>
     );
 }

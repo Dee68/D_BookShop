@@ -85,3 +85,12 @@
     transform: translateY(-2px);
     transition: 0.2s ease;
 }
+.order-items-preview {
+    margin: 8px 0;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.order-items-preview p {
+    margin: 2px 0;
+}

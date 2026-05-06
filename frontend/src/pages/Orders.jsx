@@ -44,14 +44,15 @@ export default function Orders() {
     }
 
     function formatDate(dateString) {
-    return new Date(dateString).toLocaleString("en-IE", {
-        year: "numeric",
-        month: "short",
-        day: "2-digit",
-        hour: "2-digit",
-        minute: "2-digit"
-    });
-}
+        if (!dateString) return "No date";
+        return new Date(dateString).toLocaleString("en-IE", {
+            year: "numeric",
+            month: "short",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit"
+        });
+    }
     return (
        <div className="orders-container">
     <h2>Orders</h2>

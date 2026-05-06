@@ -44,27 +44,36 @@ export default function Home() {
         <>
         <Navbar />
         <div className="home">
+            {/* hero section */}
+            <div className="hero">
+                <div className="hero-content">
+                    <h1>Discover Your Next Great Book</h1>
+                    <p>Best deals on programming, business & self-development books</p>
+                    <button>Shop Now</button>
+                </div>
+            </div>
 
             {/* SEARCH BAR */}
-            <div className="filters">
+           <div className="filters">
+
                 <input
-                    placeholder="Search by title or author"
+                    className="search-input"
+                    placeholder="Search books by title or author..."
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                 />
 
                 <select
+                    className="category-select"
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
                 >
                     <option value="">All Categories</option>
-
-                    {categories.map(cat => (
-                        <option key={cat.id} value={cat.id}>
-                            {cat.name}
-                        </option>
-                    ))}
+                    <option value="1">Programming</option>
+                    <option value="2">Business</option>
+                    <option value="3">Fiction</option>
                 </select>
+
             </div>
 
             {/* PRODUCTS GRID */}

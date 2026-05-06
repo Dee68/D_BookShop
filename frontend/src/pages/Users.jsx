@@ -29,7 +29,7 @@ export default function Users() {
             },
             body: JSON.stringify({ role })
         });
-        console.log("CLICKED:", id, role);
+        //console.log("CLICKED:", id, role);
 
         loadUsers();
     }

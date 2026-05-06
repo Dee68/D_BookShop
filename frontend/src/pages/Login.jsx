@@ -3,6 +3,7 @@ import { apiRequest } from "../api/client";
 import { AuthContext } from "../auth/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
+import { toast } from "react-toastify";
 
 export default function Login() {
     const { login } = useContext(AuthContext); // use this only
@@ -19,8 +20,12 @@ export default function Login() {
         });
 
         if (!data.token) {
-            alert("Login failed");
-            return;
+            if (!res.ok) {
+                toast.error("Login failed");
+                return;
+            }
+
+            toast.success("Welcome back!");
         }
 
         login(data.token); // handles localStorage + state

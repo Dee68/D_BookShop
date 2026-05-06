@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { apiUpload } from "../api/client";
+import { toast } from "react-toastify";
 
 export default function ProductForm({ onCreated, editingProduct, clearEdit }) {
     const [form, setForm] = useState({
@@ -109,7 +110,9 @@ export default function ProductForm({ onCreated, editingProduct, clearEdit }) {
     }
 
     if (res.message || res.productId) {
-        alert(editingProduct ? "Product updated" : "Product created");
+        //alert(editingProduct ? "Product updated" : "Product created");
+        toast.info(editingProduct ? "Product updated": "Product created")
+
         await onCreated();
         clearEdit();
         resetForm();

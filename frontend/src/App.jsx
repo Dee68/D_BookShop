@@ -13,6 +13,8 @@ import Home from "./pages/HomePage";
 import Checkout from "./pages/Checkout";
 import ProtectedRoute  from "./components/ProtectedRoute";
 import OrderDetails from "./pages/OrderDetails";
+import OrderSuccess from "./pages/OrderSuccess";
+import CustomerOrders from "./pages/CustomerOrders";
 
 export default function App() {
     const { token } = useContext(AuthContext);
@@ -33,14 +35,22 @@ export default function App() {
             <Routes>
 
                 {/* PUBLIC STORE */}
-                <Route path="/" element={
-                    <ProtectedRoute>
-                        <Home />
-                    </ProtectedRoute>} />
+                <Route path="/" element={<Home />} />
+
+                <Route
+                    path="/my-orders"
+                    element={
+                        <ProtectedRoute>
+                            <CustomerOrders />
+                        </ProtectedRoute>
+                    }
+                />
 
                 {/* LOGIN */}
                 <Route path="/login" element={<Login />} />
                 <Route path="/checkout" element={<Checkout />} />
+                <Route path="/order-success/:id" element={<OrderSuccess />} />
+                <Route path="orders/:id" element={<OrderDetails />} />
                 
 
                 {/* ADMIN (protected UI still controlled inside layout) */}
@@ -58,7 +68,8 @@ export default function App() {
                 <Route path="categories" element={<Categories />} />
                 <Route path="users" element={<Users />} />
                 <Route path="orders" element={<Orders />} />
-                <Route path="orders/:id" element={<OrderDetails />} />
+                
+                
                 
                 </Route>
 
