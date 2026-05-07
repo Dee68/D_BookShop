@@ -12,6 +12,34 @@ export default function Register() {
 
     const navigate = useNavigate();
 
+    //validates form inputs
+    function validateForm() {
+
+        if (!form.name.trim()) {
+            toast.error("Username is required");
+            return false;
+        }
+
+        if (form.name.length < 3) {
+            toast.error("Username must be at least 3 characters");
+            return false;
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (!emailRegex.test(form.email)) {
+            toast.error("Enter a valid email address");
+            return false;
+        }
+
+        if (form.password.length < 6) {
+            toast.error("Password must be at least 6 characters");
+            return false;
+        }
+
+        return true;
+    }
+
     function handleChange(e) {
         setForm({ ...form, [e.target.name]: e.target.value });
     }
@@ -19,6 +47,7 @@ export default function Register() {
     async function handleSubmit(e) {
         e.preventDefault();
 
+        if (!validateForm()) return;
         const res = await fetch("http://localhost:3000/api/users/register", {
             method: "POST",
             headers: {

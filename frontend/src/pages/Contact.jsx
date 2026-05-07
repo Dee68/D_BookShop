@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 export default function Contact() {
     const [form, setForm] = useState({
@@ -7,21 +8,61 @@ export default function Contact() {
         email: "",
         message: ""
     });
-
+   const navigate = useNavigate();
     function handleChange(e) {
         setForm({ ...form, [e.target.name]: e.target.value });
     }
 
-    function handleSubmit(e) {
-        e.preventDefault();
+   
+    async function handleSubmit(e) {
+    e.preventDefault();
 
-        // For now: just simulate submission
-        toast.success("Message sent successfully!");
+    const res = await fetch("http://localhost:3000/api/contact", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(form)
+    });
 
-        setForm({
-            name: "",
-            email: "",
-            message: ""
+    let data;
+    try {
+        data = await res.json();
+    } catch {
+        toast.error("Server error");
+        return;
+    }
+
+    if (!res.ok) {
+        toast.error(data.message || "Failed to deliver message");
+        return;
+    }
+
+    toast.success(
+        `Message received successfully on ${formatDate(data.receivedAt)}`
+    );
+
+    // RESET FORM
+    setForm({
+        name: "",
+        email: "",
+        message: ""
+    });
+
+    // REDIRECT HOME
+    setTimeout(() => {
+        navigate("/");
+    }, 1200);
+}
+
+    function formatDate(dateString) {
+        if (!dateString) return "No date";
+        return new Date(dateString).toLocaleString("en-IE", {
+            year: "numeric",
+            month: "short",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit"
         });
     }
 

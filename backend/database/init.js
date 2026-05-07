@@ -80,5 +80,18 @@ CREATE TABLE IF NOT EXISTS order_items (
     FOREIGN KEY (product_id) REFERENCES products(id)
 )
 `);
+// Contact Messages
+db.run(`
+CREATE TABLE IF NOT EXISTS contact_messages (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    email TEXT NOT NULL,
+    subject TEXT,
+    message TEXT NOT NULL,
+    status TEXT DEFAULT 'new'
+    CHECK(status IN ('new', 'read', 'replied')),
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+)
+`);
 
 console.log("Tables created successfully");

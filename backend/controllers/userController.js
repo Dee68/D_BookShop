@@ -2,9 +2,37 @@ const User = require('../models/userModel');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
+function validateEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
 exports.registerUser = async (req, res) => {
     try {
         const { name, email, password } = req.body;
+        const existingUser = await User.getUserByEmail(email);
+        if (existingUser) {
+        return res.status(409).json({
+            error: "Email already exists"
+        });
+    }
+
+        if (!name || name.length < 3) {
+            return res.status(400).json({
+                error: "Username must be at least 3 characters"
+            });
+        }
+
+        if (!email || !validateEmail(email)) {
+            return res.status(400).json({
+                error: "Invalid email format"
+            });
+        }
+
+        if (!password || password.length < 6) {
+            return res.status(400).json({
+                error: "Password must be at least 6 characters"
+            });
+        }
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -25,6 +53,12 @@ exports.registerUser = async (req, res) => {
 exports.loginUser = async (req, res) => {
     try {
         const { email, password } = req.body;
+
+        if (!email || !password) {
+            return res.status(400).json({
+                error: "Email and password are required"
+            });
+        }
 
         const user = await User.getUserByEmail(email);
 
