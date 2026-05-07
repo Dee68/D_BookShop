@@ -23,9 +23,9 @@ export default function AdminLayout({ onLogout }) {
     return (
         <div className="admin-layout">
             <div className="topbar">
-             <button className="hamburger" onClick={() => setMobileOpen(true)}>
+             {/* <button className="hamburger" onClick={() => setMobileOpen(true)}>
                 ☰
-            </button>
+            </button> */}
             </div>
             <Sidebar collapsed={collapsed}
                      setCollapsed={setCollapsed}

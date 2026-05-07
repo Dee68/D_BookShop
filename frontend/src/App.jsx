@@ -18,19 +18,7 @@ import CustomerOrders from "./pages/CustomerOrders";
 
 export default function App() {
     const { token } = useContext(AuthContext);
-    // const [loading, setLoading] = useState(true);
-
-    // useEffect(() => {
-    //     setLoading(false);
-    // }, []);
-
-    // if (loading) return <div>Loading...</div>;
-
-    // if (!token) {
-    //     return <Login onLogin={() => {}} />;
-    // }
-
-    // return <AdminLayout />;
+    
     return (
             <Routes>
 

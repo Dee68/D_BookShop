@@ -1,133 +1,210 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
-import { CartContext } from "../context/CartContext";
-import CartDrawer from "../context/CartDrawer";
 import { jwtDecode } from "jwt-decode";
 
-export default function Navbar() {
-    const { cart } = useContext(CartContext);
+import { CartContext } from "../context/CartContext";
+import { AuthContext } from "../auth/AuthContext";
+import CartDrawer from "../context/CartDrawer";
 
-    const [cartOpen, setCartOpen] = useState(false);
+export default function Navbar() {
+
+    const { cart } = useContext(CartContext);
+    const { logout } = useContext(AuthContext);
+
+    const navigate = useNavigate();
+
     const [menuOpen, setMenuOpen] = useState(false);
+    const [cartOpen, setCartOpen] = useState(false);
 
     const token = localStorage.getItem("token");
+
     let role = null;
 
     if (token) {
         try {
-            const decoded = jwtDecode(token);
-            role = decoded.role;
-        } catch (err) {
+            role = jwtDecode(token).role;
+        } catch {
             console.error("Invalid token");
         }
     }
 
+    function handleLogout() {
+        logout();
+
+        setMenuOpen(false);
+        setCartOpen(false);
+
+        navigate("/login");
+    }
+
     return (
         <>
-            <nav className="navbar">
+            {/* NAVBAR */}
+            <header className="sticky top-0 z-50 bg-black text-white shadow-md">
 
-                {/* HAMBURGER */}
-                <button
-                    className="hamburger"
-                    onClick={() => setMenuOpen(true)}
-                >
-                    ☰
-                </button>
+                <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
 
-                {/* LOGO */}
-                <Link to="/" className="logo">
-                    <img
-                        src="/images/FullLogo.png"
-                        alt="D-BookShop"
-                        className="logo-img"
-                    />
-                </Link>
+                    {/* LOGO */}
+                    <Link to="/" className="flex items-center">
+                        <img
+                            src="/images/FullLogo.png"
+                            alt="D-BookShop"
+                            className="h-12 object-contain"
+                        />
+                    </Link>
 
-                {/* DESKTOP ACTIONS */}
-                <div className="nav-actions">
+                    {/* DESKTOP NAV */}
+                    <div className="hidden md:flex items-center gap-4">
 
-                    {/* CART */}
+                        {/* CUSTOMER */}
+                        {token && role !== "admin" && (
+                            <Link
+                                to="/my-orders"
+                                className="px-4 py-2 rounded-lg bg-zinc-800 hover:bg-zinc-700 transition"
+                            >
+                                My Orders
+                            </Link>
+                        )}
+
+                        {/* ADMIN */}
+                        {token && role === "admin" && (
+                            <Link
+                                to="/admin"
+                                className="px-4 py-2 rounded-lg bg-zinc-800 hover:bg-zinc-700 transition"
+                            >
+                                Dashboard
+                            </Link>
+                        )}
+
+                        {/* CART */}
+                        <button
+                            onClick={() => setCartOpen(true)}
+                            className="relative px-4 py-2 rounded-lg bg-yellow-400 text-black font-semibold hover:bg-yellow-300 transition"
+                        >
+                            🛒 Cart
+
+                            <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
+                                {cart?.length || 0}
+                            </span>
+                        </button>
+
+                        {/* LOGIN / LOGOUT */}
+                        {!token ? (
+                            <Link
+                                to="/login"
+                                className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 transition"
+                            >
+                                Login
+                            </Link>
+                        ) : (
+                            <button
+                                onClick={handleLogout}
+                                className="px-4 py-2 rounded-lg bg-red-500 hover:bg-red-400 transition"
+                            >
+                                Logout
+                            </button>
+                        )}
+
+                    </div>
+
+                    {/* MOBILE HAMBURGER */}
                     <button
-                        className="cart-btn"
-                        onClick={() => setCartOpen(true)}
+                        onClick={() => setMenuOpen(true)}
+                        className="md:hidden text-3xl"
                     >
-                        🛒
-                        <span className="cart-count">
-                            {cart?.length || 0}
-                        </span>
+                        ☰
                     </button>
 
-                    {/* LOGIN */}
-                    {!token && (
-                        <Link to="/login" className="nav-btn">
-                            Login
-                        </Link>
-                    )}
-
-                    {/* CUSTOMER */}
-                    {token && role !== "admin" && (
-                        <Link to="/my-orders" className="nav-btn">
-                            My Orders
-                        </Link>
-                    )}
-
-                    {/* ADMIN */}
-                    {token && role === "admin" && (
-                        <Link to="/admin" className="nav-btn">
-                            Dashboard
-                        </Link>
-                    )}
-
                 </div>
-            </nav>
+            </header>
 
-            {/* 🔥 MOBILE DRAWER */}
-          {/* OVERLAY */}
+            {/* MOBILE OVERLAY */}
             <div
-                className={`mobile-overlay ${menuOpen ? "show" : ""}`}
                 onClick={() => setMenuOpen(false)}
+                className={`
+                    fixed inset-0 bg-black/40 backdrop-blur-sm z-40
+                    transition-opacity duration-300
+                    ${menuOpen ? "opacity-100 visible" : "opacity-0 invisible"}
+                `}
             />
 
-            {/* DRAWER */}
-            <div className={`mobile-drawer ${menuOpen ? "open" : ""}`}>
+            {/* MOBILE DRAWER */}
+            <div
+                className={`
+                    fixed top-0 right-0 h-full w-72 bg-white z-50
+                    shadow-2xl p-6 flex flex-col gap-4
+                    transition-transform duration-300
+                    ${menuOpen ? "translate-x-0" : "translate-x-full"}
+                `}
+            >
 
+                {/* CLOSE */}
                 <button
-                    className="close-btn"
                     onClick={() => setMenuOpen(false)}
+                    className="self-end text-2xl text-black"
                 >
                     ✕
                 </button>
 
-                <Link to="/" onClick={() => setMenuOpen(false)}>
+                {/* HOME */}
+                <Link
+                    to="/"
+                    onClick={() => setMenuOpen(false)}
+                    className="p-3 rounded-lg bg-gray-100 hover:bg-gray-200"
+                >
                     Home
                 </Link>
 
-                {!token && (
-                    <Link to="/login" onClick={() => setMenuOpen(false)}>
-                        Login
-                    </Link>
-                )}
-
+                {/* CUSTOMER */}
                 {token && role !== "admin" && (
-                    <Link to="/my-orders" onClick={() => setMenuOpen(false)}>
+                    <Link
+                        to="/my-orders"
+                        onClick={() => setMenuOpen(false)}
+                        className="p-3 rounded-lg bg-gray-100 hover:bg-gray-200"
+                    >
                         My Orders
                     </Link>
                 )}
 
+                {/* ADMIN */}
                 {token && role === "admin" && (
-                    <Link to="/admin" onClick={() => setMenuOpen(false)}>
+                    <Link
+                        to="/admin"
+                        onClick={() => setMenuOpen(false)}
+                        className="p-3 rounded-lg bg-gray-100 hover:bg-gray-200"
+                    >
                         Dashboard
                     </Link>
                 )}
 
+                {/* CART */}
                 <button
                     onClick={() => {
                         setCartOpen(true);
                         setMenuOpen(false);
                     }}
+                    className="p-3 rounded-lg bg-yellow-400 text-black font-semibold"
                 >
-                    🛒 Cart ({cart.length})
+                    🛒 Cart ({cart?.length || 0})
                 </button>
+
+                {/* LOGIN / LOGOUT */}
+                {!token ? (
+                    <Link
+                        to="/login"
+                        onClick={() => setMenuOpen(false)}
+                        className="p-3 rounded-lg bg-blue-600 text-white text-center"
+                    >
+                        Login
+                    </Link>
+                ) : (
+                    <button
+                        onClick={handleLogout}
+                        className="p-3 rounded-lg bg-red-500 text-white"
+                    >
+                        Logout
+                    </button>
+                )}
 
             </div>
 
