@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useContext } from "react";
 import { Routes, Route } from "react-router-dom";
 
 import Login from "./pages/Login";
@@ -15,6 +15,10 @@ import ProtectedRoute  from "./components/ProtectedRoute";
 import OrderDetails from "./pages/OrderDetails";
 import OrderSuccess from "./pages/OrderSuccess";
 import CustomerOrders from "./pages/CustomerOrders";
+import ProductDetails from "./pages/ProductDetails";
+import Register from "./pages/Register";
+import Contact from "./pages/Contact";
+import StoreLayout from "./layout/StoreLayout";
 
 export default function App() {
     const { token } = useContext(AuthContext);
@@ -23,22 +27,38 @@ export default function App() {
             <Routes>
 
                 {/* PUBLIC STORE */}
-                <Route path="/" element={<Home />} />
-
-                <Route
-                    path="/my-orders"
-                    element={
+                <Route element={<StoreLayout />}>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/product/:id" element={<ProductDetails />} />
+                    <Route path="/register" element={<Register />} />
+                    <Route path="/contact" element={<Contact />} />
+                    <Route
+                        path="/my-orders"
+                        element={
+                            <ProtectedRoute>
+                                <CustomerOrders />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route path="/checkout" element={
                         <ProtectedRoute>
-                            <CustomerOrders />
-                        </ProtectedRoute>
-                    }
-                />
+                            <Checkout />
+                        </ProtectedRoute>} 
+                    />
 
-                {/* LOGIN */}
-                <Route path="/login" element={<Login />} />
-                <Route path="/checkout" element={<Checkout />} />
-                <Route path="/order-success/:id" element={<OrderSuccess />} />
-                <Route path="orders/:id" element={<OrderDetails />} />
+                    <Route path="/order-success/:id" element={
+                        <ProtectedRoute>
+                            <OrderSuccess />
+                        </ProtectedRoute>} 
+                    />
+                    
+                    <Route path="/orders/:id" element={
+                        <ProtectedRoute>
+                            <OrderDetails />
+                        </ProtectedRoute>} 
+                    />
+                </Route>
                 
 
                 {/* ADMIN (protected UI still controlled inside layout) */}
@@ -51,11 +71,11 @@ export default function App() {
                     }>
 
                          {/* CHILD ROUTES */}
-                <Route index element={<Dashboard />} />
-                <Route path="products" element={<Products />} />
-                <Route path="categories" element={<Categories />} />
-                <Route path="users" element={<Users />} />
-                <Route path="orders" element={<Orders />} />
+                    <Route index element={<Dashboard />} />
+                    <Route path="products" element={<Products />} />
+                    <Route path="categories" element={<Categories />} />
+                    <Route path="users" element={<Users />} />
+                    <Route path="orders" element={<Orders />} />
                 
                 
                 

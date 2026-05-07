@@ -4,6 +4,7 @@ import { CartContext } from "../context/CartContext";
 import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
 import "../styles/global.css";
+import { Link } from "react-router-dom";
 
 export default function Home() {
     const [products, setProducts] = useState([]);
@@ -49,7 +50,7 @@ export default function Home() {
 
     return (
         <>
-        <Navbar />
+        {/* <Navbar /> */}
             <div className="home">
                 {/* hero section */}
                 <Hero />
@@ -93,6 +94,7 @@ export default function Home() {
                             : null;
                         
                         return (
+                            <Link key={p.id} to={`/product/${p.id}`} className="block">
                                 <div
                                         key={p.id}
                                         className="
@@ -191,6 +193,7 @@ export default function Home() {
 
                                         </div>
                                 </div>
+                            </Link>
                                     )
                                     
                                 })}

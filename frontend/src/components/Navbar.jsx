@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
 import { jwtDecode } from "jwt-decode";
+import { FiShoppingCart, FiUser, FiLogOut, FiHome } from "react-icons/fi";
 
 import { CartContext } from "../context/CartContext";
 import { AuthContext } from "../auth/AuthContext";
@@ -76,32 +77,31 @@ export default function Navbar() {
                             </Link>
                         )}
 
-                        {/* CART */}
-                        <button
-                            onClick={() => setCartOpen(true)}
-                            className="relative px-4 py-2 rounded-lg bg-yellow-400 text-black font-semibold hover:bg-yellow-300 transition"
+                        <Link
+                            to="/contact"
+                            className="px-4 py-2 rounded-lg bg-zinc-800 hover:bg-zinc-700 transition"
                         >
-                            🛒 Cart
-
-                            <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
-                                {cart?.length || 0}
-                            </span>
+                            Contact
+                        </Link>
+                        {/* CART */}
+                       <button className="cart-btn" onClick={() => setCartOpen(true)}>
+                            <FiShoppingCart size={18} />
+                            <span className="cart-count">{cart?.length || 0}</span>
                         </button>
 
                         {/* LOGIN / LOGOUT */}
                         {!token ? (
-                            <Link
-                                to="/login"
-                                className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 transition"
-                            >
-                                Login
+                            <>
+                            <Link to="/login" className="nav-btn">
+                                <FiUser size={16} /> Login
                             </Link>
+                            <Link to="/register" className="nav-btn">
+                                Register
+                            </Link>
+                            </>
                         ) : (
-                            <button
-                                onClick={handleLogout}
-                                className="px-4 py-2 rounded-lg bg-red-500 hover:bg-red-400 transition"
-                            >
-                                Logout
+                            <button className="nav-btn logout" onClick={handleLogout}>
+                                <FiLogOut size={16} /> Logout
                             </button>
                         )}
 
@@ -154,7 +154,13 @@ export default function Navbar() {
                 >
                     Home
                 </Link>
-
+                <Link
+                        to="/contact"
+                        onClick={() => setMenuOpen(false)}
+                        className="p-3 rounded-lg bg-gray-100 hover:bg-gray-200"
+                    >
+                        Contact
+                </Link>
                 {/* CUSTOMER */}
                 {token && role !== "admin" && (
                     <Link
@@ -185,7 +191,7 @@ export default function Navbar() {
                     }}
                     className="p-3 rounded-lg bg-yellow-400 text-black font-semibold"
                 >
-                    🛒 Cart ({cart?.length || 0})
+                    <FiShoppingCart size={18} /> Cart ({cart?.length || 0})
                 </button>
 
                 {/* LOGIN / LOGOUT */}

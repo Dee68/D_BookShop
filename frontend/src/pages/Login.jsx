@@ -1,12 +1,12 @@
 import { useState, useContext } from "react";
 import { apiRequest } from "../api/client";
 import { AuthContext } from "../auth/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import { toast } from "react-toastify";
 
 export default function Login() {
-    const { login } = useContext(AuthContext); // use this only
+    const { login } = useContext(AuthContext);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
@@ -14,49 +14,81 @@ export default function Login() {
     async function handleLogin(e) {
         e.preventDefault();
 
-        const data = await apiRequest("/users/login", "POST", {
-            email,
-            password
-        });
+        try {
+            const data = await apiRequest("/users/login", "POST", {
+                email,
+                password
+            });
 
-        if (!data.token) {
-            if (!res.ok) {
-                toast.error("Login failed");
+            if (!data?.token) {
+                toast.error(data?.message || "Invalid credentials");
                 return;
             }
 
             toast.success("Welcome back!");
-        }
 
-        login(data.token); // handles localStorage + state
+            login(data.token);
 
-        const decoded = jwtDecode(data.token);
+            const decoded = jwtDecode(data.token);
 
-        if (decoded.role === "admin") {
-            navigate("/admin");
-        } else {
-            navigate("/");
+            setTimeout(() => {
+                decoded.role === "admin"
+                    ? navigate("/admin")
+                    : navigate("/");
+            }, 600);
+
+        } catch (err) {
+            toast.error("Server error. Please try again.");
         }
     }
 
     return (
-        <div className="login-container">
-            <form onSubmit={handleLogin} className="login-box">
-                <h2>Login</h2>
+        <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
 
-                <input
-                    placeholder="email"
-                    onChange={e => setEmail(e.target.value)}
-                />
+            <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8">
 
-                <input
-                    placeholder="password"
-                    type="password"
-                    onChange={e => setPassword(e.target.value)}
-                />
+                {/* HEADER */}
+                <h2 className="text-3xl font-bold text-center mb-6">
+                    Login
+                </h2>
 
-                <button>Login</button>
-            </form>
+                {/* FORM */}
+                <form onSubmit={handleLogin} className="space-y-5">
+
+                    <input
+                        type="email"
+                        placeholder="Email"
+                        value={email}
+                        onChange={e => setEmail(e.target.value)}
+                        className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+                    />
+
+                    <input
+                        type="password"
+                        placeholder="Password"
+                        value={password}
+                        onChange={e => setPassword(e.target.value)}
+                        className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+                    />
+
+                    <button
+                        type="submit"
+                        className="w-full bg-black text-white py-3 rounded-lg hover:bg-zinc-800 transition"
+                    >
+                        Login
+                    </button>
+
+                </form>
+
+                {/* FOOTER */}
+                <p className="text-sm text-center mt-6 text-gray-600">
+                    Don’t have an account?{" "}
+                    <Link to="/register" className="text-blue-600 hover:underline">
+                        Register
+                    </Link>
+                </p>
+
+            </div>
         </div>
     );
 }
