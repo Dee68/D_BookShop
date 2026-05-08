@@ -17,8 +17,9 @@ export default function Home() {
     
 
     async function loadProducts() {
+        const limit = 8;
         const res = await fetch(
-            `http://localhost:3000/api/products?page=${page}&search=${search}&category=${category}`
+           `http://localhost:3000/api/products?page=${page}&limit=${limit}&search=${search}&category=${category}`
         );
 
         const data = await res.json();
@@ -38,10 +39,20 @@ export default function Home() {
         return () => clearTimeout(delay);
     }, [search, category, page]);
 
+    // useEffect(() => {
+    //     fetch("http://localhost:3000/api/categories")
+    //         .then(res => res.json())
+    //         .then(setCategories);
+    // }, []);
     useEffect(() => {
-        fetch("http://localhost:3000/api/categories")
-            .then(res => res.json())
-            .then(setCategories);
+        async function loadCategories() {
+            const res = await fetch("http://localhost:3000/api/categories");
+            const data = await res.json();
+
+            setCategories(Array.isArray(data) ? data : data.data || []);
+        }
+
+        loadCategories();
     }, []);
 
     useEffect(() => {
@@ -216,11 +227,11 @@ export default function Home() {
                     </button>
 
                         <span className="font-medium">
-                            Page {pagination.page || 1} of {pagination.pages || 1}
+                            Page {pagination.page || 1} of {pagination.totalPages || 1}
                         </span>
 
                     <button
-                        disabled={page >= pagination.pages}
+                        disabled={page >= pagination.totalPages}
                         onClick={() => setPage(prev => prev + 1)}
                         className="
                             px-4 py-2

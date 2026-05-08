@@ -24,12 +24,14 @@ export default function Login() {
                 toast.error(data?.message || "Invalid credentials");
                 return;
             }
-
-            toast.success("Welcome back!");
+            //console.log("LOGIN RESPONSE:", data);
+            
 
             login(data.token);
-
+            toast.success("Welcome back!");
+            
             const decoded = jwtDecode(data.token);
+            
 
             setTimeout(() => {
                 decoded.role === "admin"

@@ -1,11 +1,36 @@
 const db = require('../config/db');
 
-exports.getAllCategories = () => {
+exports.getAllCategories = (page = 1, limit = 5) => {
+
     return new Promise((resolve, reject) => {
-        db.all("SELECT * FROM categories", [], (err, rows) => {
-            if (err) reject(err);
-            else resolve(rows);
+ 
+        const offset = (page - 1) * limit;
+
+         const sqlCount = `SELECT COUNT(*) AS count FROM categories`;
+
+         db.get(sqlCount, [], (err, countResult) => {
+            if (err) return reject(err);
+
+            const total = countResult.count;
+
+            const sqlData = `
+                SELECT *
+                FROM categories
+                ORDER BY id ASC
+                LIMIT ?
+                OFFSET ?
+            `;
+
+            db.all(sqlData, [limit, offset], (err, rows) => {
+                if (err) return reject(err);
+
+                resolve({
+                    data: rows,
+                    total
+                });
+            });
         });
+
     });
 };
 

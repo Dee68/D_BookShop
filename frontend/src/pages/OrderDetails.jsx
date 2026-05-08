@@ -17,7 +17,7 @@ export default function OrderDetails() {
             .then(res => res.json())
             .then(setOrder);
     }, [id]);
-    //console.log("ORDER:", order);
+    console.log("ORDER:", order);
     if (!order) return <p>Loading...</p>;
 
    return (

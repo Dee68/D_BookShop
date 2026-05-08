@@ -58,7 +58,7 @@ export default function Orders() {
     <h2>Orders</h2>
 
     {orders.map(order => (
-        <div key={order.id} className="order-card" onClick={() => navigate(`/admin/orders/${order.id}`)}>
+        <div key={order.id} className="order-card" >
 
             {/* HEADER */}
             <div className="order-header">
@@ -73,7 +73,8 @@ export default function Orders() {
 
             {/* USER */}
             <div className="order-user">
-                {order.user.name} ({order.user.email})
+                {order.user?.name || "Unknown User"} 
+                ({order.user?.email || "No Email"})
             </div>
             <div className="order-date">
                 {formatDate(order.created_at)}
@@ -81,7 +82,7 @@ export default function Orders() {
 
             {/* ITEMS */}
             <ul className="order-items">
-                {order.items.map((item, i) => (
+                {(order.items || []).map((item, i) => (
                     <li key={i}>
                         {item.title} — {item.quantity} × {Number(item.price).toLocaleString("en-IE",{style:"currency",currency:"EUR"})}
                     </li>
@@ -100,7 +101,7 @@ export default function Orders() {
                     value={order.status}
                     onChange={(e) => updateStatus(order.id, e.target.value)}
                 >
-                   {statusFlow[order.status].map(status => (
+                   {(statusFlow[order.status] || []).map(status => (
                         <option key={status} value={status}>
                             {status}
                         </option>

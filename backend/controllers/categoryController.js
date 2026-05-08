@@ -1,11 +1,31 @@
 const Category = require('../models/categoryModel');
 
 exports.getCategories = async (req, res) => {
+
     try {
-        const categories = await Category.getAllCategories();
-        res.json(categories);
+ 
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 5;
+
+        const result = await Category.getAllCategories(page, limit);
+        const pages = Math.ceil(result.total / limit);
+
+         res.json({
+            data: result.data,
+            pagination: {
+                page,
+                limit,
+                total: result.total,
+                pages: pages
+            }
+        });
+
     } catch (error) {
-        res.status(500).json({ error: error.message });
+
+        res.status(500).json({
+            error: error.message
+        });
+
     }
 };
 

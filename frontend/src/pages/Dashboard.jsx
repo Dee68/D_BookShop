@@ -1,20 +1,17 @@
 import { useEffect, useState, useContext } from "react";
 import { AuthContext } from "../auth/AuthContext";
-import "../styles/dashboard.css";
+
+import {
+    FiUsers,
+    FiBookOpen,
+    FiDollarSign,
+    FiShoppingBag,
+    FiAlertTriangle
+} from "react-icons/fi";
 
 export default function Dashboard() {
+
     const { token } = useContext(AuthContext);
-
-    const statusColors = {
-        pending: "#f59e0b",     // orange
-        shipped: "#3b82f6",     // blue
-        delivered: "#10b981",   // green
-        cancelled: "#ef4444"    // red
-    };
-
-    function formatStatus(status) {
-    return status.charAt(0).toUpperCase() + status.slice(1);
-    }
 
     const [data, setData] = useState({
         system: null,
@@ -22,8 +19,21 @@ export default function Dashboard() {
         orders: []
     });
 
+    const statusColors = {
+        pending: "bg-yellow-100 text-yellow-700",
+        shipped: "bg-blue-100 text-blue-700",
+        delivered: "bg-green-100 text-green-700",
+        cancelled: "bg-red-100 text-red-700"
+    };
+
+    function formatStatus(status) {
+        return status.charAt(0).toUpperCase() + status.slice(1);
+    }
+
     useEffect(() => {
+
         async function load() {
+
             const headers = {
                 Authorization: `Bearer ${token}`
             };
@@ -38,52 +48,195 @@ export default function Dashboard() {
             const sales = await salesRes.json();
             const orders = await ordersRes.json();
 
-            setData({ system, sales, orders });
+            setData({
+                system,
+                sales,
+                orders
+            });
         }
 
         load();
+
     }, [token]);
 
-    if (!data.system || !data.sales) return <div>Loading...</div>;
+    if (!data.system || !data.sales) {
+        return (
+            <div className="text-center py-20 text-gray-500">
+                Loading dashboard...
+            </div>
+        );
+    }
 
     return (
-        <div className="dashboard">
-            <h2>Admin Dashboard</h2>
+        <div className="space-y-8">
 
-            <div className="grid">
-                <Card title="Users" value={data.system.totalUsers} icon="👤" />
-                <Card title="Products" value={data.system.totalProducts} icon="📚" />
-                <Card title="Revenue" value={`€${data.sales.totalRevenue.toFixed(2)}`} icon="💰" />
-                <Card title="Orders" value={data.sales.totalOrders} icon="📦" />
-                <Card title="Low Stock" value={data.system.lowStock} icon="⚠️" />
+            {/* PAGE HEADER */}
+            <div>
+                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+                    Dashboard
+                </h1>
+
+                <p className="text-gray-500 mt-1 text-gray-900 dark:text-white">
+                    Welcome back, Admin.
+                </p>
             </div>
 
-            <div className="status-box">
-                <h3>Order Status</h3>
-                {data.orders.map(o => (
-                    <div key={formatStatus(o.status)} className="status-row">
-                        <span
-                            className="status-badge"
-                            style={{ backgroundColor: statusColors[o.status] || "#999" }}
-                        >
-                            {formatStatus(o.status)}
-                        </span>
+            {/* STATS GRID */}
+            <div
+                className="
+                    grid
+                    grid-cols-1
+                    sm:grid-cols-2
+                    lg:grid-cols-3
+                    xl:grid-cols-3
+                    gap-6
+                    items-stretch
+                "
+            >
 
-                        <span className="status-count">{o.count}</span>
+                <StatCard
+                    title="Users"
+                    value={data.system.totalUsers}
+                    icon={<FiUsers size={18} />}
+                    color="bg-blue-100 text-blue-600"
+                />
+
+                <StatCard
+                    title="Products"
+                    value={data.system.totalProducts}
+                    icon={<FiBookOpen size={18} />}
+                    color="bg-purple-100 text-purple-600"
+                />
+
+                <StatCard
+                    title="Revenue"
+                    value={`€${data.sales.totalRevenue.toFixed(2)}`}
+                    icon={<FiDollarSign size={18} />}
+                    color="bg-green-100 text-green-600"
+                />
+
+                <StatCard
+                    title="Orders"
+                    value={data.sales.totalOrders}
+                    icon={<FiShoppingBag size={18} />}
+                    color="bg-orange-100 text-orange-600"
+                />
+
+                <StatCard
+                    title="Low Stock"
+                    value={data.system.lowStock}
+                    icon={<FiAlertTriangle size={18} />}
+                    color="bg-red-100 text-red-600"
+                />
+
+            </div>
+
+            {/* ORDER STATUS */}
+            <div
+                className="
+                    bg-white
+                    rounded-2xl
+                    shadow-sm
+                    border border-gray-100
+                    p-6
+                "
+            >
+
+                <div className="flex items-center justify-between mb-6">
+
+                    <div>
+                        <h2 className="text-xl font-semibold text-gray-900">
+                            Order Status
+                        </h2>
+
+                        <p className="text-sm text-gray-500">
+                            Current order processing overview
+                        </p>
                     </div>
-                ))}
+
+                </div>
+
+                <div className="space-y-4">
+
+                    {data.orders.map((o) => (
+
+                        <div
+                            key={o.status}
+                            className="
+                                flex items-center justify-between
+                                p-4
+                                rounded-xl
+                                bg-gray-50
+                            "
+                        >
+
+                            <div
+                                className={`
+                                    px-4 py-2
+                                    rounded-full
+                                    text-sm font-medium
+                                    ${statusColors[o.status] || "bg-gray-100 text-gray-700"}
+                                `}
+                            >
+                                {formatStatus(o.status)}
+                            </div>
+
+                            <div className="text-xl font-bold text-gray-900">
+                                {o.count}
+                            </div>
+
+                        </div>
+
+                    ))}
+
+                </div>
+
             </div>
+
         </div>
     );
 }
 
-function Card({ title, value, icon }) {
+function StatCard({ title, value, icon, color }) {
     return (
-        <div className="card">
-            <div className="card-icon">{icon}</div>
-            <div>
-                <div className="card-title">{title}</div>
-                <div className="card-value">{value}</div>
+        <div
+            className="
+                bg-white
+                rounded-2xl
+                shadow-sm
+                border border-gray-100
+                p-4
+                min-h-[140px]
+                flex
+                items-center
+                justify-between
+                gap-4
+            "
+        >
+            {/* LEFT SIDE */}
+            <div className="flex flex-col justify-center flex-1 min-w-0">
+                <p className="text-sm text-gray-500 mb-1">
+                    {title}
+                </p>
+
+                <h3 className="text-xl font-bold text-gray-900 leading-tight">
+                    {value}
+                </h3>
+            </div>
+
+            {/* RIGHT SIDE ICON */}
+            <div
+                className={`
+                    w-10 h-10
+                    flex items-center justify-center
+                    rounded-xl
+                    shrink-0
+                    ${color}
+                `}
+            >
+                <div className="flex items-center justify-center">
+                    {icon}
+                </div>
             </div>
         </div>
     );

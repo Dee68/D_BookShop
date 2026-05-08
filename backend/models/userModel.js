@@ -16,15 +16,37 @@ exports.createUser = (user) => {
     });
 };
 
-exports.getAllUsers = () => {
+exports.getAllUsers = (page = 1, limit = 5) => {
+    const offset = (page - 1) * limit;
+
     return new Promise((resolve, reject) => {
-        db.all(`SELECT id, name, email, role FROM users`, [], (err, rows) => {
-            if (err) reject(err);
-            else resolve(rows);
+
+        const sqlCount = `SELECT COUNT(*) AS count FROM users`;
+
+        db.get(sqlCount, [], (err, countResult) => {
+            if (err) return reject(err);
+
+            const total = countResult.count;
+
+            const sqlData = `
+                SELECT *
+                FROM users
+                ORDER BY id DESC
+                LIMIT ?
+                OFFSET ?
+            `;
+
+            db.all(sqlData, [limit, offset], (err, rows) => {
+                if (err) return reject(err);
+
+                resolve({
+                    data: rows,
+                    total
+                });
+            });
         });
     });
 };
-
 exports.getUserByEmail = (email) => {
     return new Promise((resolve, reject) => {
         db.get(

@@ -6,10 +6,13 @@ function validateEmail(email) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
+
+
 exports.registerUser = async (req, res) => {
     try {
         const { name, email, password } = req.body;
         const existingUser = await User.getUserByEmail(email);
+        //Already a user with that email exists
         if (existingUser) {
         return res.status(409).json({
             error: "Email already exists"
@@ -88,13 +91,28 @@ exports.loginUser = async (req, res) => {
 
 exports.getAllUsers = async (req, res) => {
     try {
-        const users = await User.getAllUsers();
-        res.json(users);
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 5;
+
+        const result = await User.getAllUsers(page, limit);
+
+        const pages = Math.ceil(result.total / limit);
+
+        res.json({
+            data: result.data,
+            pagination: {
+                page,
+                limit,
+                total: result.total,
+                pages: pages
+            }
+        });
+ 
     } catch (error) {
+        //console.log("USER PAGINATION ERROR:", error);
         res.status(500).json({ error: error.message });
     }
 };
-
 exports.updateUserRole = async (req, res) => {
     try {
         const { role } = req.body;

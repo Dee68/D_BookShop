@@ -1,5 +1,5 @@
 const db = require('../config/db');
-
+ 
 function replaceImages(id, images) {
     return new Promise((resolve, reject) => {
         db.serialize(() => {
@@ -56,40 +56,55 @@ exports.createProduct = (product) => {
         );
     });
 };
-
+ 
 exports.getFilteredProducts = (filters) => {
     const { search, category, minPrice, maxPrice, limit, offset } = filters;
 
     let sql = `
-    SELECT p.*, pi.image_url
-    FROM products p
-    LEFT JOIN product_images pi ON p.id = pi.product_id
-    WHERE 1=1
+    SELECT 
+        p.id,
+        p.title,
+        p.author,
+        p.price,
+        p.category_id,
+        p.stock,
+        pi.image_url
+    FROM (
+        SELECT *
+        FROM products
+        WHERE 1=1
     `;
 
     const params = [];
 
     if (search) {
-        sql += ` AND (p.title LIKE ? OR p.author LIKE ?)`;
+        sql += ` AND (title LIKE ? OR author LIKE ?)`;
         params.push(`%${search}%`, `%${search}%`);
     }
 
     if (category) {
-        sql += ` AND p.category_id = ?`;
+        sql += ` AND category_id = ?`;
         params.push(category);
     }
 
     if (minPrice) {
-        sql += ` AND p.price >= ?`;
+        sql += ` AND price >= ?`;
         params.push(minPrice);
     }
 
     if (maxPrice) {
-        sql += ` AND p.price <= ?`;
+        sql += ` AND price <= ?`;
         params.push(maxPrice);
     }
 
-    sql += ` ORDER BY p.id DESC LIMIT ? OFFSET ?`;
+    sql += `
+        ORDER BY id DESC
+        LIMIT ? OFFSET ?
+    ) p
+    LEFT JOIN product_images pi
+    ON p.id = pi.product_id
+    `;
+
     params.push(limit, offset);
 
     return new Promise((resolve, reject) => {

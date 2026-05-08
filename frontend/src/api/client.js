@@ -1,4 +1,15 @@
+import { toast } from "react-toastify";
 const BASE_URL = "http://localhost:3000/api";
+
+function handleAuth(res) {
+    if (res.status === 401) {
+        localStorage.removeItem("token");
+        toast.error("Session expired. Please log in again.");
+        window.location.href = "/login";
+        return true;
+    }
+    return false;
+}
 
 export async function apiRequest(endpoint, method = "GET", body, token) {
     const res = await fetch(BASE_URL + endpoint, {
@@ -10,18 +21,21 @@ export async function apiRequest(endpoint, method = "GET", body, token) {
         body: body ? JSON.stringify(body) : undefined
     });
 
+    if (handleAuth(res)) return;
+
     return res.json();
 }
 
-export async function apiUpload(endpoint, formData, token) {
+export async function apiUpload(endpoint, formData, token, method="POST") {
     const res = await fetch("http://localhost:3000/api" + endpoint, {
-        method: "POST",
+        method,
         headers: {
             Authorization: `Bearer ${token}`
-            //DO NOT set Content-Type (browser sets it for FormData)
+            
         },
         body: formData
     });
 
+    if (handleAuth(res)) return;
     return res.json();
 }

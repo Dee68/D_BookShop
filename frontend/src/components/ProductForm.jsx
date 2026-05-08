@@ -22,11 +22,18 @@ export default function ProductForm({ onCreated, editingProduct, clearEdit }) {
     function handleChange(e) {
         setForm({ ...form, [e.target.name]: e.target.value });
     }
+    
+    async function loadCategories() {
+        const res = await fetch("http://localhost:3000/api/categories");
+        const data = await res.json();
+
+        setCategories(Array.isArray(data.data) ? data.data : []);
+    }
+
     useEffect(() => {
-        fetch("http://localhost:3000/api/categories")
-            .then(res => res.json())
-            .then(setCategories);
+        loadCategories();
     }, []);
+    
     const MAX_SIZE = 5 * 1024 * 1024;
     function handleImages(e) {
     const files = Array.from(e.target.files);
@@ -74,66 +81,185 @@ export default function ProductForm({ onCreated, editingProduct, clearEdit }) {
         }
     }
   //console.log("Reloading products...");
-   async function handleSubmit(e) {
-    e.preventDefault();
+  // Form submission
+    async function handleSubmit(e) {
+        e.preventDefault();
 
-    const formData = new FormData();
+        const formData = new FormData();
 
-    
+        Object.keys(form).forEach(key => {
+            formData.append(
+                key,
+                key === "category_id" ? Number(form[key]) : form[key]
+            );
+        });
 
-    Object.keys(form).forEach(key => {
-        formData.append(key, form[key]);
-    });
+        images.forEach(img => {
+            formData.append("images", img);
+        });
 
-    images.forEach(img => {
-        formData.append("images", img);
-    });
-
-    let res;
-
-    if (editingProduct) {
-        // UPDATE MODE
-        res = await fetch(
-            `http://localhost:3000/api/products/${editingProduct.id}`,
-            {
-                method: "PUT",
-                headers: {
-                    Authorization: `Bearer ${token}`
-                },
-                body: formData
+        try {
+            let res;
+            const isEditing = Boolean(editingProduct?.id);
+            if (isEditing) {
+                res = await apiUpload(
+                    `/products/${editingProduct.id}`,
+                    formData,
+                    token,
+                    "PUT"
+                );
+            } else {
+                res = await apiUpload("/products", formData, token,"POST");
             }
-        ).then(r => r.json());
-        //console.log(editingProduct.images);
-    } else {
-        // CREATE MODE
-        res = await apiUpload("/products", formData, token);
-    }
 
-    if (res.message || res.productId) {
-        //alert(editingProduct ? "Product updated" : "Product created");
-        toast.info(editingProduct ? "Product updated": "Product created")
+            if (!res || res.error) {
+                toast.error(res?.error || "Operation failed");
+                return;
+            }
 
-        await onCreated();
-        clearEdit();
-        resetForm();
-       
+            toast.success(
+                isEditing ? "Product updated successfully" : "Product created successfully"
+            );
+
+            await onCreated();
+            clearEdit();
+            resetForm();
+
+        } catch (err) {
+            toast.error("Server error");
+        }
     }
-    //console.log("Update response:", res);
-}
     return (
-        <form onSubmit={handleSubmit} style={{ marginBottom: 20 }}>
-            <h3>Create Product</h3>
+    <form
+        onSubmit={handleSubmit}
+        className="space-y-6"
+    >
 
-            <input name="title" placeholder="Title" value={form.title} onChange={handleChange} required />
-            <input name="author" placeholder="Author" value={form.author} onChange={handleChange} />
-            <input name="price" placeholder="Price" type="number" value={form.price} onChange={handleChange} required />
+        {/* GRID */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+            {/* TITLE */}
+            <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Title
+                </label>
+
+                <input
+                    name="title"
+                    placeholder="Book title"
+                    value={form.title}
+                    onChange={handleChange}
+                    required
+                    className="
+                        w-full
+                        px-4 py-3
+                        rounded-xl
+                        border border-gray-200
+                        focus:outline-none
+                        focus:ring-2 focus:ring-blue-500
+                        bg-gray-50
+                    "
+                />
+            </div>
+
+            {/* AUTHOR */}
+            <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Author
+                </label>
+
+                <input
+                    name="author"
+                    placeholder="Author name"
+                    value={form.author}
+                    onChange={handleChange}
+                    className="
+                        w-full
+                        px-4 py-3
+                        rounded-xl
+                        border border-gray-200
+                        focus:outline-none
+                        focus:ring-2 focus:ring-blue-500
+                        bg-gray-50
+                    "
+                />
+            </div>
+
+            {/* PRICE */}
+            <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Price (€)
+                </label>
+
+                <input
+                    name="price"
+                    type="number"
+                    placeholder="0.00"
+                    value={form.price}
+                    onChange={handleChange}
+                    required
+                    className="
+                        w-full
+                        px-4 py-3
+                        rounded-xl
+                        border border-gray-200
+                        focus:outline-none
+                        focus:ring-2 focus:ring-green-500
+                        bg-gray-50
+                    "
+                />
+            </div>
+
+            {/* STOCK */}
+            <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Stock
+                </label>
+
+                <input
+                    name="stock"
+                    type="number"
+                    placeholder="0"
+                    value={form.stock}
+                    onChange={handleChange}
+                    className="
+                        w-full
+                        px-4 py-3
+                        rounded-xl
+                        border border-gray-200
+                        focus:outline-none
+                        focus:ring-2 focus:ring-orange-500
+                        bg-gray-50
+                    "
+                />
+            </div>
+
+        </div>
+
+        {/* CATEGORY */}
+        <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+                Category
+            </label>
+
             <select
                 name="category_id"
                 value={form.category_id}
                 onChange={handleChange}
                 required
+                className="
+                    w-full
+                    px-4 py-3
+                    rounded-xl
+                    border border-gray-200
+                    focus:outline-none
+                    focus:ring-2 focus:ring-purple-500
+                    bg-gray-50
+                "
             >
-                <option value="">Select Category</option>
+                <option value="">
+                    Select Category
+                </option>
 
                 {categories.map(cat => (
                     <option key={cat.id} value={cat.id}>
@@ -141,30 +267,100 @@ export default function ProductForm({ onCreated, editingProduct, clearEdit }) {
                     </option>
                 ))}
             </select>
-            <input name="stock" placeholder="Stock" type="number" value={form.stock} onChange={handleChange} />
+        </div>
 
-           <input
+        {/* IMAGE UPLOAD */}
+        <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+                Product Images
+            </label>
+
+            <input
                 type="file"
                 multiple
                 ref={fileRef}
                 onChange={handleImages}
+                className="
+                    w-full
+                    text-sm
+                    border border-dashed border-gray-300
+                    rounded-xl
+                    p-4
+                    bg-gray-50
+                    cursor-pointer
+                "
             />
-            {/* PREVIEW */}
-            <div style={{ display: "flex", gap: 10, marginTop: 10 }}>
+        </div>
+
+        {/* IMAGE PREVIEW */}
+        {preview.length > 0 && (
+            <div className="flex flex-wrap gap-3">
+
                 {preview.map((src, i) => (
+
                     <img
                         key={i}
                         src={
                             src.startsWith("blob:")
-                                ? src // new uploaded images
-                                : `http://localhost:3000${src}` // existing images
+                                ? src
+                                : `http://localhost:3000${src}`
                         }
-                        width="60"
+                        alt=""
+                        className="
+                            w-20 h-20
+                            object-cover
+                            rounded-xl
+                            border border-gray-200
+                            shadow-sm
+                        "
                     />
-                ))}
-            </div>
 
-            <button type="submit">{editingProduct ? "Update Product" : "Create Product"}</button>
-        </form>
-    );
+                ))}
+
+            </div>
+        )}
+
+        {/* ACTION BUTTONS */}
+        <div className="flex justify-end gap-3 pt-2">
+
+            {editingProduct && (
+                <button
+                    type="button"
+                    onClick={() => {
+                        clearEdit();
+                        resetForm();
+                    }}
+                    className="
+                        px-5 py-3
+                        rounded-xl
+                        bg-gray-200
+                        text-gray-700
+                        hover:bg-gray-300
+                        transition
+                    "
+                >
+                    Cancel
+                </button>
+            )}
+
+            <button
+                type="submit"
+                className="
+                    px-6 py-3
+                    rounded-xl
+                    bg-blue-600
+                    text-white
+                    font-medium
+                    hover:bg-blue-700
+                    transition
+                    shadow-sm
+                "
+            >
+                {editingProduct?.id ? "Update Product" : "Create Product"}
+            </button>
+
+        </div>
+
+    </form>
+);
 }

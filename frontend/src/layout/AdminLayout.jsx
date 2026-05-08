@@ -1,49 +1,30 @@
-import { useState, useContext } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, Navigate } from "react-router-dom";
+import { useContext } from "react";
 import Sidebar from "./Sidebar";
+import { AuthContext } from "../auth/AuthContext";
+import ThemeToggle from "../components/ToggleButton";
 
-import { Navigate } from "react-router-dom";
-import { AuthContext} from "../auth/AuthContext";
-import { Routes, Route } from "react-router-dom";
-
-
-
-export default function AdminLayout({ onLogout }) {
-    const [page, setPage] = useState("dashboard");
-    const { logout } = useContext(AuthContext);
-    const [collapsed, setCollapsed] = useState(false);
-    const [mobileOpen, setMobileOpen] = useState(false);
+export default function AdminLayout() {
     const { token } = useContext(AuthContext);
 
     if (!token) {
         return <Navigate to="/login" replace />;
     }
 
-
     return (
-        <div className="admin-layout">
-            <div className="topbar">
-             {/* <button className="hamburger" onClick={() => setMobileOpen(true)}>
-                ☰
-            </button> */}
-            </div>
-            <Sidebar collapsed={collapsed}
-                     setCollapsed={setCollapsed}
-                     mobileOpen={mobileOpen}
-                     setMobileOpen={setMobileOpen}
-                     logout={logout} />
+        <div className="flex min-h-screen bg-gray-100 bg-white dark:bg-zinc-900">
 
-            <div className="admin-content">
-                {/* <Routes>
-                    <Route path="/admin" element={<Dashboard />} />
-                    <Route path="/admin/products" element={<Products />} />
-                    <Route path="/admin/categories" element={<Categories />} />
-                    <Route path="/admin/users" element={<Users />} />
-                    <Route path="/admin/orders" element={<Orders />} />
-                </Routes> */}
-                <Outlet />
-               
-            </div>
+            {/* SIDEBAR */}
+            <Sidebar />
+
+            {/* MAIN CONTENT */}
+            <main className="flex-1 p-6 overflow-x-hidden">
+                <ThemeToggle />
+                <div className="p-6">
+                    <Outlet />
+                </div>
+            </main>
+
         </div>
     );
 }

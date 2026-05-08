@@ -1,6 +1,7 @@
 import { Outlet } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import ThemeToggle from "../components/ToggleButton";
 
 export default function StoreLayout() {
 
@@ -9,7 +10,8 @@ export default function StoreLayout() {
 
             <Navbar />
 
-            <main className="flex-1">
+            <main className="flex-1 bg-white dark:bg-zinc-900">
+                <ThemeToggle />
                 <Outlet />
             </main>
 
