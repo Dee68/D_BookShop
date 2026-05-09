@@ -135,7 +135,7 @@ exports.updateStatus = async (req, res) => {
     } catch (err) {
         res.status(400).json({ error: err.message });
     }
-};
+}; 
 
 exports.getOrderById = async (req, res) => {
     try {

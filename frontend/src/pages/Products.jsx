@@ -35,7 +35,7 @@ export default function Products() {
             null,
             token
         );
-         //console.log(data);
+         console.log(data);
 
         setProducts(data.data || []);
         setPagination(data.pagination || {});

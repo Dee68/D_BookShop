@@ -7,6 +7,7 @@ db.serialize(() => {
     db.run(`DROP TABLE IF EXISTS products`);
     db.run(`DROP TABLE IF EXISTS categories`);
     db.run(`DROP TABLE IF EXISTS users`);
+    db.run(`DROP TABLE IF EXISTS contact_messages`)
 
     console.log("Database reset completed");
 });

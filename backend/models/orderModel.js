@@ -7,71 +7,81 @@ const allowedTransitions = {
     cancelled: []
 };
 
-exports.createOrder = (user_id, items, total) => {
+function runQuery(sql, params = []) {
     return new Promise((resolve, reject) => {
-
-        db.serialize(() => {
-            db.run("BEGIN TRANSACTION");
-
-            db.run(
-                `INSERT INTO orders (user_id, total, status)
-                 VALUES (?, ?, 'pending')`,
-                [user_id, total],
-                function (err) {
-                    if (err) {
-                        db.run("ROLLBACK");
-                        return reject(err);
-                    }
-
-                    const orderId = this.lastID;
-
-                    const stmt = db.prepare(
-                        `INSERT INTO order_items (order_id, product_id, quantity, price)
-                         VALUES (?, ?, ?, ?)`
-                    );
-
-                    let failed = false;
-
-                    items.forEach(item => {
-
-                        stmt.run(orderId, item.product_id, item.quantity, item.price);
-
-                        db.run(
-                            `UPDATE products
-                             SET stock = stock - ?
-                             WHERE id = ?
-                             AND stock >= ?`,
-                            [item.quantity, item.product_id, item.quantity],
-                            function (err) {
-                                if (err || this.changes === 0) {
-                                    failed = true;
-                                }
-                            }
-                        );
-                    });
-
-                    stmt.finalize(err => {
-                        if (err || failed) {
-                            db.run("ROLLBACK");
-                            return reject(new Error("Stock issue, order cancelled"));
-                        }
-
-                        db.run("COMMIT");
-                        resolve({ orderId });
-                    });
-                }
-            );
+        db.run(sql, params, function (err) {
+            if (err) reject(err);
+            else resolve(this);
         });
     });
+}
+
+exports.createOrder = async (user_id, items, total) => {
+
+    try {
+
+        await runQuery("BEGIN TRANSACTION");
+
+        const orderResult = await runQuery(
+            `INSERT INTO orders (user_id, total, status)
+             VALUES (?, ?, 'pending')`,
+            [user_id, total]
+        );
+
+        const orderId = orderResult.lastID;
+
+        for (const item of items) {
+
+            await runQuery(
+                `INSERT INTO order_items
+                 (order_id, product_id, quantity, price)
+                 VALUES (?, ?, ?, ?)`,
+                [
+                    orderId,
+                    item.product_id,
+                    item.quantity,
+                    item.price
+                ]
+            );
+
+            const stockResult = await runQuery(
+                `UPDATE products
+                 SET stock = stock - ?
+                 WHERE id = ?
+                 AND stock >= ?`,
+                [
+                    item.quantity,
+                    item.product_id,
+                    item.quantity
+                ]
+            );
+
+            if (stockResult.changes === 0) {
+                throw new Error(
+                    `Insufficient stock for product ${item.product_id}`
+                );
+            }
+        }
+
+        await runQuery("COMMIT");
+
+        return { orderId };
+
+    } catch (error) {
+
+        await runQuery("ROLLBACK");
+
+        throw error;
+    }
 };
 exports.updateOrderStatus = (id, newStatus, currentStatus) => {
     return new Promise((resolve, reject) => {
 
-        const allowedTransitions = {
-            pending: ["shipped"],
-            shipped: ["delivered"],
-            delivered: []
-        };
+        // const allowedTransitions = {
+        //     pending: ["shipped"],
+        //     shipped: ["delivered"],
+        //     delivered: []
+        // };
 
         if (!allowedTransitions[currentStatus]?.includes(newStatus)) {
             return reject(new Error("Invalid status transition"));
@@ -172,6 +182,7 @@ exports.getOrderById = (id) => {
         const sql = `
         SELECT 
             o.id as order_id,
+            o.user_id,
             o.total,
             o.status,
             o.created_at,
@@ -195,6 +206,7 @@ exports.getOrderById = (id) => {
             // Base order object
             const order = {
                 id: rows[0].order_id,
+                user_id: rows[0].user_id,
                 total: rows[0].total,
                 status: rows[0].status,
                 created_at: rows[0].created_at,

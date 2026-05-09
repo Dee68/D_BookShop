@@ -6,6 +6,8 @@ import { FiShoppingCart, FiUser, FiLogOut, FiHome } from "react-icons/fi";
 import { CartContext } from "../context/CartContext";
 import { AuthContext } from "../auth/AuthContext";
 import CartDrawer from "../context/CartDrawer";
+import NavItem from "./navbar/NavItem";
+import NavButton from "./navbar/NavButton";
 
 export default function Navbar() {
 
@@ -59,52 +61,74 @@ export default function Navbar() {
 
                         {/* CUSTOMER */}
                         {token && role !== "admin" && (
-                            <Link
-                                to="/my-orders"
-                                className="px-4 py-2 rounded-lg bg-zinc-800 hover:bg-zinc-700 transition"
-                            >
+                            <NavItem to="/my-orders">
                                 My Orders
-                            </Link>
+                            </NavItem>
                         )}
 
                         {/* ADMIN */}
                         {token && role === "admin" && (
-                            <Link
-                                to="/admin"
-                                className="px-4 py-2 rounded-lg bg-zinc-800 hover:bg-zinc-700 transition"
-                            >
+                           <NavItem to="/admin">
                                 Dashboard
-                            </Link>
+                            </NavItem>
                         )}
 
-                        <Link
-                            to="/contact"
-                            className="px-4 py-2 rounded-lg bg-zinc-800 hover:bg-zinc-700 transition"
-                        >
+                        {/* Contact */}
+                        <NavItem to="/contact">
                             Contact
-                        </Link>
+                        </NavItem>
                         {/* CART */}
-                       <button className="cart-btn" onClick={() => setCartOpen(true)}>
-                            <FiShoppingCart size={18} />
-                            <span className="cart-count">{cart?.length || 0}</span>
+                        <button
+                            className="relative p-2 rounded-full hover:bg-zinc-800 transition"
+                            onClick={() => setCartOpen(true)}
+                        >
+
+                            <FiShoppingCart size={20} />
+
+                            {/* BADGE */}
+                            {cart?.length > 0 && (
+                                <span className="
+                                    absolute -top-1 -right-1
+                                    bg-red-500 text-white
+                                    text-xs font-bold
+                                    w-5 h-5
+                                    flex items-center justify-center
+                                    rounded-full
+                                ">
+                                    {cart.length}
+                                </span>
+                            )}
+
                         </button>
 
                         {/* LOGIN / LOGOUT */}
                         {!token ? (
-                            <>
-                            <Link to="/login" className="nav-btn">
-                                <FiUser size={16} /> Login
-                            </Link>
-                            <Link to="/register" className="nav-btn">
-                                Register
-                            </Link>
-                            </>
-                        ) : (
-                            <button className="nav-btn logout" onClick={handleLogout}>
-                                <FiLogOut size={16} /> Logout
-                            </button>
-                        )}
+                            <div className="flex items-center gap-2">
 
+                                <NavItem
+                                    to="/login"
+                                    icon={FiUser}
+                                    variant="auth"
+                                >
+                                    Login
+                                </NavItem>
+
+                                <NavItem
+                                    to="/register"
+                                    variant="pill"
+                                >
+                                    Register
+                                </NavItem>
+
+                            </div>
+                        ) : (
+                            <NavButton
+                                onClick={handleLogout}
+                                icon={FiLogOut}
+                            >
+                                Logout
+                            </NavButton>
+                        )}
                     </div>
 
                     {/* MOBILE HAMBURGER */}

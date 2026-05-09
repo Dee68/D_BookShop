@@ -1,16 +1,16 @@
 const db = require('../config/db');
-const RESET_DB = process.env.RESET_DB === "true";
-if (RESET_DB) {
-    db.serialize(() => {
-        db.run(`DROP TABLE IF EXISTS order_items`);
-        db.run(`DROP TABLE IF EXISTS orders`);
-        db.run(`DROP TABLE IF EXISTS product_images`);
-        db.run(`DROP TABLE IF EXISTS products`);
-        db.run(`DROP TABLE IF EXISTS categories`);
-        db.run(`DROP TABLE IF EXISTS users`);
-        db.run(`DROP TABLE IF EXISTS contact_messages`)
-    });
-}
+// const RESET_DB = process.env.RESET_DB === "true";
+// if (RESET_DB) {
+//     db.serialize(() => {
+//         db.run(`DROP TABLE IF EXISTS order_items`);
+//         db.run(`DROP TABLE IF EXISTS orders`);
+//         db.run(`DROP TABLE IF EXISTS product_images`);
+//         db.run(`DROP TABLE IF EXISTS products`);
+//         db.run(`DROP TABLE IF EXISTS categories`);
+//         db.run(`DROP TABLE IF EXISTS users`);
+//         db.run(`DROP TABLE IF EXISTS contact_messages`)
+//     });
+// }
 
 // Enable foreign keys
 db.run(`PRAGMA foreign_keys = ON`);
@@ -63,10 +63,18 @@ CREATE TABLE IF NOT EXISTS orders (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER NOT NULL,
     total REAL NOT NULL,
-    status TEXT DEFAULT 'pending',
+    status TEXT DEFAULT 'pending'
+    CHECK (
+        status IN (
+            'pending',
+            'shipped',
+            'delivered',
+            'cancelled'
+        )
+    ),
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id)
-);
+)
 `);
 
 // Order Items
