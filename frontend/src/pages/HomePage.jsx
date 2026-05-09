@@ -23,7 +23,7 @@ export default function Home() {
         );
 
         const data = await res.json();
-        //setProducts(data.data);
+        
         setProducts(Array.isArray(data.data) ? data.data : []);
         setPagination(data.pagination || {});
        
@@ -39,14 +39,10 @@ export default function Home() {
         return () => clearTimeout(delay);
     }, [search, category, page]);
 
-    // useEffect(() => {
-    //     fetch("http://localhost:3000/api/categories")
-    //         .then(res => res.json())
-    //         .then(setCategories);
-    // }, []);
+    
     useEffect(() => {
         async function loadCategories() {
-            const res = await fetch("http://localhost:3000/api/categories");
+            const res = await fetch("http://localhost:3000/api/categories/store");
             const data = await res.json();
 
             setCategories(Array.isArray(data) ? data : data.data || []);
@@ -114,6 +110,7 @@ export default function Home() {
                                             rounded-2xl
                                             overflow-hidden
                                             shadow-sm
+                                            hover:-translate-y-1
                                             hover:shadow-2xl
                                             transition-all
                                             duration-300
@@ -181,7 +178,7 @@ export default function Home() {
 
                                             {/* BUTTON */}
                                             <button
-                                                onClick={() => addToCart(p)}
+                                                onClick={(e) => {e.preventDefault();addToCart(p);}}
                                                 disabled={p.stock <= 0}
                                                 className={`
                                                     mt-auto

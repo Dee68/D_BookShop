@@ -1,5 +1,6 @@
 import { useEffect, useState, useContext } from "react";
 import { AuthContext } from "../auth/AuthContext";
+import { FileText, FileDown } from "lucide-react";
 
 import {
     FiUsers,
@@ -65,6 +66,50 @@ export default function Dashboard() {
                 Loading dashboard...
             </div>
         );
+    }
+
+    async function downloadReport(type) {
+
+        try {
+
+            const res = await fetch(
+                `http://localhost:3000/api/reports/inventory/${type}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
+
+            if (!res.ok) {
+                throw new Error("Failed to download report");
+            }
+
+            const blob = await res.blob();
+
+            const url = window.URL.createObjectURL(blob);
+
+            const a = document.createElement("a");
+
+            a.href = url;
+
+            a.download =
+                type === "pdf"
+                    ? "inventory-report.pdf"
+                    : "inventory-report.txt";
+
+            document.body.appendChild(a);
+
+            a.click();
+
+            a.remove();
+
+            window.URL.revokeObjectURL(url);
+
+        } catch (err) {
+
+            console.error(err);
+        }
     }
 
     return (
@@ -188,6 +233,50 @@ export default function Dashboard() {
                         </div>
 
                     ))}
+
+                </div>
+
+            </div>
+
+            {/* REPORT SECTION */}
+            <div className="
+                bg-white rounded-2xl shadow-md
+                p-6 space-y-4
+            ">
+
+                <h2 className="text-xl font-semibold">
+                    Inventory Reports
+                </h2>
+
+                <div className="flex gap-4">
+
+                    <button
+                        onClick={() => downloadReport("txt")}
+                        className="
+                            flex items-center gap-2
+                            px-4 py-2 rounded-xl
+                            bg-zinc-800 text-white
+                            hover:bg-zinc-700 transition
+                        "
+                    >
+                        <FileText size={18} />
+
+                        TXT Report
+                    </button>
+
+                    <button
+                        onClick={() => downloadReport("pdf")}
+                        className="
+                            flex items-center gap-2
+                            px-4 py-2 rounded-xl
+                            bg-red-600 text-white
+                            hover:bg-red-500 transition
+                        "
+                    >
+                        <FileDown size={18} />
+
+                        PDF Report
+                    </button>
 
                 </div>
 

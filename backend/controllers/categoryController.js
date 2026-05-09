@@ -29,6 +29,22 @@ exports.getCategories = async (req, res) => {
     }
 };
 
+exports.getStoreCategories = async (req, res) => {
+
+    try {
+
+        const categories =
+            await Category.getCategoriesForStore();
+
+        res.json(categories);
+
+    } catch (err) {
+
+        res.status(500).json({
+            error: err.message
+        });
+    }
+};
 exports.addCategory = async (req, res) => {
     try {
         const { name } = req.body;

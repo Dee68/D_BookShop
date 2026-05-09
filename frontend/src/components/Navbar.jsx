@@ -77,29 +77,6 @@ export default function Navbar() {
                         <NavItem to="/contact">
                             Contact
                         </NavItem>
-                        {/* CART */}
-                        <button
-                            className="relative p-2 rounded-full hover:bg-zinc-800 transition"
-                            onClick={() => setCartOpen(true)}
-                        >
-
-                            <FiShoppingCart size={20} />
-
-                            {/* BADGE */}
-                            {cart?.length > 0 && (
-                                <span className="
-                                    absolute -top-1 -right-1
-                                    bg-red-500 text-white
-                                    text-xs font-bold
-                                    w-5 h-5
-                                    flex items-center justify-center
-                                    rounded-full
-                                ">
-                                    {cart.length}
-                                </span>
-                            )}
-
-                        </button>
 
                         {/* LOGIN / LOGOUT */}
                         {!token ? (
@@ -129,6 +106,29 @@ export default function Navbar() {
                                 Logout
                             </NavButton>
                         )}
+                           {/* CART */}
+                        <button
+                            className="relative p-2 rounded-full hover:bg-zinc-800 transition"
+                            onClick={() => setCartOpen(true)}
+                        >
+
+                            <FiShoppingCart size={20} />
+
+                            {/* BADGE */}
+                            {cart?.length > 0 && (
+                                <span className="
+                                    absolute -top-1 -right-1
+                                    bg-red-500 text-white
+                                    text-xs font-bold
+                                    w-5 h-5
+                                    flex items-center justify-center
+                                    rounded-full
+                                ">
+                                    {cart.length}
+                                </span>
+                            )}
+
+                        </button>
                     </div>
 
                     {/* MOBILE HAMBURGER */}

@@ -54,7 +54,7 @@ export default function Categories() {
 
         e.preventDefault();
 
-        await fetch("http://localhost:3000/api/categories", {
+         const res = await fetch("http://localhost:3000/api/categories", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -62,6 +62,7 @@ export default function Categories() {
             },
             body: JSON.stringify({ name })
         });
+        const data = await res.json();
         toast.success("Category created successfully.");
         setName("");
         loadCategories();

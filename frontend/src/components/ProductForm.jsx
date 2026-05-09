@@ -17,22 +17,42 @@ export default function ProductForm({ onCreated, editingProduct, clearEdit }) {
     const [preview, setPreview] = useState([]);
 
     const token = localStorage.getItem("token");
-    const fileRef = useRef(null);
+    const fileRef = useRef(null); 
 
     function handleChange(e) {
         setForm({ ...form, [e.target.name]: e.target.value });
     }
     
-    async function loadCategories() {
-        const res = await fetch("http://localhost:3000/api/categories");
-        const data = await res.json();
+   async function loadCategories() {
 
-        setCategories(Array.isArray(data.data) ? data.data : []);
+        try {
+
+            const res = await fetch(
+                "http://localhost:3000/api/categories/store"
+            );
+
+            const data = await res.json();
+
+            setCategories(
+                Array.isArray(data)
+                    ? data
+                    : Array.isArray(data.data)
+                        ? data.data
+                        : []
+            );
+
+        } catch (err) {
+
+            console.error("Failed to load categories", err);
+            setCategories([]);
+        }
     }
-
+ 
     useEffect(() => {
         loadCategories();
     }, []);
+
+    
     
     const MAX_SIZE = 5 * 1024 * 1024;
     function handleImages(e) {
@@ -40,7 +60,8 @@ export default function ProductForm({ onCreated, editingProduct, clearEdit }) {
 
     const validFiles = files.filter(file => {
         if (file.size > MAX_SIZE) {
-            alert(`${file.name} is too large (max 5MB)`);
+            //alert(`${file.name} is too large (max 5MB)`);
+            toast.warning(`${file.name} is too large (max 5MB)`);
             return false;
         }
         return true;

@@ -40,7 +40,7 @@ export default function ProductDetails() {
                 />
             </div>
 
-            {/* GALLERY (MOVED HERE ✅) */}
+            {/* GALLERY (MOVED HERE) */}
             <div className="flex gap-2 mt-4">
                 {product.images?.map((img, i) => {
                     const fullUrl = img.startsWith("http")
@@ -82,7 +82,10 @@ export default function ProductDetails() {
                 {product.description}
             </p>
 
-            <button className="bg-black text-white px-6 py-3 rounded-xl hover:bg-zinc-800">
+            <button 
+                className="bg-black text-white px-6 py-3 rounded-xl hover:bg-zinc-800" 
+                onClick={(e) => {e.preventDefault();addToCart(product);}}
+                disabled={product.stock <= 0}>
                 Add to Cart
             </button>
         </div>

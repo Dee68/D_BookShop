@@ -169,6 +169,31 @@ exports.getProductById = (id) => {
     });
 };
 
+exports.getAllProducts = () => {
+
+    return new Promise((resolve, reject) => {
+
+        const sql = `
+            SELECT
+                p.id,
+                p.title,
+                p.price,
+                p.stock,
+                c.name AS category_name
+            FROM products p
+            LEFT JOIN categories c
+                ON p.category_id = c.id
+            ORDER BY p.id DESC
+        `;
+
+        db.all(sql, [], (err, rows) => {
+
+            if (err) reject(err);
+            else resolve(rows);
+        });
+    });
+};
+
 exports.getProductByIdSimple = (id) => {
     return new Promise((resolve, reject) => {
         db.get(

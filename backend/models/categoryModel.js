@@ -34,6 +34,24 @@ exports.getAllCategories = (page = 1, limit = 5) => {
     });
 };
 
+exports.getCategoriesForStore = () => {
+
+    return new Promise((resolve, reject) => {
+
+        const sql = `
+            SELECT *
+            FROM categories
+            ORDER BY name ASC
+        `;
+
+        db.all(sql, [], (err, rows) => {
+
+            if (err) reject(err);
+            else resolve(rows);
+        });
+    });
+};
+
 exports.createCategory = (name) => {
     return new Promise((resolve, reject) => {
         db.run(

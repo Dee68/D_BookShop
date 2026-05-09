@@ -43,6 +43,9 @@ const contactRoutes = require("./routes/contactRoutes");
 
 app.use("/api/contact", contactRoutes);
 
+const reportRoutes = require("./routes/reportRoutes");
+app.use("/api/reports", reportRoutes);
+
 const adminRoutes = require('./routes/adminRoutes');
 
 app.use('/api/admin', adminRoutes);
