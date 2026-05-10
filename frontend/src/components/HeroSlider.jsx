@@ -7,32 +7,66 @@ import {
 
 export default function HeroSlider() {
 
+    // const slides = [
+    //     {
+    //         image: "http://localhost:3000/images/slide1.jpg",
+    //         title: "Discover Your Next Great Read",
+    //         subtitle:
+    //             "Explore bestselling books, timeless classics, programming guides, business reads, and more.",
+    //         primaryBtn: "Shop Now",
+    //         secondaryBtn: "Contact Us"
+    //     },
+    //     {
+    //         image: "http://localhost:3000/images/slide2.jpg",
+    //         title: "Programming & Tech Books",
+    //         subtitle:
+    //             "Level up your software engineering skills with modern development resources.",
+    //         primaryBtn: "Browse Tech",
+    //         secondaryBtn: "View Collection"
+    //     },
+    //     {
+    //         image: "http://localhost:3000/images/slide3.jpg",
+    //         title: "Bestsellers & Classics",
+    //         subtitle:
+    //             "From fiction to business strategy, discover books readers love worldwide.",
+    //         primaryBtn: "Explore Books",
+    //         secondaryBtn: "Learn More"
+    //     }
+    // ];
     const slides = [
-        {
-            image: "http://localhost:3000/images/slide1.jpg",
-            title: "Discover Your Next Great Read",
-            subtitle:
-                "Explore bestselling books, timeless classics, programming guides, business reads, and more.",
-            primaryBtn: "Shop Now",
-            secondaryBtn: "Contact Us"
-        },
-        {
-            image: "http://localhost:3000/images/slide2.jpg",
-            title: "Programming & Tech Books",
-            subtitle:
-                "Level up your software engineering skills with modern development resources.",
-            primaryBtn: "Browse Tech",
-            secondaryBtn: "View Collection"
-        },
-        {
-            image: "http://localhost:3000/images/slide3.jpg",
-            title: "Bestsellers & Classics",
-            subtitle:
-                "From fiction to business strategy, discover books readers love worldwide.",
-            primaryBtn: "Explore Books",
-            secondaryBtn: "Learn More"
-        }
-    ];
+    {
+        image: "http://localhost:3000/images/slide1.jpg",
+        title: "Discover Your Next Great Read",
+        subtitle:
+            "Explore bestselling books, timeless classics, programming guides, business reads, and more.",
+        primaryBtn: "Shop Now",
+        primaryLink: "#products",
+        secondaryBtn: "Contact Us",
+        secondaryLink: "/contact"
+    },
+
+    {
+        image: "http://localhost:3000/images/slide2.jpg",
+        title: "Programming & Tech Books",
+        subtitle:
+            "Level up your software engineering skills with modern development resources.",
+        primaryBtn: "Browse Tech",
+        primaryLink: "#products",
+        secondaryBtn: "Contact Us",
+        secondaryLink: "/contact"
+    },
+
+    {
+        image: "http://localhost:3000/images/slide3.jpg",
+        title: "Bestsellers & Classics",
+        subtitle:
+            "From fiction to business strategy, discover books readers love worldwide.",
+        primaryBtn: "Explore Books",
+        primaryLink: "#products",
+        secondaryBtn: "About Us",
+        secondaryLink: "/about"
+    }
+];
 
     const [current, setCurrent] = useState(0);
 
@@ -139,8 +173,8 @@ export default function HeroSlider() {
                                 {/* BUTTONS */}
                                 <div className="flex flex-wrap gap-4">
 
-                                    <a
-                                        href="#products"
+                                   <a
+                                        href={slide.primaryLink}
                                         className="
                                             bg-yellow-400
                                             text-black
@@ -157,17 +191,17 @@ export default function HeroSlider() {
                                     
 
                                     <Link
-                                        to="/contact"
-                                        className="
-                                            border border-white
-                                            px-6 py-3
-                                            rounded-xl
-                                            hover:bg-white
-                                            hover:text-black
-                                            transition
-                                        "
-                                    >
-                                        {slide.secondaryBtn}
+                                            to={slide.secondaryLink}
+                                            className="
+                                                border border-white
+                                                px-6 py-3
+                                                rounded-xl
+                                                hover:bg-white
+                                                hover:text-black
+                                                transition
+                                            "
+                                        >
+                                            {slide.secondaryBtn}
                                     </Link>
 
                                 </div>

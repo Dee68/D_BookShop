@@ -19,6 +19,7 @@ import ProductDetails from "./pages/ProductDetails";
 import Register from "./pages/Register";
 import Contact from "./pages/Contact";
 import StoreLayout from "./layout/StoreLayout";
+import About from "./pages/About";
 
 export default function App() {
     const { token } = useContext(AuthContext);
@@ -33,6 +34,7 @@ export default function App() {
                     <Route path="/product/:id" element={<ProductDetails />} />
                     <Route path="/register" element={<Register />} />
                     <Route path="/contact" element={<Contact />} />
+                    <Route path="/about" element={<About />} />
                     <Route
                         path="/my-orders"
                         element={

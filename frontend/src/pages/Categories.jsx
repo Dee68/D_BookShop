@@ -70,13 +70,6 @@ export default function Categories() {
 
     // DELETE
     async function deleteCategory(id) {
-
-        // const confirmDelete = window.confirm(
-        //     "Are you sure you want to delete this category?"
-        // );
-
-        // if (!confirmDelete) return;
-
         await fetch(`http://localhost:3000/api/categories/${id}`, {
             method: "DELETE",
             headers: {
@@ -116,15 +109,17 @@ export default function Categories() {
     }
  
     return (
-        <div className="space-y-6">
+        <div className=" space-y-6
+        text-gray-800
+        dark:text-gray-100">
 
             {/* HEADER */}
             <div>
-                <h2 className="text-2xl font-bold text-gray-900">
+                <h2 className="text-2xl font-bold text-emerald-900 dark:text-emerald-100">
                     Categories
                 </h2>
 
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-emerald-700/80 dark:text-emerald-300/70">
                     Manage product categories
                 </p>
             </div>
@@ -132,10 +127,14 @@ export default function Categories() {
             {/* FORM CARD */}
             <div
                 className="
-                    bg-white
-                    rounded-2xl
-                    border border-gray-100
-                    shadow-sm
+                    bg-white/90
+                    dark:bg-zinc-900/90
+
+                    border border-emerald-100
+                    dark:border-zinc-800
+
+                    shadow-lg
+                    backdrop-blur
                     p-6
                 "
             >
@@ -146,8 +145,11 @@ export default function Categories() {
                         className="
                             h-10 w-10
                             rounded-xl
-                            bg-purple-100
-                            text-purple-600
+                            bg-emerald-100
+                            dark:bg-emerald-900/40
+
+                            text-emerald-700
+                            dark:text-emerald-300
                             flex items-center justify-center
                         "
                     >
@@ -155,11 +157,11 @@ export default function Categories() {
                     </div>
 
                     <div>
-                        <h3 className="font-semibold text-gray-900">
+                        <h3 className="font-semibold text-emerald-900 dark:text-emerald-100">
                             {editingId ? "Edit Category" : "Create Category"}
                         </h3>
 
-                        <p className="text-sm text-gray-500">
+                        <p className="text-sm text-gray-500 dark:text-gray-400">
                             {editingId
                                 ? "Update category information"
                                 : "Add a new category"}
@@ -186,13 +188,24 @@ export default function Categories() {
                             flex-1
                             px-4 py-3
                             rounded-xl
-                            border border-gray-200
-                            bg-gray-50
+
+                            border border-emerald-200
+                            dark:border-zinc-700
+
+                            bg-emerald-50
+                            dark:bg-zinc-800
+
+                            text-gray-800
+                            dark:text-white
+
+                            placeholder:text-gray-400
+
                             focus:outline-none
-                            focus:ring-2 focus:ring-purple-500
-                            focus:border-transparent
+                            focus:ring-2
+                            focus:ring-emerald-500
+
                             transition
-                        "
+                                "
                     />
 
                     {/* BUTTONS */}
@@ -208,8 +221,8 @@ export default function Categories() {
                                 font-medium
                                 transition
                                 ${editingId
-                                    ? "bg-blue-600 hover:bg-blue-700"
-                                    : "bg-purple-600 hover:bg-purple-700"
+                                    ? "bg-emerald-700 hover:bg-emerald-800 dark:bg-emerald-600 dark:hover:bg-emerald-500"
+                                    : "bg-emerald-700 hover:bg-emerald-800 dark:bg-emerald-600 dark:hover:bg-emerald-500"
                                 }
                             `}
                         >
@@ -237,9 +250,12 @@ export default function Categories() {
                                     flex items-center gap-2
                                     px-5 py-3
                                     rounded-xl
-                                    bg-gray-200
-                                    hover:bg-gray-300
+                                    bg-zinc-200
+                                    dark:bg-zinc-700
+                                    hover:bg-zinc-300
+                                    dark:hover:bg-zinc-600
                                     text-gray-700
+                                    dark:text-gray-100
                                     font-medium
                                     transition
                                 "
@@ -258,10 +274,13 @@ export default function Categories() {
             {/* TABLE CARD */}
             <div
                 className="
-                    bg-white
                     rounded-2xl
                     shadow-sm
-                    border border-gray-100
+                    bg-white/90
+                    dark:bg-zinc-900/90
+                    border border-emerald-100
+                    dark:border-zinc-800
+                    backdrop-blur
                     overflow-hidden
                 "
             >
@@ -273,8 +292,9 @@ export default function Categories() {
                         {/* TABLE HEADER */}
                         <thead
                             className="
-                                bg-gray-900
-                                text-white
+                                bg-emerald-800
+                                dark:bg-zinc-950
+                                text-emerald-50
                                 uppercase
                                 text-xs
                                 tracking-wider
@@ -302,10 +322,10 @@ export default function Categories() {
 
                                 <tr
                                     key={cat.id}
-                                    className="hover:bg-purple-50 transition"
+                                    className="hover:bg-emerald-50 dark:hover:bg-zinc-800/70 transition"
                                 >
 
-                                    <td className="px-6 py-4 font-medium text-gray-700">
+                                    <td className="px-6 py-4 font-medium hover:bg-emerald-50 dark:hover:bg-zinc-800/70">
                                         #{cat.id}
                                     </td>
 
@@ -317,8 +337,10 @@ export default function Categories() {
                                                 items-center gap-2
                                                 px-3 py-1
                                                 rounded-full
-                                                bg-purple-100
-                                                text-purple-700
+                                                bg-emerald-100
+                                                dark:bg-emerald-900/40
+                                                text-emerald-700
+                                                dark:text-emerald-300
                                                 text-xs
                                                 font-semibold
                                             "
@@ -341,8 +363,10 @@ export default function Categories() {
                                                     flex items-center gap-1
                                                     px-3 py-2
                                                     rounded-lg
-                                                    bg-blue-600
-                                                    hover:bg-blue-700
+                                                    bg-emerald-700
+                                                    hover:bg-emerald-800
+                                                    dark:bg-emerald-600
+                                                    dark:hover:bg-emerald-500
                                                     text-white
                                                     text-xs
                                                     font-medium
@@ -391,13 +415,13 @@ export default function Categories() {
             {confirmDelete && (
             <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
 
-                <div className="bg-white rounded-2xl p-6 shadow-xl w-full max-w-md">
+                <div className="bg-white dark:bg-zinc-900 rounded-2xl p-6 shadow-xl w-full max-w-md">
 
                     <h3 className="text-lg font-semibold mb-2">
                         Confirm Deletion
                     </h3>
 
-                    <p className="text-sm text-gray-600 mb-6">
+                    <p className="text-sm text-gray-600 dark:text-gray-300 mb-6">
                     Are you sure you want to delete this category?
                     This action cannot be undone.
                     </p>
@@ -436,8 +460,11 @@ export default function Categories() {
                         px-4 py-2
                         rounded-xl
                         bg-gray-200
-                        hover:bg-gray-300
-                        text-gray-700
+                        bg-emerald-700
+                        hover:bg-emerald-800
+                        dark:bg-emerald-600
+                        dark:hover:bg-emerald-500
+                        text-white
                         transition
                         disabled:opacity-50
                         disabled:cursor-not-allowed
@@ -452,9 +479,7 @@ export default function Categories() {
                     className="
                         px-4 py-2
                         rounded-xl
-                        bg-purple-100
-                        text-purple-700
-                        font-semibold
+                        text-gray-700 dark:text-white font-medium
                     "
                 >
                     Page {page}
@@ -473,8 +498,12 @@ export default function Categories() {
                         px-4 py-2
                         rounded-xl
                         bg-gray-200
-                        hover:bg-gray-300
-                        text-gray-700
+                        bg-emerald-700
+                        hover:bg-emerald-800
+                        dark:bg-emerald-600
+                        dark:hover:bg-emerald-500
+                        text-white
+                        disabled:opacity-50
                         transition
                     "
                 >

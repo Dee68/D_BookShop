@@ -59,7 +59,14 @@ export default function Home() {
     return (
         <>
         {/* <Navbar /> */}
-            <div className="home">
+            <div className="min-h-screen
+                bg-emerald-50
+                text-gray-900
+
+                dark:bg-zinc-950
+                dark:text-white
+
+                transition-colors duration-500">
                 {/* hero section */}
                 <HeroSlider />
 
@@ -113,6 +120,9 @@ export default function Home() {
                                             shadow-sm
                                             hover:-translate-y-1
                                             hover:shadow-2xl
+                                            dark:bg-zinc-900
+                                            border border-emerald-100
+                                            dark:border-zinc-800
                                             transition-all
                                             duration-300
                                             flex
@@ -179,11 +189,15 @@ export default function Home() {
 
                                             {/* BUTTON */}
                                             <button
-                                                onClick={(e) => {e.preventDefault();addToCart(p);}}
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    addToCart(p);
+                                                }}
                                                 disabled={p.stock <= 0}
                                                 className={`
                                                     mt-auto
-                                                    py-2
+                                                    py-2.5
+                                                    px-4
                                                     text-sm
                                                     rounded-xl
                                                     font-semibold
@@ -192,8 +206,22 @@ export default function Home() {
 
                                                     ${
                                                         p.stock > 0
-                                                            ? "bg-black text-white hover:bg-zinc-800"
-                                                            : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                                                            ? `
+                                                                bg-emerald-700
+                                                                text-white
+                                                                hover:bg-emerald-800
+
+                                                                dark:bg-emerald-600
+                                                                dark:hover:bg-emerald-500
+
+                                                                shadow-md
+                                                                hover:shadow-lg
+                                                            `
+                                                            : `
+                                                                bg-gray-300
+                                                                text-gray-500
+                                                                cursor-not-allowed
+                                                            `
                                                     }
                                                 `}
                                             >
@@ -216,7 +244,11 @@ export default function Home() {
                         className="
                             px-4 py-2
                             rounded-lg
-                            bg-black
+                            bg-emerald-700
+                            hover:bg-emerald-800
+                            dark:bg-emerald-600
+                            dark:hover:bg-emerald-500
+                            text-white
                             text-white
                             disabled:bg-gray-300
                         "
@@ -234,7 +266,11 @@ export default function Home() {
                         className="
                             px-4 py-2
                             rounded-lg
-                            bg-black
+                            bg-emerald-700
+                            hover:bg-emerald-800
+                            dark:bg-emerald-600
+                            dark:hover:bg-emerald-500
+                            text-white
                             text-white
                             disabled:bg-gray-300
                         "

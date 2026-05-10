@@ -153,7 +153,7 @@ export default function ProductForm({ onCreated, editingProduct, clearEdit }) {
     return (
     <form
         onSubmit={handleSubmit}
-        className="space-y-6"
+        className="space-y-6 text-gray-900 dark:text-white"
     >
 
         {/* GRID */}
@@ -161,7 +161,7 @@ export default function ProductForm({ onCreated, editingProduct, clearEdit }) {
 
             {/* TITLE */}
             <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Title
                 </label>
 
@@ -172,20 +172,25 @@ export default function ProductForm({ onCreated, editingProduct, clearEdit }) {
                     onChange={handleChange}
                     required
                     className="
-                        w-full
-                        px-4 py-3
-                        rounded-xl
-                        border border-gray-200
-                        focus:outline-none
-                        focus:ring-2 focus:ring-blue-500
-                        bg-gray-50
-                    "
+                                w-full
+                                px-4 py-3
+                                rounded-2xl
+                                border border-emerald-200
+                                dark:border-zinc-700
+                                bg-white
+                                dark:bg-zinc-900
+                                text-gray-900 dark:text-white
+                                placeholder:text-gray-400
+                                focus:outline-none
+                                focus:ring-2 focus:ring-emerald-500
+                                transition
+                            "
                 />
             </div>
 
             {/* AUTHOR */}
             <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Author
                 </label>
 
@@ -194,21 +199,26 @@ export default function ProductForm({ onCreated, editingProduct, clearEdit }) {
                     placeholder="Author name"
                     value={form.author}
                     onChange={handleChange}
-                    className="
-                        w-full
-                        px-4 py-3
-                        rounded-xl
-                        border border-gray-200
-                        focus:outline-none
-                        focus:ring-2 focus:ring-blue-500
-                        bg-gray-50
-                    "
+                   className="
+                            w-full
+                            px-4 py-3
+                            rounded-2xl
+                            border border-emerald-200
+                            dark:border-zinc-700
+                            bg-white
+                            dark:bg-zinc-900
+                            text-gray-900 dark:text-white
+                            placeholder:text-gray-400
+                            focus:outline-none
+                            focus:ring-2 focus:ring-emerald-500
+                            transition
+                        "
                 />
             </div>
 
             {/* PRICE */}
             <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Price (€)
                 </label>
 
@@ -219,21 +229,26 @@ export default function ProductForm({ onCreated, editingProduct, clearEdit }) {
                     value={form.price}
                     onChange={handleChange}
                     required
-                    className="
+                   className="
                         w-full
                         px-4 py-3
-                        rounded-xl
-                        border border-gray-200
+                        rounded-2xl
+                        border border-emerald-200
+                        dark:border-zinc-700
+                        bg-white
+                        dark:bg-zinc-900
+                        text-gray-900 dark:text-white
+                        placeholder:text-gray-400
                         focus:outline-none
-                        focus:ring-2 focus:ring-green-500
-                        bg-gray-50
+                        focus:ring-2 focus:ring-emerald-500
+                        transition
                     "
                 />
             </div>
 
             {/* STOCK */}
             <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Stock
                 </label>
 
@@ -246,11 +261,16 @@ export default function ProductForm({ onCreated, editingProduct, clearEdit }) {
                     className="
                         w-full
                         px-4 py-3
-                        rounded-xl
-                        border border-gray-200
+                        rounded-2xl
+                        border border-emerald-200
+                        dark:border-zinc-700
+                        bg-white
+                        dark:bg-zinc-900
+                        text-gray-900 dark:text-white
+                        placeholder:text-gray-400
                         focus:outline-none
-                        focus:ring-2 focus:ring-orange-500
-                        bg-gray-50
+                        focus:ring-2 focus:ring-emerald-500
+                        transition
                     "
                 />
             </div>
@@ -259,7 +279,7 @@ export default function ProductForm({ onCreated, editingProduct, clearEdit }) {
 
         {/* CATEGORY */}
         <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Category
             </label>
 
@@ -271,11 +291,15 @@ export default function ProductForm({ onCreated, editingProduct, clearEdit }) {
                 className="
                     w-full
                     px-4 py-3
-                    rounded-xl
-                    border border-gray-200
+                    rounded-2xl
+                    border border-emerald-200
+                    dark:border-zinc-700
+                    bg-white
+                    dark:bg-zinc-900
+                    text-gray-900 dark:text-white
                     focus:outline-none
-                    focus:ring-2 focus:ring-purple-500
-                    bg-gray-50
+                    focus:ring-2 focus:ring-emerald-500
+                    transition
                 "
             >
                 <option value="">
@@ -292,7 +316,7 @@ export default function ProductForm({ onCreated, editingProduct, clearEdit }) {
 
         {/* IMAGE UPLOAD */}
         <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Product Images
             </label>
 
@@ -304,11 +328,15 @@ export default function ProductForm({ onCreated, editingProduct, clearEdit }) {
                 className="
                     w-full
                     text-sm
-                    border border-dashed border-gray-300
-                    rounded-xl
-                    p-4
-                    bg-gray-50
+                    border-2 border-dashed border-emerald-300
+                    dark:border-zinc-700
+                    rounded-2xl
+                    p-5
+                    bg-emerald-50/40
+                    dark:bg-zinc-900
                     cursor-pointer
+                    hover:border-emerald-500
+                    transition
                 "
             />
         </div>
@@ -330,8 +358,9 @@ export default function ProductForm({ onCreated, editingProduct, clearEdit }) {
                         className="
                             w-20 h-20
                             object-cover
-                            rounded-xl
-                            border border-gray-200
+                            rounded-2xl
+                            border border-emerald-100
+                            dark:border-zinc-700
                             shadow-sm
                         "
                     />
@@ -354,9 +383,12 @@ export default function ProductForm({ onCreated, editingProduct, clearEdit }) {
                     className="
                         px-5 py-3
                         rounded-xl
-                        bg-gray-200
-                        text-gray-700
-                        hover:bg-gray-300
+                        bg-zinc-200
+                        dark:bg-zinc-800
+                        text-gray-800
+                        dark:text-white
+                        hover:bg-zinc-300
+                        dark:hover:bg-zinc-700
                         transition
                     "
                 >
@@ -369,10 +401,13 @@ export default function ProductForm({ onCreated, editingProduct, clearEdit }) {
                 className="
                     px-6 py-3
                     rounded-xl
-                    bg-blue-600
                     text-white
                     font-medium
-                    hover:bg-blue-700
+                    bg-emerald-700
+                    hover:bg-emerald-800
+                    dark:bg-emerald-600
+                    dark:hover:bg-emerald-500
+                    text-white
                     transition
                     shadow-sm
                 "

@@ -84,7 +84,7 @@ export default function Products() {
     }
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 text-gray-900 dark:text-white">
 
             {/* HEADER */}
             <div>
@@ -112,23 +112,30 @@ export default function Products() {
                             setSearch(e.target.value);
                         }}
                         className="
-                            w-full
-                            pl-10 pr-4 py-2
-                            border border-gray-200
-                            rounded-xl
-                            focus:outline-none
-                            focus:ring-2 focus:ring-blue-500
-                            bg-white
-                        "
+                                    w-full
+                                    pl-10 pr-4 py-3
+                                    rounded-2xl
+                                    border border-emerald-200
+                                    dark:border-zinc-700
+                                    bg-white/90
+                                    dark:bg-zinc-900
+                                    text-gray-900
+                                    dark:text-white
+                                    placeholder:text-gray-400
+                                    focus:outline-none
+                                    focus:ring-2
+                                    focus:ring-emerald-500
+                                    transition
+                                "
                     />
                 </div>
                 <div className="flex items-center justify-between">
 
                     <div>
-                        <h2 className="text-2xl font-bold text-gray-900">
+                        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
                             Products
                         </h2>
-                        <p className="text-gray-500 text-sm">
+                        <p className="text-gray-500 text-sm dark:text-white">
                             Manage D-BookShop and product catalog
                         </p>
                     </div>
@@ -137,9 +144,12 @@ export default function Products() {
                         onClick={() => {setEditingProduct({}); setIsModalOpen(true);}}
                         className="
                             px-4 py-2
-                            bg-blue-600 text-white
+                            text-white
                             rounded-xl
-                            hover:bg-blue-700
+                            bg-emerald-700
+                            hover:bg-emerald-800
+                            dark:bg-emerald-600
+                            dark:hover:bg-emerald-500
                             transition
                         "
                     >
@@ -150,14 +160,25 @@ export default function Products() {
             </div>
 
             {/* TABLE CARD */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <div className="bg-white
+                            dark:bg-zinc-900
+                            rounded-2xl
+                            shadow-sm
+                            border border-emerald-100
+                            dark:border-zinc-800
+                            overflow-hidden">
 
                 <div className="overflow-x-auto">
 
                     <table className="min-w-full text-sm">
 
                         {/* HEADER */}
-                        <thead className="bg-gray-900 text-white text-xs uppercase tracking-wider">
+                        <thead className="bg-emerald-800
+                                        dark:bg-zinc-950
+                                        text-white
+                                        text-xs
+                                        uppercase
+                                        tracking-wider">
                             <tr>
                                 <th className="px-6 py-4 text-left">Title</th>
                                 <th className="px-6 py-4 text-left">Author</th>
@@ -173,18 +194,20 @@ export default function Products() {
                             {products.map((p) => (
                                 <tr
                                     key={p.id}
-                                    className="hover:bg-blue-50 transition"
+                                    className=" hover:bg-emerald-50
+                                                dark:hover:bg-zinc-800
+                                                transition"
                                 >
 
-                                    <td className="px-6 py-4 font-medium text-gray-900">
+                                    <td className="px-6 py-4 font-medium text-gray-900 dark:text-white">
                                         {p.title}
                                     </td>
 
-                                    <td className="px-6 py-4 text-gray-600">
+                                    <td className="px-6 py-4 text-gray-600 dark:text-gray-300">
                                         {p.author}
                                     </td>
 
-                                    <td className="px-6 py-4 font-semibold text-green-600">
+                                    <td className="px-6 py-4 font-semibold text-emerald-700 dark:text-emerald-400">
                                         €{p.price}
                                     </td>
 
@@ -192,9 +215,10 @@ export default function Products() {
                                         <span
                                             className={`
                                                 px-3 py-1 rounded-full text-xs font-medium
-                                                ${p.stock > 5
-                                                    ? "bg-green-100 text-green-700"
-                                                    : "bg-red-100 text-red-700"
+                                               ${
+                                                    p.stock > 5
+                                                        ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300"
+                                                        : "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300"
                                                 }
                                             `}
                                         >
@@ -216,8 +240,11 @@ export default function Products() {
                                                 className="
                                                     flex items-center gap-1
                                                     px-3 py-1 text-xs rounded-lg
-                                                    bg-blue-600 text-white
-                                                    hover:bg-blue-700
+                                                    text-white
+                                                    bg-emerald-700
+                                                    hover:bg-emerald-800
+                                                    dark:bg-emerald-600
+                                                    dark:hover:bg-emerald-500
                                                     transition
                                                 "
                                             >
@@ -286,7 +313,7 @@ export default function Products() {
                             transition={{ duration: 0.2 }}
                             className="
                                 relative
-                                bg-white
+                                bg-white dark:bg-zinc-900
                                 w-full
                                 max-w-3xl
                                 rounded-3xl
@@ -295,7 +322,7 @@ export default function Products() {
                                 z-10
                                 max-h-[90vh]
                                 overflow-y-auto
-                                border border-gray-100
+                                border border-emerald-100 dark:border-zinc-800
                             "
                         >
 
@@ -309,26 +336,26 @@ export default function Products() {
                                         className="
                                             h-14 w-14
                                             rounded-2xl
-                                            bg-blue-100
+                                            bg-emerald-100 dark:bg-emerald-900/30
                                             flex items-center justify-center
                                         "
                                     >
                                         <FiPackage
                                             size={24}
-                                            className="text-blue-600"
+                                            className="text-emerald-700 dark:text-emerald-400"
                                         />
                                     </div>
 
                                     {/* TITLE */}
                                     <div>
 
-                                        <h3 className="text-2xl font-bold text-gray-900">
+                                        <h3 className="text-2xl font-bold text-emerald-700 dark:text-emerald-400">
                                             {editingProduct?.id
                                                 ? "Edit Product"
                                                 : "Create Product"}
                                         </h3>
 
-                                        <p className="text-sm text-gray-500 mt-1">
+                                        <p className="text-sm text-emerald-500 dark:text-emerald-300 mt-1">
                                             Manage product information and inventory
                                         </p>
 
@@ -343,7 +370,8 @@ export default function Products() {
                                         h-10 w-10
                                         rounded-xl
                                         flex items-center justify-center
-                                        hover:bg-gray-100
+                                        hover:bg-emerald-50
+                                        dark:hover:bg-zinc-800
                                         transition
                                     "
                                 >
@@ -373,7 +401,16 @@ export default function Products() {
             {confirmDelete && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
 
-                    <div className="bg-white rounded-2xl p-6 shadow-xl w-full max-w-md">
+                    <div className="bg-white
+                            dark:bg-zinc-900
+                            rounded-3xl
+                            p-6
+                            shadow-2xl
+                            w-full
+                            max-w-md
+                            border border-emerald-100
+                            dark:border-zinc-800"
+                    >
 
                         <h3 className="text-lg font-semibold mb-2">
                             Confirm Deletion
@@ -417,6 +454,11 @@ export default function Products() {
                         px-4 py-2
                         bg-gray-200
                         rounded-lg
+                        bg-emerald-700
+                        hover:bg-emerald-800
+                        dark:bg-emerald-600
+                        dark:hover:bg-emerald-500
+                        text-white
                         disabled:opacity-50
                     "
                 >
@@ -435,7 +477,13 @@ export default function Products() {
                         flex items-center gap-1
                         px-4 py-2
                         bg-gray-200
+                        bg-emerald-700
+                        hover:bg-emerald-800
+                        dark:bg-emerald-600
+                        dark:hover:bg-emerald-500
+                        text-white
                         rounded-lg
+                        disabled:opacity-50
                     "
                 >
                     Next

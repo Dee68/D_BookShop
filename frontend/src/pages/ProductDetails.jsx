@@ -82,11 +82,44 @@ export default function ProductDetails() {
                 {product.description}
             </p>
 
-            <button 
-                className="bg-black text-white px-6 py-3 rounded-xl hover:bg-zinc-800" 
-                onClick={(e) => {e.preventDefault();addToCart(product);}}
-                disabled={product.stock <= 0}>
-                Add to Cart
+            <button
+                    onClick={(e) => {
+                        e.preventDefault();
+                        addToCart(product);
+                    }}
+                    disabled={product.stock <= 0}
+                    className={`
+                        mt-auto
+                        py-2.5
+                        px-4
+                        text-sm
+                        rounded-xl
+                        font-semibold
+                        transition-all
+                        duration-300
+
+                        ${
+                            product.stock > 0
+                                ? `
+                                    bg-emerald-700
+                                    text-white
+                                    hover:bg-emerald-800
+
+                                    dark:bg-emerald-600
+                                    dark:hover:bg-emerald-500
+
+                                    shadow-md
+                                    hover:shadow-lg
+                                `
+                                : `
+                                    bg-gray-300
+                                    text-gray-500
+                                    cursor-not-allowed
+                                `
+                        }
+                    `}
+                >
+                    {product.stock > 0 ? "Add to Cart" : "Out of Stock"}
             </button>
         </div>
 

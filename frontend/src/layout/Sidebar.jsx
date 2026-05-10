@@ -24,17 +24,15 @@ export default function Sidebar() {
         management: true
     });
 
-    const linkClass = ({ isActive }) =>
-        `
+    const linkClass = ({ isActive }) => `
         flex items-center gap-3
         px-3 py-2
-        rounded-lg
+        rounded-xl
         transition-all duration-200
 
-        ${
-            isActive
-                ? "bg-blue-600 text-white"
-                : "text-gray-300 hover:bg-gray-800 hover:text-white"
+        ${isActive
+            ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300 border-r-4 border-emerald-600"
+            : "text-gray-600 dark:text-gray-300 hover:bg-emerald-50 dark:hover:bg-zinc-800 hover:text-emerald-700"
         }
     `;
 
@@ -77,12 +75,12 @@ export default function Sidebar() {
                     fixed md:static
                     top-0 left-0
                     z-50
-
+                    text-gray-900 dark:text-white
                     flex flex-col
 
                     h-screen
-                    bg-gray-900
-                    text-white
+                    bg-white dark:bg-zinc-950
+                    
 
                     transition-all duration-300
 
@@ -243,10 +241,7 @@ export default function Sidebar() {
                             flex items-center justify-center gap-3
                             px-3 py-2
                             rounded-lg
-
-                            bg-red-600
-                            hover:bg-red-700
-
+                            bg-red-500 hover:bg-red-600 text-white rounded-xl
                             transition-all duration-200
                         "
                     >

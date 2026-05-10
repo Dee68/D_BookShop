@@ -43,7 +43,12 @@ export default function Navbar() {
     return (
         <>
             {/* NAVBAR */}
-            <header className="sticky top-0 z-50 bg-black text-white shadow-md">
+            <header className="sticky top-0 z-50
+                                bg-emerald-900
+                                dark:bg-zinc-900
+                                text-white
+                                shadow-lg
+                                transition-colors duration-500">
 
                 <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
 
@@ -72,7 +77,11 @@ export default function Navbar() {
                                 Dashboard
                             </NavItem>
                         )}
-
+                        {/* About  */}
+                        <NavItem to="/about">
+                            About
+                        </NavItem>
+                        
                         {/* Contact */}
                         <NavItem to="/contact">
                             Contact

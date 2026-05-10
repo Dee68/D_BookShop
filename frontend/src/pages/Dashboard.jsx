@@ -1,6 +1,7 @@
 import { useEffect, useState, useContext } from "react";
 import { AuthContext } from "../auth/AuthContext";
 import { FileText, FileDown } from "lucide-react";
+import { adminCardClass } from "../styles/ui";
 
 import {
     FiUsers,
@@ -20,12 +21,25 @@ export default function Dashboard() {
         orders: []
     });
 
+    // const statusColors = {
+    //     pending: "bg-yellow-100 text-yellow-700",
+    //     shipped: "bg-blue-100 text-blue-700",
+    //     delivered: "bg-green-100 text-green-700",
+    //     cancelled: "bg-red-100 text-red-700"
+    // };
     const statusColors = {
-        pending: "bg-yellow-100 text-yellow-700",
-        shipped: "bg-blue-100 text-blue-700",
-        delivered: "bg-green-100 text-green-700",
-        cancelled: "bg-red-100 text-red-700"
-    };
+    pending:
+        "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300",
+
+    shipped:
+        "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300",
+
+    delivered:
+        "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300",
+
+    cancelled:
+        "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300"
+};
 
     function formatStatus(status) {
         return status.charAt(0).toUpperCase() + status.slice(1);
@@ -178,13 +192,7 @@ export default function Dashboard() {
 
             {/* ORDER STATUS */}
             <div
-                className="
-                    bg-white
-                    rounded-2xl
-                    shadow-sm
-                    border border-gray-100
-                    p-6
-                "
+                className={`${adminCardClass} p-6`}
             >
 
                 <div className="flex items-center justify-between mb-6">
@@ -239,10 +247,7 @@ export default function Dashboard() {
             </div>
 
             {/* REPORT SECTION */}
-            <div className="
-                bg-white rounded-2xl shadow-md
-                p-6 space-y-4
-            ">
+            <div className={`${adminCardClass} p-6 space-y-4`}>
 
                 <h2 className="text-xl font-semibold">
                     Inventory Reports
@@ -255,8 +260,9 @@ export default function Dashboard() {
                         className="
                             flex items-center gap-2
                             px-4 py-2 rounded-xl
-                            bg-zinc-800 text-white
-                            hover:bg-zinc-700 transition
+                            text-white
+                            bg-emerald-600 hover:bg-emerald-700
+                            transition
                         "
                     >
                         <FileText size={18} />
@@ -289,26 +295,20 @@ export default function Dashboard() {
 function StatCard({ title, value, icon, color }) {
     return (
         <div
-            className="
-                bg-white
-                rounded-2xl
-                shadow-sm
-                border border-gray-100
+            className={`
+                ${adminCardClass}
                 p-4
                 min-h-[140px]
-                flex
-                items-center
-                justify-between
-                gap-4
-            "
+                flex items-center justify-between gap-4
+            `}
         >
             {/* LEFT SIDE */}
             <div className="flex flex-col justify-center flex-1 min-w-0">
-                <p className="text-sm text-gray-500 mb-1">
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
                     {title}
                 </p>
 
-                <h3 className="text-xl font-bold text-gray-900 leading-tight">
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white leading-tight">
                     {value}
                 </h3>
             </div>

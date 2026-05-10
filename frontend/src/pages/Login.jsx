@@ -4,8 +4,10 @@ import { AuthContext } from "../auth/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import { toast } from "react-toastify";
+import { cardClass } from "../styles/ui";
 
 export default function Login() {
+
     const { login } = useContext(AuthContext);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -24,14 +26,11 @@ export default function Login() {
                 toast.error(data?.message || "Invalid credentials");
                 return;
             }
-            //console.log("LOGIN RESPONSE:", data);
-            
 
             login(data.token);
             toast.success("Welcome back!");
-            
+
             const decoded = jwtDecode(data.token);
-            
 
             setTimeout(() => {
                 decoded.role === "admin"
@@ -45,37 +44,76 @@ export default function Login() {
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
+        <div className="
+            min-h-screen
+            flex items-center justify-center
+            bg-emerald-50
+            dark:bg-zinc-950
+            px-4
+            transition-colors duration-500
+        ">
 
-            <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8">
+            {/* CARD */}
+            <div className={cardClass}>
 
                 {/* HEADER */}
-                <h2 className="text-3xl font-bold text-center mb-6">
+                <h2 className="
+                    text-3xl font-bold text-center mb-6
+                    text-gray-900 dark:text-white
+                ">
                     Login
                 </h2>
 
                 {/* FORM */}
                 <form onSubmit={handleLogin} className="space-y-5">
 
+                    {/* EMAIL */}
                     <input
                         type="email"
                         placeholder="Email"
                         value={email}
                         onChange={e => setEmail(e.target.value)}
-                        className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+                        className="
+                            w-full px-4 py-3
+                            rounded-xl
+                            border border-gray-200 dark:border-zinc-700
+                            bg-gray-50 dark:bg-zinc-800
+                            text-gray-900 dark:text-white
+                            focus:outline-none
+                            focus:ring-2 focus:ring-emerald-500
+                        "
                     />
 
+                    {/* PASSWORD */}
                     <input
                         type="password"
                         placeholder="Password"
                         value={password}
                         onChange={e => setPassword(e.target.value)}
-                        className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+                        className="
+                            w-full px-4 py-3
+                            rounded-xl
+                            border border-gray-200 dark:border-zinc-700
+                            bg-gray-50 dark:bg-zinc-800
+                            text-gray-900 dark:text-white
+                            focus:outline-none
+                            focus:ring-2 focus:ring-emerald-500
+                        "
                     />
 
+                    {/* BUTTON */}
                     <button
                         type="submit"
-                        className="w-full bg-black text-white py-3 rounded-lg hover:bg-zinc-800 transition"
+                        className="
+                            w-full
+                            bg-emerald-600
+                            hover:bg-emerald-700
+                            text-white
+                            py-3
+                            rounded-xl
+                            font-medium
+                            transition
+                        "
                     >
                         Login
                     </button>
@@ -83,14 +121,21 @@ export default function Login() {
                 </form>
 
                 {/* FOOTER */}
-                <p className="text-sm text-center mt-6 text-gray-600">
+                <p className="
+                    text-sm text-center mt-6
+                    text-gray-600 dark:text-gray-400
+                ">
                     Don’t have an account?{" "}
-                    <Link to="/register" className="text-blue-600 hover:underline">
+                    <Link
+                        to="/register"
+                        className="text-emerald-600 hover:underline"
+                    >
                         Register
                     </Link>
                 </p>
 
             </div>
+
         </div>
     );
 }

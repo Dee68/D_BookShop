@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FiUser, FiMail, FiLock } from "react-icons/fi";
 import { toast } from "react-toastify";
+import { cardClass } from "../styles/ui";
 
 export default function Register() {
     const [form, setForm] = useState({
@@ -12,34 +13,6 @@ export default function Register() {
 
     const navigate = useNavigate();
 
-    //validates form inputs
-    function validateForm() {
-
-        if (!form.name.trim()) {
-            toast.error("Username is required");
-            return false;
-        }
-
-        if (form.name.length < 3) {
-            toast.error("Username must be at least 3 characters");
-            return false;
-        }
-
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-        if (!emailRegex.test(form.email)) {
-            toast.error("Enter a valid email address");
-            return false;
-        }
-
-        if (form.password.length < 6) {
-            toast.error("Password must be at least 6 characters");
-            return false;
-        }
-
-        return true;
-    }
-
     function handleChange(e) {
         setForm({ ...form, [e.target.name]: e.target.value });
     }
@@ -47,12 +20,9 @@ export default function Register() {
     async function handleSubmit(e) {
         e.preventDefault();
 
-        if (!validateForm()) return;
         const res = await fetch("http://localhost:3000/api/users/register", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(form)
         });
 
@@ -63,72 +33,76 @@ export default function Register() {
             return;
         }
 
-        toast.success("Registration successful! Please login.");
+        toast.success("Registration successful!");
 
-        // small delay so user sees toast
-        setTimeout(() => {
-            navigate("/login");
-        }, 1000);
+        setTimeout(() => navigate("/login"), 1000);
     }
 
+    const inputClass =
+        "w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 dark:border-zinc-700 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500";
+
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-100">
+        <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-zinc-950 px-4">
 
-            <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow-lg">
+            <div className={cardClass}>
 
-                <h2 className="text-2xl font-bold mb-6 text-center">
+                <h2 className="text-3xl font-bold text-center mb-6 text-gray-900 dark:text-white">
                     Create Account
                 </h2>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
 
-                    <div className="flex items-center gap-2 bg-gray-100 p-3 rounded-lg">
-                        <FiUser />
+                    {/* NAME */}
+                    <div className="relative">
+                        <FiUser className="absolute left-3 top-3.5 text-gray-400" />
                         <input
                             name="name"
                             placeholder="Full Name"
                             onChange={handleChange}
-                            className="bg-transparent w-full outline-none"
+                            className={inputClass}
                             required
                         />
                     </div>
 
-                    <div className="flex items-center gap-2 bg-gray-100 p-3 rounded-lg">
-                        <FiMail />
+                    {/* EMAIL */}
+                    <div className="relative">
+                        <FiMail className="absolute left-3 top-3.5 text-gray-400" />
                         <input
                             name="email"
                             type="email"
                             placeholder="Email"
                             onChange={handleChange}
-                            className="bg-transparent w-full outline-none"
+                            className={inputClass}
                             required
                         />
                     </div>
 
-                    <div className="flex items-center gap-2 bg-gray-100 p-3 rounded-lg">
-                        <FiLock />
+                    {/* PASSWORD */}
+                    <div className="relative">
+                        <FiLock className="absolute left-3 top-3.5 text-gray-400" />
                         <input
                             name="password"
                             type="password"
                             placeholder="Password"
                             onChange={handleChange}
-                            className="bg-transparent w-full outline-none"
+                            className={inputClass}
                             required
                         />
                     </div>
 
+                    {/* BUTTON */}
                     <button
                         type="submit"
-                        className="w-full bg-black text-white py-3 rounded-lg hover:bg-zinc-800 transition"
+                        className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-medium transition"
                     >
                         Create Account
                     </button>
 
                 </form>
 
-                <p className="text-center mt-4 text-sm">
+                <p className="text-center mt-4 text-sm text-gray-600 dark:text-gray-300">
                     Already have an account?{" "}
-                    <Link to="/login" className="text-blue-600 hover:underline">
+                    <Link to="/login" className="text-emerald-600 hover:underline">
                         Login
                     </Link>
                 </p>
