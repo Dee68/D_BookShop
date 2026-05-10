@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { useContext } from "react";
 import { CartContext } from "../context/CartContext";
 import Navbar from "../components/Navbar";
-import Hero from "../components/Hero";
+// import Hero from "../components/Hero";
+import HeroSlider from "../components/HeroSlider";
 import "../styles/global.css";
 import { Link } from "react-router-dom";
 
@@ -60,7 +61,7 @@ export default function Home() {
         {/* <Navbar /> */}
             <div className="home">
                 {/* hero section */}
-                <Hero />
+                <HeroSlider />
 
                 {/* SEARCH BAR */}
                 <div className="filters">
@@ -89,7 +90,7 @@ export default function Home() {
                 </div>
 
                 {/* PRODUCTS GRID */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 px-4 py-6">
+                <div id="products" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 px-4 py-6">
                     {Array.isArray(products) && products.map(p => {
                         
                         const imagePath = p.images?.[0];

@@ -6,7 +6,7 @@ export default function Hero() {
 
             {/* BACKGROUND IMAGE */}
             <img
-                src="/images/hero.jpg"
+                src="http://localhost:3000/images/slide3.jpg" 
                 alt="Books Collection"
                 className="w-full h-[500px] object-cover"
             />
