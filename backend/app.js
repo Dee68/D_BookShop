@@ -49,6 +49,9 @@ app.use("/api/reports", reportRoutes);
 const adminRoutes = require('./routes/adminRoutes');
 
 app.use('/api/admin', adminRoutes);
+if (process.env.NODE_ENV !== "production") {
+    console.log("Serving images from:", path.join(__dirname,"uploads/images"));
+}
 
 app.use((err, req, res, next) => {
     if (err.code === 'LIMIT_FILE_SIZE') {

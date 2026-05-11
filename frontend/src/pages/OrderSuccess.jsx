@@ -41,7 +41,7 @@ export default function OrderSuccess() {
                     </Link>
 
                     <Link
-                        to="/admin/orders"
+                        to="/my-orders"
                         className="
                             block w-full
                             border border-gray-300

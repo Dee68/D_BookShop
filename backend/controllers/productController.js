@@ -8,10 +8,12 @@ exports.createProduct = async (req, res) => {
     try {
         const { title, author, price, category_id, stock } = req.body;
 
-        // extract uploaded files
-        //const images = req.files.map(file => `/images/${file.filename}`);
-        // handle optional images safely
-        const images = req.files && req.files.length > 0
+        // VALIDATION FIRST
+        if (!title || !price) {
+            return res.status(400).json({ error: "Title and price required" });
+        }
+
+        const images = req.files?.length
             ? req.files.map(file => `/images/${file.filename}`)
             : [];
 
@@ -24,13 +26,16 @@ exports.createProduct = async (req, res) => {
             images
         });
 
-        res.status(201).json({message: "Product created",productId: result.id});
+        res.status(201).json({
+            message: "Product created",
+            productId: result.id   // FIXED
+        });
 
     } catch (error) {
+        console.error("CREATE PRODUCT ERROR:", error);
         res.status(500).json({ error: error.message });
     }
 };
-
 exports.getProducts = async (req, res) => {
     try {
         const { page, limit, offset } = getPagination(req);
@@ -43,6 +48,14 @@ exports.getProducts = async (req, res) => {
             limit,
             offset
         };
+        // const filters = {
+        //     search: req.query.search,
+        //     category: req.query.category ? Number(req.query.category) : null,
+        //     minPrice: req.query.minPrice ? Number(req.query.minPrice) : null,
+        //     maxPrice: req.query.maxPrice ? Number(req.query.maxPrice) : null,
+        //     limit,
+        //     offset
+        // };
 
         const products = await Product.getFilteredProducts(filters);
         const total = await Product.countFilteredProducts(filters);
@@ -58,6 +71,7 @@ exports.getProducts = async (req, res) => {
         });
 
     } catch (error) {
+        console.error("PRODUCT ERROR:", error); 
         res.status(500).json({ error: error.message });
     }
 };

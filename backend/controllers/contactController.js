@@ -10,6 +10,10 @@ async function sendMessage(req, res) {
             subject,
             message
         } = req.body;
+        const cleanName = name?.trim();
+        const cleanEmail = email?.trim();
+        const cleanSubject = subject?.trim();
+        const cleanMessage = message?.trim();
 
         // BASIC VALIDATION
         if (!name || !email || !message) {
@@ -19,10 +23,10 @@ async function sendMessage(req, res) {
         }
 
         const result = await contactModel.createMessage({
-            name,
-            email,
-            subject,
-            message
+            name: cleanName,
+            email: cleanEmail,
+            subject: cleanSubject,
+            message: cleanMessage
         });
 
         res.status(201).json({

@@ -56,7 +56,7 @@ exports.addCategory = async (req, res) => {
         const result = await Category.createCategory(name);
         res.status(201).json(result);
     } catch (error) {
-        if (error.message.includes("UNIQUE")) {
+        if (error.code === "23505") {
             return res.status(400).json({ error: "Category already exists" });
 }
         res.status(500).json({ error: error.message });

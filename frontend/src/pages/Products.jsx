@@ -33,7 +33,7 @@ export default function Products() {
             `/products?search=${search}&page=${page}&limit=${limit}`,
             "GET",
             null,
-            token
+            token 
         );
          console.log(data);
 

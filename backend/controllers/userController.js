@@ -1,6 +1,7 @@
 const User = require('../models/userModel');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+const INVALID_CREDENTIALS = "Invalid credentials";
 
 function validateEmail(email) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -66,13 +67,13 @@ exports.loginUser = async (req, res) => {
         const user = await User.getUserByEmail(email);
 
         if (!user) {
-            return res.status(400).json({ error: "Invalid credentials" });
+            return res.status(401).json({ error: INVALID_CREDENTIALS });
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
 
         if (!isMatch) {
-            return res.status(400).json({ error: "Invalid credentials" });
+            return res.status(401).json({ error: INVALID_CREDENTIALS });
         }
 
         // create token

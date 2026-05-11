@@ -26,16 +26,34 @@ export async function apiRequest(endpoint, method = "GET", body, token) {
     return res.json();
 }
 
-export async function apiUpload(endpoint, formData, token, method="POST") {
+// export async function apiUpload(endpoint, formData, token, method="POST") {
+//     const res = await fetch("http://localhost:3000/api" + endpoint, {
+//         method,
+//         headers: {
+//             Authorization: `Bearer ${token}`
+            
+//         },
+//         body: formData
+//     });
+
+//     if (handleAuth(res)) return;
+//     return res.json();
+// }
+export async function apiUpload(endpoint, formData, token, method = "POST") {
     const res = await fetch("http://localhost:3000/api" + endpoint, {
         method,
         headers: {
             Authorization: `Bearer ${token}`
-            
         },
         body: formData
     });
 
-    if (handleAuth(res)) return;
-    return res.json();
+    const data = await res.text(); // for debugging
+
+    if (!res.ok) {
+        console.error("UPLOAD ERROR:", data);
+        throw new Error(data);
+    }
+
+    return JSON.parse(data);
 }
