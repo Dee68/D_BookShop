@@ -1,13 +1,35 @@
 # 📚 D-BookShop
 
-## This is a full-stack Bookshop Management System built with:
+## A modern full-stack e-commerce bookstore application built with React, Node.js, Express, and SQLite/PostgreSQL-ready architecture.
 
-- ### Frontend: React (Vite)
-- ### Backend: Node.js + Express
-- ### Database: SQLite
-- ### Authentication: JWT
-- ### File Uploads: Multer
-- ### Architecture: REST API
+## D-BookShop provides a complete online bookstore experience with customer ordering, admin management, authentication, reporting, image uploads, responsive UI, and dark/light theme support.
+
+## ✨ Features
+### 👤 Customer Features
+- ### User registration & login
+- ### JWT authentication
+- ### Browse books/products
+- ### Product search & category filtering
+- ### Product detail pages with gallery
+- ### Shopping cart functionality
+- ### Order checkout system
+- ### View customer orders
+- ### Responsive modern UI
+- ### Dark / Light mode support
+
+## 🛠️ Admin Features
+- ### Admin dashboard
+- ### Product management (CRUD)
+- ### Category management
+- ### Order management
+- ### Order status updates
+- ### Inventory tracking
+- ### Low stock monitoring
+- ### PDF inventory reports
+- ### TXT inventory reports
+- ### Image uploads using Multer
+
+
 
 ---
 
@@ -15,19 +37,37 @@
 
 ### Frontend
 - React (Vite)
-- JavaScript (ES6+)
+- React Router DOM
+- Tailwind CSS
+- React Icons
+- Lucide React
+- React Toastify
+- Context API
 - Fetch API
-- Basic CSS (custom styling)
 
 ### Backend
 - Node.js
 - Express.js
 - SQLite3
+- JWT Authentication
+- bcryptjs
+- Multer
 - dotenv
-- REST API
-- Multer (file uploads)
-- bcrypt (password hashing)
-- JWT (Authentication)
+- PDFKit (PDF report generation)
+- REST API Architecture
+
+### Database
+- SQLite3 (current)
+- PostgreSQL ready for deployment
+
+## 🎨 UI Features
+- Fully responsive design
+- Dark / Light theme
+- Tailwind utility-first styling
+- Hover animations & transitions
+- Modern card-based layouts
+- Mobile-friendly admin dashboard
+
 
 ## 📁 Project Structure
 
@@ -59,6 +99,8 @@ D-BookShop/
 
 ```
 npm install
+
+npm install pdfkit
 
 ▶️ Run the project
 
@@ -120,6 +162,28 @@ npm run dev
 | DELETE | `/api/users/:id` | Delete a user |
 
 ````
+
+
+````
+## 📄 Reporting System
+
+The admin dashboard supports downloadable inventory reports:
+
+- TXT Reports
+- PDF Reports
+
+Reports are dynamically generated from inventory data.
+````
+````
+## 🖼️ File Uploads
+
+Product image uploads are handled using:
+
+- Multer
+- Local uploads directory
+- Product gallery support
+````
+
 ````
 
 ## 🔐 Business Rules
@@ -136,7 +200,17 @@ A full Postman collection is included for testing all API endpoints.
 
 ### 📁 Location
 `/docs/postman/BookShop_API.postman_collection.json`
+````
 
+````
+## Setup
+| Variable |	Value |
+|----------|----------|
+|base_url	|` http://localhost:3000`|
+|token	|    Auto-generated after login|
+
+````
+````
 ### ▶️ How to use
 
 1. Open Postman
@@ -144,13 +218,74 @@ A full Postman collection is included for testing all API endpoints.
 3. Select the JSON file
 4. Set environment variables:
 
-| Variable   | Value                     |
-|------------|--------------------------|
-| base_url   | http://localhost:3000     |
-| token      | (auto-filled after login) |
+````
 
-### 🔐 Authentication
+````
+### 🔐 Authentication & Security
+- JWT authentication
+- Protected admin routes
+- Password hashing with bcrypt
+- Role-based authorization
+- Secure API access
 
-- Run `Login` request first
-- Token is automatically saved using Postman scripts
-- All protected routes use: Authorization: Bearer {{token}}
+````
+
+````
+### 📦 Future Improvements
+- PostgreSQL migration
+- Render deployment
+- Stripe payments
+- Email notifications
+- Wishlist system
+- Advanced analytics
+- Docker support
+- CI/CD pipeline
+
+````
+
+````
+## 📸 Screenshots
+
+
+## Home Page
+![Home Page](./screenshots/homepage.png)
+
+
+![Mobile Home page](./screenshots/Mhomepage.png)
+
+## Product details
+![Product Detail page](./screenshots/productDetails.png)
+
+![Mobile Product Detail Page](./screenshots/MproductDetails.png)
+
+## Admin dashboard
+
+![Admin Dashboard](./screenshots/admin.png)
+
+![Mobile Admin Dashboard](./screenshots/Madmin.png)
+
+
+## Orders page
+![Customer Orders Page](./screenshots/oders.png)
+
+![Admin Orders Page](./screenshots/adminOrders.png)
+
+## Dark mode UI
+![Admin Dashboard Dark Mode](./screenshots/Dadmin.png)
+
+![Home Page Dark Mode](./screenshots/Dhomepage.png)
+
+````
+
+````
+### 👨‍💻 Author
+
+### Dimie Egberipou
+
+### Full Stack Software Developer
+````
+````
+### 📜 License
+
+### This project is licensed for educational and portfolio purposes.
+````
