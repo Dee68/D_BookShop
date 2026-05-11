@@ -1,8 +1,9 @@
 # 📚 D-BookShop
+````
+A modern full-stack e-commerce bookstore application built with React, Node.js, Express, and SQLite/PostgreSQL-ready architecture.
+D-BookShop provides a complete online bookstore experience with customer ordering, admin management, authentication, reporting, image uploads, responsive UI, and dark/light theme support.
 
-## A modern full-stack e-commerce bookstore application built with React, Node.js, Express, and SQLite/PostgreSQL-ready architecture.
-
-## D-BookShop provides a complete online bookstore experience with customer ordering, admin management, authentication, reporting, image uploads, responsive UI, and dark/light theme support.
+````
 
 ## ✨ Features
 ### 👤 Customer Features
