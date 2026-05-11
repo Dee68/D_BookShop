@@ -7,32 +7,7 @@ import {
 
 export default function HeroSlider() {
 
-    // const slides = [
-    //     {
-    //         image: "http://localhost:3000/images/slide1.jpg",
-    //         title: "Discover Your Next Great Read",
-    //         subtitle:
-    //             "Explore bestselling books, timeless classics, programming guides, business reads, and more.",
-    //         primaryBtn: "Shop Now",
-    //         secondaryBtn: "Contact Us"
-    //     },
-    //     {
-    //         image: "http://localhost:3000/images/slide2.jpg",
-    //         title: "Programming & Tech Books",
-    //         subtitle:
-    //             "Level up your software engineering skills with modern development resources.",
-    //         primaryBtn: "Browse Tech",
-    //         secondaryBtn: "View Collection"
-    //     },
-    //     {
-    //         image: "http://localhost:3000/images/slide3.jpg",
-    //         title: "Bestsellers & Classics",
-    //         subtitle:
-    //             "From fiction to business strategy, discover books readers love worldwide.",
-    //         primaryBtn: "Explore Books",
-    //         secondaryBtn: "Learn More"
-    //     }
-    // ];
+    
     const slides = [
     {
         image: "http://localhost:3000/images/slide1.jpg",
@@ -144,17 +119,18 @@ export default function HeroSlider() {
                                     tracking-[4px]
                                     text-yellow-400
                                     mb-3
-                                    text-sm
+                                    text-lg
                                     md:text-base
                                 ">
                                     D-BookShop
                                 </p>
 
                                 <h1 className="
-                                    text-4xl
+                                    text-3xl
                                     md:text-6xl
                                     font-bold
                                     leading-tight
+                                    text-emerald-500
                                     mb-5
                                 ">
                                     {slide.title}

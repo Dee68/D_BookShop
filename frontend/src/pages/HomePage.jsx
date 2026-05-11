@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useContext } from "react";
 import { CartContext } from "../context/CartContext";
 import Navbar from "../components/Navbar";
-// import Hero from "../components/Hero";
 import HeroSlider from "../components/HeroSlider";
 import "../styles/global.css";
 import { Link } from "react-router-dom";
@@ -71,17 +70,40 @@ export default function Home() {
                 <HeroSlider />
 
                 {/* SEARCH BAR */}
-                <div className="filters">
+                <div className="max-w-7xl mx-auto
+                        px-4 py-6
+                        flex flex-col md:flex-row
+                        gap-4"
+                    >
 
                         <input
-                            className="search-input"
+                            className="flex-1
+                            px-4 py-3
+                            rounded-2xl
+                            border border-emerald-100 dark:border-zinc-800
+                            bg-white dark:bg-zinc-900
+                            text-gray-900 dark:text-white
+                            placeholder:text-gray-400 dark:placeholder:text-gray-500
+                            shadow-sm
+                            focus:outline-none
+                            focus:ring-2 focus:ring-emerald-500
+                            transition"
                             placeholder="Search books by title or author..."
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
                         />
 
                         <select
-                            className="category-select"
+                            className="md:w-64
+                            px-4 py-3
+                            rounded-2xl
+                            border border-emerald-100 dark:border-zinc-800
+                            bg-white dark:bg-zinc-900
+                            text-gray-900 dark:text-white
+                            shadow-sm
+                            focus:outline-none
+                            focus:ring-2 focus:ring-emerald-500
+                            transition"
                             value={category}
                             onChange={(e) => setCategory(e.target.value)}
                         >
@@ -119,7 +141,8 @@ export default function Home() {
                                             overflow-hidden
                                             shadow-sm
                                             hover:-translate-y-1
-                                            hover:shadow-2xl
+                                            hover:shadow-[0_20px_50px_rgba(16,185,129,0.15)]
+                                            dark:hover:shadow-[0_20px_50px_rgba(0,0,0,0.45)]
                                             dark:bg-zinc-900
                                             border border-emerald-100
                                             dark:border-zinc-800
@@ -162,28 +185,44 @@ export default function Home() {
                                         </div>
 
                                         {/* CONTENT */}
-                                        <div className="p-2 flex flex-col flex-1">
+                                        <div className="p-5 flex flex-col flex-1">
 
                                             {/* CATEGORY */}
-                                            <p className="text-sm text-gray-500 mb-2">
+                                            <p className="
+                                                text-xs uppercase tracking-wide
+                                                text-emerald-600 dark:text-emerald-400
+                                                mb-2
+                                                font-medium
+                                            ">
                                                 {p.category_name}
                                             </p>
 
                                             {/* TITLE */}
-                                            <h3 className="text-sm font-semibold text-gray-900 mb-2 leading-snug">
+                                            <h3 className="
+                                                text-base font-semibold
+                                                text-gray-900 dark:text-white
+                                                mb-2 leading-snug
+                                                line-clamp-2
+                                            ">
                                                 {p.title}
                                             </h3>
 
                                             {/* AUTHOR */}
-                                            <p className="text-xs text-gray-600 mb-2">
+                                            <p className="
+                                                text-sm
+                                                text-gray-600 dark:text-gray-300
+                                                mb-3
+                                            ">
                                                 by {p.author || "Unknown Author"}
                                             </p>
 
                                             {/* PRICE */}
                                             <div className="mb-5">
-                                                <span className="text-lg font-bold text-black">
-                                                    €
-                                                    {Number(p.price).toFixed(2)}
+                                                <span className="
+                                                    text-2xl font-bold
+                                                    text-emerald-700 dark:text-emerald-400
+                                                ">
+                                                    €{Number(p.price).toFixed(2)}
                                                 </span>
                                             </div>
 
@@ -215,11 +254,11 @@ export default function Home() {
                                                                 dark:hover:bg-emerald-500
 
                                                                 shadow-md
-                                                                hover:shadow-lg
+                                                                hover:shadow-xl
                                                             `
                                                             : `
-                                                                bg-gray-300
-                                                                text-gray-500
+                                                                bg-gray-300 dark:bg-zinc-700
+                                                                text-gray-500 dark:text-gray-400
                                                                 cursor-not-allowed
                                                             `
                                                     }
@@ -256,7 +295,7 @@ export default function Home() {
                         Prev
                     </button>
 
-                        <span className="font-medium">
+                        <span className="font-medium text-gray-700 dark:text-gray-300">
                             Page {pagination.page || 1} of {pagination.totalPages || 1}
                         </span>
 

@@ -1,128 +1,340 @@
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-//import "../styles/productDetails.css";
-import { useContext } from "react";
+import { useEffect, useState, useContext } from "react";
+import { useParams, Link } from "react-router-dom";
 import { CartContext } from "../context/CartContext";
-import { Link } from "react-router-dom";
+import { FiArrowLeft } from "react-icons/fi";
 
 export default function ProductDetails() {
+
     const { id } = useParams();
+
     const [product, setProduct] = useState(null);
+
     const { addToCart } = useContext(CartContext);
+
     const [mainImage, setMainImage] = useState(null);
 
     useEffect(() => {
+
         fetch(`http://localhost:3000/api/products/${id}`)
             .then(res => res.json())
             .then(setProduct);
+
     }, [id]);
 
     useEffect(() => {
+
         if (product?.images?.length) {
             setMainImage(`http://localhost:3000${product.images[0]}`);
         }
+
     }, [product]);
 
-    if (!product) return <p>Loading...</p>;
+    if (!product) {
+
+        return (
+            <div className="
+                min-h-[60vh]
+                flex items-center justify-center
+                text-gray-500 dark:text-gray-400
+            ">
+                Loading product...
+            </div>
+        );
+    }
 
     return (
-    <div className="max-w-6xl mx-auto p-6 grid md:grid-cols-2 gap-10">
 
-        {/* LEFT: IMAGE + GALLERY */}
-        <div>
+        <div className="
+            max-w-7xl
+            mx-auto
+            px-4 md:px-6
+            py-10
+        ">
 
-            {/* MAIN IMAGE */}
-            <div className="bg-gray-100 rounded-xl overflow-hidden">
-                <img
-                    src={mainImage}
-                    alt={product.title}
-                    className="w-full h-[500px] object-cover"
-                />
-            </div>
-
-            {/* GALLERY (MOVED HERE) */}
-            <div className="flex gap-2 mt-4">
-                {product.images?.map((img, i) => {
-                    const fullUrl = img.startsWith("http")
-                        ? img
-                        : `http://localhost:3000${img}`;
-
-                    return (
-                        <img
-                            key={i}
-                            src={fullUrl}
-                            className="w-16 h-16 object-cover rounded-md cursor-pointer border hover:border-black"
-                            onClick={() => setMainImage(fullUrl)}
-                        />
-                    );
-                })}
-            </div>
-
-        </div>
-
-        {/* RIGHT: INFO */}
-        <div>
+            {/* BACK BUTTON */}
             <Link
                 to="/"
-                className="inline-flex items-center gap-2 mb-4 px-3 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition"
+                className="
+                    inline-flex items-center gap-2
+                    mb-8
+                    px-4 py-2
+                    rounded-xl
+
+                    bg-white dark:bg-zinc-900
+                    border border-gray-200 dark:border-zinc-800
+
+                    text-gray-700 dark:text-gray-200
+
+                    hover:bg-emerald-50
+                    dark:hover:bg-zinc-800
+
+                    transition-all duration-300
+                    shadow-sm hover:shadow-md
+                "
             >
-                Go Back
+                <FiArrowLeft />
+
+                Back to Store
             </Link>
-            <h1 className="text-3xl font-bold mb-2">{product.title}</h1>
 
-            <p className="text-gray-500 mb-4">
-                by {product.author}
-            </p>
+            {/* MAIN CARD */}
+            <div className="
+                grid
+                md:grid-cols-2
+                gap-10
 
-            <p className="text-2xl font-bold mb-4">
-                €{Number(product.price).toFixed(2)}
-            </p>
+                bg-white dark:bg-zinc-900
+                border border-gray-100 dark:border-zinc-800
 
-            <p className="text-gray-700 mb-6">
-                {product.description}
-            </p>
+                rounded-3xl
+                shadow-xl
 
-            <button
-                    onClick={(e) => {
-                        e.preventDefault();
-                        addToCart(product);
-                    }}
-                    disabled={product.stock <= 0}
-                    className={`
-                        mt-auto
-                        py-2.5
-                        px-4
+                overflow-hidden
+            ">
+
+                {/* LEFT SIDE */}
+                <div className="p-6">
+
+                    {/* MAIN IMAGE */}
+                    <div className="
+                        rounded-2xl
+                        overflow-hidden
+
+                        bg-gray-100 dark:bg-zinc-800
+                        border border-gray-200 dark:border-zinc-700
+                    ">
+                        <img
+                            src={mainImage}
+                            alt={product.title}
+                            className="
+                                w-full
+                                h-[500px]
+                                object-cover
+                                transition-transform duration-500
+                                hover:scale-[1.02]
+                            "
+                        />
+                    </div>
+
+                    {/* GALLERY */}
+                    <div className="
+                        flex flex-wrap gap-3
+                        mt-5
+                    ">
+
+                        {product.images?.map((img, i) => {
+
+                            const fullUrl = img.startsWith("http")
+                                ? img
+                                : `http://localhost:3000${img}`;
+
+                            return (
+
+                                <button
+                                    key={i}
+                                    onClick={() => setMainImage(fullUrl)}
+                                    className={`
+                                        rounded-xl
+                                        overflow-hidden
+                                        border-2
+                                        transition-all duration-300
+
+                                        ${
+                                            mainImage === fullUrl
+                                                ? `
+                                                    border-emerald-600
+                                                    shadow-md
+                                                `
+                                                : `
+                                                    border-transparent
+                                                    hover:border-emerald-400
+                                                `
+                                        }
+                                    `}
+                                >
+
+                                    <img
+                                        src={fullUrl}
+                                        alt=""
+                                        className="
+                                            w-20 h-20
+                                            object-cover
+                                        "
+                                    />
+
+                                </button>
+                            );
+                        })}
+
+                    </div>
+
+                </div>
+
+                {/* RIGHT SIDE */}
+                <div className="
+                    p-6 md:p-8
+                    flex flex-col
+                ">
+
+                    {/* CATEGORY */}
+                    <div className="
+                        inline-flex
+                        w-fit
+                        px-3 py-1
+                        rounded-full
+
+                        bg-emerald-100
+                        dark:bg-emerald-900/30
+
+                        text-emerald-700
+                        dark:text-emerald-300
+
                         text-sm
-                        rounded-xl
-                        font-semibold
-                        transition-all
-                        duration-300
+                        font-medium
+                        mb-4
+                    ">
+                        {product.category_name || "Book"}
+                    </div>
 
-                        ${
-                            product.stock > 0
-                                ? `
-                                    bg-emerald-700
-                                    text-white
-                                    hover:bg-emerald-800
+                    {/* TITLE */}
+                    <h1 className="
+                        text-4xl
+                        font-bold
+                        text-gray-900 dark:text-white
+                        mb-3
+                    ">
+                        {product.title}
+                    </h1>
 
-                                    dark:bg-emerald-600
-                                    dark:hover:bg-emerald-500
+                    {/* AUTHOR */}
+                    <p className="
+                        text-lg
+                        text-gray-500 dark:text-gray-400
+                        mb-6
+                    ">
+                        by {product.author}
+                    </p>
 
-                                    shadow-md
-                                    hover:shadow-lg
-                                `
-                                : `
-                                    bg-gray-300
-                                    text-gray-500
-                                    cursor-not-allowed
-                                `
-                        }
-                    `}
-                >
-                    {product.stock > 0 ? "Add to Cart" : "Out of Stock"}
-            </button>
+                    {/* PRICE */}
+                    <div className="
+                        text-3xl
+                        font-bold
+
+                        text-emerald-700
+                        dark:text-emerald-400
+
+                        mb-6
+                    ">
+                        €{Number(product.price).toFixed(2)}
+                    </div>
+
+                    {/* DESCRIPTION */}
+                    <p className="
+                        text-gray-600 dark:text-gray-300
+                        leading-relaxed
+                        mb-8
+                    ">
+                        {product.description}
+                    </p>
+
+                    {/* STOCK */}
+                    <div className="mb-8">
+
+                        {product.stock > 0 ? (
+
+                            <span className="
+                                inline-flex
+                                px-3 py-1
+                                rounded-full
+
+                                bg-green-100
+                                dark:bg-green-900/30
+
+                                text-green-700
+                                dark:text-green-300
+
+                                text-sm font-medium
+                            ">
+                                In Stock ({product.stock})
+                            </span>
+
+                        ) : (
+
+                            <span className="
+                                inline-flex
+                                px-3 py-1
+                                rounded-full
+
+                                bg-red-100
+                                dark:bg-red-900/30
+
+                                text-red-700
+                                dark:text-red-300
+
+                                text-sm font-medium
+                            ">
+                                Out of Stock
+                            </span>
+
+                        )}
+
+                    </div>
+
+                    {/* CTA */}
+                    <button
+                        onClick={(e) => {
+
+                            e.preventDefault();
+
+                            addToCart(product);
+
+                        }}
+
+                        disabled={product.stock <= 0}
+
+                        className={`
+                            w-full md:w-fit
+
+                            px-8 py-4
+                            rounded-2xl
+
+                            font-semibold
+                            text-sm
+
+                            transition-all duration-300
+
+                            ${
+                                product.stock > 0
+                                    ? `
+                                        bg-emerald-600
+                                        hover:bg-emerald-700
+
+                                        text-white
+
+                                        shadow-lg
+                                        hover:shadow-xl
+                                    `
+                                    : `
+                                        bg-gray-300
+                                        dark:bg-zinc-700
+
+                                        text-gray-500
+                                        dark:text-gray-400
+
+                                        cursor-not-allowed
+                                    `
+                            }
+                        `}
+                    >
+                        {product.stock > 0
+                            ? "Add to Cart"
+                            : "Out of Stock"}
+                    </button>
+
+                </div>
+
+            </div>
+
         </div>
-
-    </div>
-);
+    );
 }

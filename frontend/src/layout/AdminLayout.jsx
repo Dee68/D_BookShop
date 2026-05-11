@@ -3,6 +3,7 @@ import { useContext } from "react";
 import Sidebar from "./Sidebar";
 import { AuthContext } from "../auth/AuthContext";
 import ThemeToggle from "../components/ToggleButton";
+import { useEffect } from "react";
 
 export default function AdminLayout() {
     const { token } = useContext(AuthContext);
@@ -10,6 +11,10 @@ export default function AdminLayout() {
     if (!token) {
         return <Navigate to="/login" replace />;
     }
+    useEffect(() => {
+    document.title = "Admin | D-BookShop";
+  }, []);
+
 
     return (
         <div className="flex min-h-screen bg-gray-100 bg-white dark:bg-zinc-900">
