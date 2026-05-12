@@ -25,7 +25,7 @@ export default function Users() {
 
     async function loadUsers() {
         const res = await fetch(
-            `${import.meta.env.VITE_API_URL}/api/users?page=${page}&limit=${limit}`,
+            `${import.meta.env.VITE_API_URL}api/users?page=${page}&limit=${limit}`,
             {
                 headers: { Authorization: `Bearer ${token}` }
             }
