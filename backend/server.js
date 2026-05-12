@@ -21,13 +21,15 @@ require('./database/init')();
 const app = require('./app');
 const pool = require('./config/db'); // pg Pool
 const seedAdmin = require("../scripts/seedAdmin");
+const resetAdmin = require("../scripts/resetAdmin");
 
 
 async function startServer() {
     try {
         await pool.query('SELECT NOW()'); // test DB connection
         console.log("PostgreSQL connected successfully");
-        await require("../scripts/resetAdmin")();
+        
+        await resetAdmin();
 
        await seedAdmin();
 
