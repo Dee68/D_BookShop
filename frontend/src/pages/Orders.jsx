@@ -16,7 +16,7 @@ export default function Orders() {
     async function loadOrders() {
 
         const res = await fetch(
-            "http://localhost:3000/api/orders",
+            `${import.meta.env.VITE_API_URL}/api/orders`,
             {
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -36,7 +36,7 @@ export default function Orders() {
     async function updateStatus(id, status) {
 
         await fetch(
-            `http://localhost:3000/api/orders/${id}/status`,
+            `${import.meta.env.VITE_API_URL}/api/orders/${id}/status`,
             {
                 method: "PATCH",
                 headers: {

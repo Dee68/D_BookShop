@@ -19,7 +19,7 @@ export default function Home() {
     async function loadProducts() {
         const limit = 8;
         const res = await fetch(
-           `http://localhost:3000/api/products?page=${page}&limit=${limit}&search=${search}&category=${category}`
+           `${import.meta.env.VITE_API_URL}/api/products?page=${page}&limit=${limit}&search=${search}&category=${category}`
         );
 
         const data = await res.json();
@@ -42,7 +42,7 @@ export default function Home() {
     
     useEffect(() => {
         async function loadCategories() {
-            const res = await fetch("http://localhost:3000/api/categories/store");
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/categories/store`);
             const data = await res.json();
 
             setCategories(Array.isArray(data) ? data : data.data || []);

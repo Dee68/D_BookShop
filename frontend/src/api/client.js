@@ -1,5 +1,5 @@
 import { toast } from "react-toastify";
-const BASE_URL = "http://localhost:3000/api";
+const BASE_URL = `${import.meta.env.VITE_API_URL}`;
 
 function handleAuth(res) {
     if (res.status === 401) {
@@ -12,7 +12,7 @@ function handleAuth(res) {
 }
 
 export async function apiRequest(endpoint, method = "GET", body, token) {
-    const res = await fetch(BASE_URL + endpoint, {
+    const res = await fetch(`${BASE_URL}${endpoint}`, {
         method,
         headers: {
             "Content-Type": "application/json",
@@ -40,7 +40,7 @@ export async function apiRequest(endpoint, method = "GET", body, token) {
 //     return res.json();
 // }
 export async function apiUpload(endpoint, formData, token, method = "POST") {
-    const res = await fetch("http://localhost:3000/api" + endpoint, {
+    const res = await fetch(`${BASE_URL}${endpoint}`, {
         method,
         headers: {
             Authorization: `Bearer ${token}`

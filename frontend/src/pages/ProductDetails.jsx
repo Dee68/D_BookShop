@@ -15,7 +15,7 @@ export default function ProductDetails() {
 
     useEffect(() => {
 
-        fetch(`http://localhost:3000/api/products/${id}`)
+        fetch(`${import.meta.env.VITE_API_URL}/api/products/${id}`)
             .then(res => res.json())
             .then(setProduct);
 
@@ -24,7 +24,7 @@ export default function ProductDetails() {
     useEffect(() => {
 
         if (product?.images?.length) {
-            setMainImage(`http://localhost:3000${product.images[0]}`);
+            setMainImage(`${import.meta.env.VITE_API_URL}${product.images[0]}`);
         }
 
     }, [product]);
@@ -126,7 +126,7 @@ export default function ProductDetails() {
 
                             const fullUrl = img.startsWith("http")
                                 ? img
-                                : `http://localhost:3000${img}`;
+                                : `${import.meta.env.VITE_API_URL}${img}`;
 
                             return (
 

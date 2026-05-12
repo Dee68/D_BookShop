@@ -31,14 +31,15 @@ export default function Categories() {
     // LOAD
     async function loadCategories() {
 
-        const res = await fetch(`http://localhost:3000/api/categories?page=${page}&limit=${limit}`);
-        const data = await res.json();
+    const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/categories?page=${page}&limit=${limit}`
+    );
 
-        //setCategories(data);
-        setCategories(data.data || data);
-        setPagination(data.pagination || {});
-    }
- 
+    const data = await res.json();
+
+    setCategories(data.data || data);
+    setPagination(data.pagination || {});
+}
     useEffect(() => {
         loadCategories();
     }, [page,limit]);
@@ -54,7 +55,7 @@ export default function Categories() {
 
         e.preventDefault();
 
-         const res = await fetch("http://localhost:3000/api/categories", {
+         const res = await fetch(`${import.meta.env.VITE_API_URL}/api/categories`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -70,7 +71,7 @@ export default function Categories() {
 
     // DELETE
     async function deleteCategory(id) {
-        await fetch(`http://localhost:3000/api/categories/${id}`, {
+        await fetch(`${import.meta.env.VITE_API_URL}/api/categories/${id}`, {
             method: "DELETE",
             headers: {
                 Authorization: `Bearer ${token}`
@@ -93,7 +94,7 @@ export default function Categories() {
 
         e.preventDefault();
 
-        await fetch(`http://localhost:3000/api/categories/${editingId}`, {
+        await fetch(`${import.meta.env.VITE_API_URL}/api/categories/${editingId}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",

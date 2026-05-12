@@ -8,7 +8,7 @@ export default function OrderDetails() {
     const token = localStorage.getItem("token");
 
     useEffect(() => {
-        fetch(`http://localhost:3000/api/orders/${id}`, {
+        fetch(`${import.meta.env.VITE_API_URL}/api/orders/${id}`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -118,7 +118,7 @@ export default function OrderDetails() {
                                 const imageUrl = item.image
                                     ? item.image.startsWith("http")
                                         ? item.image
-                                        : `http://localhost:3000${item.image}`
+                                        : `${import.meta.env.VITE_API_URL}${item.image}`
                                     : null;
 
                                 return (
