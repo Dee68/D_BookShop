@@ -35,7 +35,7 @@ async function seedAdmin() {
 
         if (existing.rows.length > 0) {
             console.log("Admin already exists");
-            process.exit();
+            //process.exit();
         }
 
         await pool.query(
@@ -53,7 +53,7 @@ async function seedAdmin() {
 
         console.log("Admin user created successfully");
 
-        process.exit();
+        //process.exit();
 
     } catch (err) {
 
