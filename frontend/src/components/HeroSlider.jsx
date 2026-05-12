@@ -11,7 +11,7 @@ export default function HeroSlider() {
     
  const slides = [
     {
-        image: "https://res.cloudinary.com/dyrp3aqdq/image/upload/v123/slide1.jpg",
+        image: "https://res.cloudinary.com/dyrp3aqdq/image/upload/v1778597113/slide3_uzeqfn.jpg",
         title: "Discover Your Next Great Read",
         subtitle: "Explore bestselling books, timeless classics...",
         primaryBtn: "Shop Now",
@@ -20,7 +20,7 @@ export default function HeroSlider() {
         secondaryLink: "/contact"
     },
     {
-        image: "https://res.cloudinary.com/dyrp3aqdq/image/upload/v123/slide2.jpg",
+        image: "https://res.cloudinary.com/dyrp3aqdq/image/upload/v1778597112/slide1_n97hmc.jpg",
         title: "Programming & Tech Books",
         subtitle: "Level up your software engineering skills...",
         primaryBtn: "Browse Tech",
@@ -29,7 +29,7 @@ export default function HeroSlider() {
         secondaryLink: "/contact"
     },
     {
-        image: "https://res.cloudinary.com/dyrp3aqdq/image/upload/v123/slide3.jpg",
+        image: "https://res.cloudinary.com/dyrp3aqdq/image/upload/v1778597113/slide2_u0d4q4.jpg",
         title: "Bestsellers & Classics",
         subtitle: "From fiction to business strategy...",
         primaryBtn: "Explore Books",
