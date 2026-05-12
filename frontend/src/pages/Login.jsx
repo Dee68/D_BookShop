@@ -17,13 +17,13 @@ export default function Login() {
         e.preventDefault();
 
         try {
-            const data = await apiRequest("/users/login", "POST", {
+            const data = await apiRequest("/api/users/login", "POST", {
                 email,
                 password
             });
 
             if (!data?.token) {
-                toast.error(data?.message || "Invalid credentials");
+                toast.error(data?.error || "Invalid credentials");
                 return;
             }
 

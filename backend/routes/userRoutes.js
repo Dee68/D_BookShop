@@ -10,4 +10,4 @@ router.get('/', auth, requireAdmin,userController.getAllUsers);
 router.patch("/:id/role", auth, requireAdmin, userController.updateUserRole);
 router.delete("/:id", auth, requireAdmin, userController.deleteUser);
 
-module.exports = router;
+module.exports = router; 

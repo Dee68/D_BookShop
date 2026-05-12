@@ -29,7 +29,7 @@ export default function Register() {
         const data = await res.json();
 
         if (!res.ok) {
-            toast.error(data.message || "Registration failed");
+            toast.error(data.error || "Registration failed");
             return;
         }
 
