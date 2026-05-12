@@ -2,6 +2,21 @@ const Product = require('../models/productModel');
 const { deleteFile } = require('../utils/fileHelper');
 const { getPagination } = require('../utils/pagination');
 
+function normalizeProductFilters(query, pagination) {
+    const toNumber = (v) => {
+        const n = Number(v);
+        return Number.isFinite(n) ? n : null;
+    };
+
+    return {
+        search: query.search?.trim() || null,
+        category: toNumber(query.category),
+        minPrice: toNumber(query.minPrice),
+        maxPrice: toNumber(query.maxPrice),
+        limit: pagination.limit,
+        offset: pagination.offset
+    };
+}
 
 
 exports.createProduct = async (req, res) => {
@@ -40,14 +55,15 @@ exports.getProducts = async (req, res) => {
     try {
         const { page, limit, offset } = getPagination(req);
 
-        const filters = {
-            search: req.query.search,
-            category: req.query.category,
-            minPrice: req.query.minPrice,
-            maxPrice: req.query.maxPrice,
-            limit,
-            offset
-        };
+        // const filters = {
+        //     search: req.query.search,
+        //     category: req.query.category,
+        //     minPrice: req.query.minPrice,
+        //     maxPrice: req.query.maxPrice,
+        //     limit,
+        //     offset
+        // };
+        const filters = normalizeProductFilters(req.query, { limit, offset });
         // const filters = {
         //     search: req.query.search,
         //     category: req.query.category ? Number(req.query.category) : null,

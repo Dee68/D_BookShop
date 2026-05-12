@@ -347,17 +347,10 @@ exports.createProduct = async (product) => {
 exports.getFilteredProducts = async (filters) => {
     const { search, category, minPrice, maxPrice, limit, offset } = filters;
 
+    // 1. Base product query FIRST (no join)
     let sql = `
-        SELECT 
-            p.id,
-            p.title,
-            p.author,
-            p.price,
-            p.category_id,
-            p.stock,
-            pi.image_url
+        SELECT p.*
         FROM products p
-        LEFT JOIN product_images pi ON p.id = pi.product_id
         WHERE 1=1
     `;
 
@@ -391,29 +384,38 @@ exports.getFilteredProducts = async (filters) => {
     sql += ` ORDER BY p.id DESC LIMIT $${i} OFFSET $${i + 1}`;
     params.push(limit, offset);
 
-    const result = await db.query(sql, params);
+    const productsResult = await db.query(sql, params);
+    const products = productsResult.rows;
 
-    const products = {};
+    const productIds = products.map(p => p.id);
 
-    result.rows.forEach(row => {
-        if (!products[row.id]) {
-            products[row.id] = {
-                id: row.id,
-                title: row.title,
-                author: row.author,
-                price: row.price,
-                category_id: row.category_id,
-                stock: row.stock,
-                images: []
-            };
+    if (productIds.length === 0) return [];
+
+    // 2. Fetch images separately (clean + deterministic)
+    const imagesResult = await db.query(
+        `
+        SELECT product_id, image_url
+        FROM product_images
+        WHERE product_id = ANY($1)
+        `,
+        [productIds]
+    );
+
+    // 3. Map images
+    const imageMap = {};
+
+    for (const img of imagesResult.rows) {
+        if (!imageMap[img.product_id]) {
+            imageMap[img.product_id] = [];
         }
+        imageMap[img.product_id].push(img.image_url);
+    }
 
-        if (row.image_url) {
-            products[row.id].images.push(row.image_url);
-        }
-    });
-
-    return Object.values(products);
+    // 4. Attach images
+    return products.map(p => ({
+        ...p,
+        images: imageMap[p.id] || []
+    }));
 };
 exports.getProductById = async (id) => {
     const result = await db.query(

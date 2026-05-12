@@ -23,18 +23,18 @@ export default function Dashboard() {
 
    
     const statusColors = {
-    pending:
-        "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300",
+        pending:
+            "bg-yellow-500/20 text-yellow-200 dark:bg-yellow-500/30 dark:text-yellow-100 border border-yellow-500/30",
 
-    shipped:
-        "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300",
+        shipped:
+            "bg-blue-500/20 text-blue-200 dark:bg-blue-500/30 dark:text-blue-100 border border-blue-500/30",
 
-    delivered:
-        "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300",
+        delivered:
+            "bg-emerald-500/20 text-emerald-200 dark:bg-emerald-500/30 dark:text-emerald-100 border border-emerald-500/30",
 
-    cancelled:
-        "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300"
-};
+        cancelled:
+            "bg-red-500/20 text-red-200 dark:bg-red-500/30 dark:text-red-100 border border-red-500/30"
+    };
 
     function formatStatus(status) {
         return status.charAt(0).toUpperCase() + status.slice(1);
@@ -197,7 +197,7 @@ export default function Dashboard() {
                             Order Status
                         </h2>
 
-                        <p className="text-sm text-gray-500">
+                        <p className="text-sm text-gray-500 dark:text-white">
                             Current order processing overview
                         </p>
                     </div>
@@ -244,7 +244,7 @@ export default function Dashboard() {
             {/* REPORT SECTION */}
             <div className={`${adminCardClass} p-6 space-y-4`}>
 
-                <h2 className="text-xl font-semibold">
+                <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
                     Inventory Reports
                 </h2>
 
