@@ -42,7 +42,7 @@ export default function Home() {
     
     useEffect(() => {
         async function loadCategories() {
-            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/categories/store`);
+            const res = await fetch(`${import.meta.env.VITE_API_URL}api/categories/store`);
             const data = await res.json();
 
             setCategories(Array.isArray(data) ? data : data.data || []);
@@ -131,7 +131,7 @@ export default function Home() {
                             : null;
                         
                         return (
-                            <Link key={p.id} to={`api/product/${p.id}`} className="block">
+                            <Link key={p.id} to={`${import.meta.env.VITE_API_URL}api/product/${p.id}`} className="block">
                                 <div
                                         key={p.id}
                                         className="
