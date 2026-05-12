@@ -15,4 +15,4 @@ async function resetAdmin() {
     }
 }
 
-resetAdmin();
+module.exports = resetAdmin();
