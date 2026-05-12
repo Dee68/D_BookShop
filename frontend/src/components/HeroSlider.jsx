@@ -7,11 +7,11 @@ import {
 
 export default function HeroSlider() {
 
-    const BASE_IMAGE = import.meta.env.VITE_ASSET_URL;
+    //const BASE_IMAGE = import.meta.env.VITE_ASSET_URL;
     
     const slides = [
     {
-        image: `${BASE_IMAGE}/slide1.jpg`,
+        image: "https://res.cloudinary.com/dyrp3aqdq/slide1.jpg",
         title: "Discover Your Next Great Read",
         subtitle:
             "Explore bestselling books, timeless classics, programming guides, business reads, and more.",
@@ -22,7 +22,7 @@ export default function HeroSlider() {
     },
 
     {
-        image: `${BASE_IMAGE}/slide2.jpg`,
+        image: "https://res.cloudinary.com/dyrp3aqdq/slide1.jpg",
         title: "Programming & Tech Books",
         subtitle:
             "Level up your software engineering skills with modern development resources.",
@@ -33,7 +33,7 @@ export default function HeroSlider() {
     },
 
     {
-        image: `${BASE_IMAGE}/slide3.jpg`,
+        image: "https://res.cloudinary.com/dyrp3aqdq/slide1.jpg",
         title: "Bestsellers & Classics",
         subtitle:
             "From fiction to business strategy, discover books readers love worldwide.",
