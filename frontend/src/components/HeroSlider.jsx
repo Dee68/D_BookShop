@@ -7,10 +7,11 @@ import {
 
 export default function HeroSlider() {
 
+    const BASE_IMAGE = import.meta.env.VITE_ASSET_URL;
     
     const slides = [
     {
-        image: "http://localhost:3000/images/slide1.jpg",
+        image: `${BASE_IMAGE}/slide1.jpg`,
         title: "Discover Your Next Great Read",
         subtitle:
             "Explore bestselling books, timeless classics, programming guides, business reads, and more.",
@@ -21,7 +22,7 @@ export default function HeroSlider() {
     },
 
     {
-        image: "http://localhost:3000/images/slide2.jpg",
+        image: `${BASE_IMAGE}/slide2.jpg`,
         title: "Programming & Tech Books",
         subtitle:
             "Level up your software engineering skills with modern development resources.",
@@ -32,7 +33,7 @@ export default function HeroSlider() {
     },
 
     {
-        image: "http://localhost:3000/images/slide3.jpg",
+        image: `${BASE_IMAGE}/slide3.jpg`,
         title: "Bestsellers & Classics",
         subtitle:
             "From fiction to business strategy, discover books readers love worldwide.",

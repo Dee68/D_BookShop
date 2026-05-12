@@ -1,23 +1,39 @@
-const express = require('express');
 const cors = require('cors');
+const express = require('express');
 
 const app = express();
 const path = require('path');
 
-// middleware
-//app.use(cors());
-
+const allowedOrigins = [
+    "http://localhost:5173",
+    "http://localhost:3000",
+    process.env.CLIENT_URL
+];
 app.use(cors({
-    origin: [
-        "http://localhost:5173",
-        process.env.CLIENT_URL],
+    origin: function (origin, callback) {
+        if (!origin) return callback(null, true);
+
+        if (allowedOrigins.includes(origin)) {
+            return callback(null, true);
+        }
+
+        return callback(new Error("Not allowed by CORS"));
+    },
     credentials: true
 }));
-app.use(express.json());
-//app.use('/images', express.static(path.join(process.cwd(),"uploads/images")));
-app.use('/images', express.static(path.resolve(__dirname,"uploads/images")));
 
-console.log("Serving images from:", path.join(__dirname,"uploads/images"));
+// app.use(cors({
+//     origin: [
+//         "http://localhost:5173",
+//         "http://localhost:3000",
+//         process.env.CLIENT_URL],
+//     credentials: true
+// }));
+app.use(express.json());
+// //app.use('/images', express.static(path.join(process.cwd(),"uploads/images")));
+// app.use('/images', express.static(path.resolve(__dirname,"uploads/images")));
+
+//console.log("Serving images from:", path.join(__dirname,"uploads/images"));
 
 
 // test route
