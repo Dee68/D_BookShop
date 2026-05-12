@@ -1,18 +1,55 @@
 import { toast } from "react-toastify";
 const BASE_URL = `${import.meta.env.VITE_API_URL}`;
 
-function handleAuth(res) {
-    if (res.status === 401) {
+// function handleAuth(res) {
+//     if (res.status === 401) {
+//         localStorage.removeItem("token");
+//         toast.error("Session expired. Please log in again.");
+//         window.location.href = "/login";
+//         return true;
+//     }
+//     return false;
+// }
+async function handleAuth(res) {
+
+    // Only handle protected-route auth failures
+    // NOT login/register failures
+
+    const isLoginRequest =
+        res.url.includes("/login");
+
+    if (res.status === 401 && !isLoginRequest) {
+
         localStorage.removeItem("token");
+
         toast.error("Session expired. Please log in again.");
+
         window.location.href = "/login";
+
         return true;
     }
+
     return false;
 }
 
+// export async function apiRequest(endpoint, method = "GET", body, token) {
+//     const res = await fetch(`${BASE_URL}${endpoint}`, {
+//         method,
+//         headers: {
+//             "Content-Type": "application/json",
+//             Authorization: token ? `Bearer ${token}` : ""
+//         },
+//         body: body ? JSON.stringify(body) : undefined
+//     });
+
+//     if (handleAuth(res)) return;
+
+//     return res.json();
+// }
+
 export async function apiRequest(endpoint, method = "GET", body, token) {
-    const res = await fetch(`${BASE_URL}${endpoint}`, {
+
+    const res = await fetch(BASE_URL + endpoint, {
         method,
         headers: {
             "Content-Type": "application/json",
@@ -21,9 +58,11 @@ export async function apiRequest(endpoint, method = "GET", body, token) {
         body: body ? JSON.stringify(body) : undefined
     });
 
-    if (handleAuth(res)) return;
+    const data = await res.json();
 
-    return res.json();
+    if (await handleAuth(res)) return;
+
+    return data;
 }
 
 // export async function apiUpload(endpoint, formData, token, method="POST") {
