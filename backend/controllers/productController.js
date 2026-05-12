@@ -1,6 +1,7 @@
 const Product = require('../models/productModel');
 const { deleteFile } = require('../utils/fileHelper');
 const { getPagination } = require('../utils/pagination');
+const uploadToCloudinary = require("../utils/uploadToCloudinary");
 
 function normalizeProductFilters(query, pagination) {
     const toNumber = (v) => {
@@ -28,9 +29,17 @@ exports.createProduct = async (req, res) => {
             return res.status(400).json({ error: "Title and price required" });
         }
 
-        const images = req.files?.length
-            ? req.files.map(file => `/images/${file.filename}`)
-            : [];
+        // const images = req.files?.length
+        //     ? req.files.map(file => `/images/${file.filename}`)
+        //     : [];
+        const uploadedImages = [];
+
+        if (req.files?.length) {
+            for (const file of req.files) {
+                const result = await uploadToCloudinary(file.buffer, "products");
+                uploadedImages.push(result.secure_url);
+            }
+        }
 
         const result = await Product.createProduct({
             title,
@@ -38,7 +47,7 @@ exports.createProduct = async (req, res) => {
             price,
             category_id,
             stock,
-            images
+            images:uploadedImages
         });
 
         res.status(201).json({
