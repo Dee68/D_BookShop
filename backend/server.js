@@ -20,18 +20,18 @@
 require('./database/init')();
 const app = require('./app');
 const pool = require('./config/db'); // pg Pool
-const seedAdmin = require("../scripts/seedAdmin");
-const resetAdmin = require("../scripts/resetAdmin");
+//const seedAdmin = require("../scripts/seedAdmin");
+//const resetAdmin = require("../scripts/resetAdmin");
 
 
 async function startServer() {
     try {
         await pool.query('SELECT NOW()'); // test DB connection
         console.log("PostgreSQL connected successfully");
-        
-        await resetAdmin();
 
-       await seedAdmin();
+        //await resetAdmin();
+
+       //await seedAdmin();
 
         const PORT = process.env.PORT || 5000;
 
