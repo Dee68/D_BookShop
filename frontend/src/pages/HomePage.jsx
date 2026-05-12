@@ -19,7 +19,7 @@ export default function Home() {
     async function loadProducts() {
         const limit = 8;
         const res = await fetch(
-           `${import.meta.env.VITE_API_URL}/api/products?page=${page}&limit=${limit}&search=${search}&category=${category}`
+           `${import.meta.env.VITE_API_URL}api/products?page=${page}&limit=${limit}&search=${search}&category=${category}`
         );
 
         const data = await res.json();
@@ -127,11 +127,11 @@ export default function Home() {
                         const imageUrl = imagePath
                             ? imagePath.startsWith("http")
                                 ? imagePath
-                                : `http://localhost:3000${imagePath.startsWith("/") ? "" : "/"}${imagePath}`
+                                : `${import.meta.env.VITE_API_URL}${imagePath.startsWith("/") ? "" : "/"}${imagePath}`
                             : null;
                         
                         return (
-                            <Link key={p.id} to={`/product/${p.id}`} className="block">
+                            <Link key={p.id} to={`api/product/${p.id}`} className="block">
                                 <div
                                         key={p.id}
                                         className="
