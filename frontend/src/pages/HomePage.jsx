@@ -131,7 +131,7 @@ export default function Home() {
                             : null;
                         
                         return (
-                            <Link key={p.id} to={`${import.meta.env.VITE_API_URL}api/product/${p.id}`} className="block">
+                            <Link key={p.id} to={`/product/${p.id}`} className="block">
                                 <div
                                         key={p.id}
                                         className="
