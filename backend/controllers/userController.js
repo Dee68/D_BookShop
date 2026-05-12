@@ -65,7 +65,8 @@ exports.loginUser = async (req, res) => {
         }
 
         const user = await User.getUserByEmail(email);
-
+        console.log("LOGIN USER:", user);
+        console.log("PASSWORD MATCH:", await bcrypt.compare(password, user.password));
         if (!user) {
             return res.status(401).json({ error: INVALID_CREDENTIALS });
         }
