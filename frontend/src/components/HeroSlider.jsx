@@ -9,34 +9,29 @@ export default function HeroSlider() {
 
     //const BASE_IMAGE = import.meta.env.VITE_ASSET_URL;
     
-    const slides = [
+ const slides = [
     {
-        image: "https://res.cloudinary.com/dyrp3aqdq/slide1.jpg",
+        image: "https://res.cloudinary.com/dyrp3aqdq/image/upload/v123/slide1.jpg",
         title: "Discover Your Next Great Read",
-        subtitle:
-            "Explore bestselling books, timeless classics, programming guides, business reads, and more.",
+        subtitle: "Explore bestselling books, timeless classics...",
         primaryBtn: "Shop Now",
         primaryLink: "#products",
         secondaryBtn: "Contact Us",
         secondaryLink: "/contact"
     },
-
     {
-        image: "https://res.cloudinary.com/dyrp3aqdq/slide1.jpg",
+        image: "https://res.cloudinary.com/dyrp3aqdq/image/upload/v123/slide2.jpg",
         title: "Programming & Tech Books",
-        subtitle:
-            "Level up your software engineering skills with modern development resources.",
+        subtitle: "Level up your software engineering skills...",
         primaryBtn: "Browse Tech",
         primaryLink: "#products",
         secondaryBtn: "Contact Us",
         secondaryLink: "/contact"
     },
-
     {
-        image: "https://res.cloudinary.com/dyrp3aqdq/slide1.jpg",
+        image: "https://res.cloudinary.com/dyrp3aqdq/image/upload/v123/slide3.jpg",
         title: "Bestsellers & Classics",
-        subtitle:
-            "From fiction to business strategy, discover books readers love worldwide.",
+        subtitle: "From fiction to business strategy...",
         primaryBtn: "Explore Books",
         primaryLink: "#products",
         secondaryBtn: "About Us",
