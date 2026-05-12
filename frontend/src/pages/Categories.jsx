@@ -32,7 +32,7 @@ export default function Categories() {
     async function loadCategories() {
 
     const res = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/categories?page=${page}&limit=${limit}`
+        `${import.meta.env.VITE_API_URL}api/categories?page=${page}&limit=${limit}`
     );
 
     const data = await res.json();
@@ -55,7 +55,7 @@ export default function Categories() {
 
         e.preventDefault();
 
-         const res = await fetch(`${import.meta.env.VITE_API_URL}/api/categories`, {
+         const res = await fetch(`${import.meta.env.VITE_API_URL}api/categories`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -71,7 +71,7 @@ export default function Categories() {
 
     // DELETE
     async function deleteCategory(id) {
-        await fetch(`${import.meta.env.VITE_API_URL}/api/categories/${id}`, {
+        await fetch(`${import.meta.env.VITE_API_URL}api/categories/${id}`, {
             method: "DELETE",
             headers: {
                 Authorization: `Bearer ${token}`
@@ -94,7 +94,7 @@ export default function Categories() {
 
         e.preventDefault();
 
-        await fetch(`${import.meta.env.VITE_API_URL}/api/categories/${editingId}`, {
+        await fetch(`${import.meta.env.VITE_API_URL}api/categories/${editingId}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",

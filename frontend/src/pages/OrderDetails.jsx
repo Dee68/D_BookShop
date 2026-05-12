@@ -8,7 +8,7 @@ export default function OrderDetails() {
     const token = localStorage.getItem("token");
 
     useEffect(() => {
-        fetch(`${import.meta.env.VITE_API_URL}/api/orders/${id}`, {
+        fetch(`${import.meta.env.VITE_API_URL}api/orders/${id}`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },

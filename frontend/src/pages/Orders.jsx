@@ -36,7 +36,7 @@ export default function Orders() {
     async function updateStatus(id, status) {
 
         await fetch(
-            `${import.meta.env.VITE_API_URL}/api/orders/${id}/status`,
+            `${import.meta.env.VITE_API_URL}api/orders/${id}/status`,
             {
                 method: "PATCH",
                 headers: {

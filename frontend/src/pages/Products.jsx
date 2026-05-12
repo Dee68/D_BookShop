@@ -30,7 +30,7 @@ export default function Products() {
 
     async function fetchProducts() {
         const data = await apiRequest(
-            `/products?search=${search}&page=${page}&limit=${limit}`,
+            `api/products?search=${search}&page=${page}&limit=${limit}`,
             "GET",
             null,
             token 
@@ -66,7 +66,7 @@ export default function Products() {
     //     fetchProducts();
     // }
     async function deleteProduct(id) {
-        await apiRequest(`/products/${id}`, "DELETE", null, token);
+        await apiRequest(`api/products/${id}`, "DELETE", null, token);
 
         toast.success("Product deleted successfully.");
         fetchProducts();

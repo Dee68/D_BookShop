@@ -15,7 +15,7 @@ export default function ProductDetails() {
 
     useEffect(() => {
 
-        fetch(`${import.meta.env.VITE_API_URL}/api/products/${id}`)
+        fetch(`${import.meta.env.VITE_API_URL}api/products/${id}`)
             .then(res => res.json())
             .then(setProduct);
 

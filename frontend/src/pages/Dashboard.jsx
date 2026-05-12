@@ -49,9 +49,9 @@ export default function Dashboard() {
             };
 
             const [systemRes, salesRes, ordersRes] = await Promise.all([
-                fetch(`${import.meta.env.VITE_API_URL}/api/admin/stats/system`, { headers }),
-                fetch(`${import.meta.env.VITE_API_URL}/api/admin/stats/sales`, { headers }),
-                fetch(`${import.meta.env.VITE_API_URL}/api/admin/stats/orders`, { headers })
+                fetch(`${import.meta.env.VITE_API_URL}api/admin/stats/system`, { headers }),
+                fetch(`${import.meta.env.VITE_API_URL}api/admin/stats/sales`, { headers }),
+                fetch(`${import.meta.env.VITE_API_URL}api/admin/stats/orders`, { headers })
             ]);
 
             const system = await systemRes.json();
@@ -82,7 +82,7 @@ export default function Dashboard() {
         try {
 
             const res = await fetch(
-                `${import.meta.env.VITE_API_URL}/api/reports/inventory/${type}`,
+                `${import.meta.env.VITE_API_URL}api/reports/inventory/${type}`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`
