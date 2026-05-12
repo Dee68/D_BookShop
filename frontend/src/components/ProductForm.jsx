@@ -28,7 +28,7 @@ export default function ProductForm({ onCreated, editingProduct, clearEdit }) {
         try {
 
             const res = await fetch(
-                "http://localhost:3000/api/categories/store"
+                `${import.meta.env.VITE_API_URL}api/categories/store`
             );
 
             const data = await res.json();
@@ -109,9 +109,15 @@ export default function ProductForm({ onCreated, editingProduct, clearEdit }) {
         const formData = new FormData();
 
         Object.keys(form).forEach(key => {
+            // formData.append(
+            //     key,
+            //     key === "category_id" ? Number(form[key]) : form[key]
+            // );
             formData.append(
                 key,
-                key === "category_id" ? Number(form[key]) : form[key]
+                key === "category_id"
+                    ? Number(form[key]) || null
+                    : form[key]
             );
         });
 
@@ -124,13 +130,13 @@ export default function ProductForm({ onCreated, editingProduct, clearEdit }) {
             const isEditing = Boolean(editingProduct?.id);
             if (isEditing) {
                 res = await apiUpload(
-                    `/products/${editingProduct.id}`,
+                    `api/products/${editingProduct.id}`,
                     formData,
                     token,
                     "PUT"
                 );
             } else {
-                res = await apiUpload("/products", formData, token,"POST");
+                res = await apiUpload("api/products", formData, token,"POST");
             }
 
             if (!res || res.error) {
@@ -352,7 +358,9 @@ export default function ProductForm({ onCreated, editingProduct, clearEdit }) {
                         src={
                             src.startsWith("blob:")
                                 ? src
-                                : `http://localhost:3000${src}`
+                                : src.startsWith("http")
+                                    ? src
+                                    : `${import.meta.env.VITE_API_URL}${src}`
                         }
                         alt=""
                         className="
