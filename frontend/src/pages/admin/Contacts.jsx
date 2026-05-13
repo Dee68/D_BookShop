@@ -17,61 +17,84 @@ export default function Contacts() {
     }, []);
 
     return (
-        <div className="p-6">
+        <div className="p-6 bg-gray-50 dark:bg-zinc-950 min-h-screen transition-colors">
 
-            <h1 className="text-2xl font-bold mb-6">
+            {/* HEADER */}
+            <h1 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">
                 Contact Messages
             </h1>
 
-            <div className="overflow-x-auto bg-white shadow rounded-lg">
+            {/* TABLE WRAPPER */}
+            <div className="overflow-x-auto rounded-2xl border border-gray-200 dark:border-zinc-800 shadow-sm bg-white dark:bg-zinc-900">
 
                 <table className="min-w-full text-sm">
 
-                    <thead className="bg-gray-100 text-left">
+                    {/* HEADER */}
+                    <thead className="bg-gray-100 dark:bg-zinc-800 text-left">
                         <tr>
-                            <th className="p-3">Name</th>
-                            <th className="p-3">Email</th>
-                            <th className="p-3">Message</th>
-                            <th className="p-3">Date</th>
-                            <th className="p-3">Status</th>
+                            <th className="p-4 text-gray-700 dark:text-gray-300">Name</th>
+                            <th className="p-4 text-gray-700 dark:text-gray-300">Email</th>
+                            <th className="p-4 text-gray-700 dark:text-gray-300">Message</th>
+                            <th className="p-4 text-gray-700 dark:text-gray-300">Date</th>
+                            <th className="p-4 text-gray-700 dark:text-gray-300">Status</th>
                         </tr>
                     </thead>
 
-                    <tbody>
+                    {/* BODY */}
+                    <tbody className="divide-y divide-gray-100 dark:divide-zinc-800">
 
                         {messages.length === 0 ? (
                             <tr>
-                                <td colSpan="4" className="p-4 text-center text-gray-500">
+                                <td
+                                    colSpan="5"
+                                    className="p-6 text-center text-gray-500 dark:text-gray-400"
+                                >
                                     No messages found
                                 </td>
                             </tr>
                         ) : (
                             messages.map(msg => (
-                                <tr key={msg.id} className="border-t hover:bg-gray-50">
+                                <tr
+                                    key={msg.id}
+                                    className="hover:bg-gray-50 dark:hover:bg-zinc-800 transition"
+                                >
 
-                                    <td className="p-3 font-medium">
+                                    {/* NAME */}
+                                    <td className="p-4 font-medium text-gray-900 dark:text-white">
                                         {msg.name}
                                     </td>
 
-                                    <td className="p-3 text-gray-600">
+                                    {/* EMAIL */}
+                                    <td className="p-4 text-gray-600 dark:text-gray-300">
                                         {msg.email}
                                     </td>
 
-                                    <td className="p-3 text-gray-700">
-                                        {msg.message}
+                                    {/* MESSAGE */}
+                                    <td className="p-4 text-gray-700 dark:text-gray-300">
+                                        <div className="max-w-xs truncate">
+                                            {msg.message}
+                                        </div>
                                     </td>
 
-                                    <td className="p-3 text-gray-500">
+                                    {/* DATE */}
+                                    <td className="p-4 text-gray-500 dark:text-gray-400">
                                         {msg.created_at
-                                        ? new Date(msg.created_at).toLocaleString()
-                                        : "N/A"}
+                                            ? new Date(msg.created_at).toLocaleString()
+                                            : "N/A"}
                                     </td>
-                                    <td className="p-3">
-                                        <span className={`px-2 py-1 rounded text-xs font-medium ${
-                                            msg.is_read
-                                                ? "bg-gray-200 text-gray-700"
-                                                : "bg-green-100 text-green-700"
-                                        }`}>
+
+                                    {/* STATUS */}
+                                    <td className="p-4">
+                                        <span
+                                            className={`
+                                                px-3 py-1 rounded-full text-xs font-medium
+                                                ${
+                                                    msg.is_read
+                                                        ? "bg-gray-200 text-gray-700 dark:bg-zinc-700 dark:text-gray-300"
+                                                        : "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300"
+                                                }
+                                            `}
+                                        >
                                             {msg.is_read ? "Read" : "New"}
                                         </span>
                                     </td>
@@ -83,7 +106,6 @@ export default function Contacts() {
                     </tbody>
 
                 </table>
-
             </div>
         </div>
     );
