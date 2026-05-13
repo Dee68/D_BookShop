@@ -529,10 +529,11 @@ exports.updateProduct = async (id, data) => {
         price,
         category_id,
         stock,
-        images
+        images = []
     } = data;
 
-    const result = await db.query(
+    // 1. Update product fields ONLY (no images here)
+    const productResult = await db.query(
         `
         UPDATE products
         SET
@@ -540,13 +541,27 @@ exports.updateProduct = async (id, data) => {
             author = $2,
             price = $3,
             category_id = $4,
-            stock = $5,
-            images = $6
-        WHERE id = $7
+            stock = $5
+        WHERE id = $6
         RETURNING *
         `,
-        [title, author, price, category_id, stock, images, id]
+        [title, author, price, category_id, stock, id]
     );
 
-    return result.rows[0];
+    // 2. Replace images (safe approach)
+    await db.query(
+        `DELETE FROM product_images WHERE product_id = $1`,
+        [id]
+    );
+
+    // 3. Insert new images
+    for (const url of images) {
+        await db.query(
+            `INSERT INTO product_images (product_id, image_url)
+             VALUES ($1, $2)`,
+            [id, url]
+        );
+    }
+
+    return productResult.rows[0];
 };
