@@ -15,7 +15,7 @@ exports.createOrder = async (req, res) => {
 
         for (const item of items) {
 
-            const product = await Product.getProductByIdSimple(item.product_id);
+            const product = await Product.getProductById(item.product_id); 
 
             if (!product) {
                 return res.status(400).json({ error: "Product not found" });
