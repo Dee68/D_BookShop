@@ -540,17 +540,15 @@ exports.countFilteredProducts = async (filters) => {
     return result.rows[0].count;
 };
 
-exports.updateProduct = async (id, data) => {
+exports.updateProduct = async (id, data, images = []) => {
     const {
         title,
         author,
         price,
         category_id,
-        stock,
-        images = []
+        stock
     } = data;
 
-    // 1. Update product fields ONLY (no images here)
     const productResult = await db.query(
         `
         UPDATE products
@@ -566,20 +564,68 @@ exports.updateProduct = async (id, data) => {
         [title, author, price, category_id, stock, id]
     );
 
-    // 2. Replace images (safe approach)
-    await db.query(
-        `DELETE FROM product_images WHERE product_id = $1`,
-        [id]
-    );
+    // ONLY replace images if new ones uploaded
+    if (images.length > 0) {
 
-    // 3. Insert new images
-    for (const url of images) {
         await db.query(
-            `INSERT INTO product_images (product_id, image_url)
-             VALUES ($1, $2)`,
-            [id, url]
+            `DELETE FROM product_images WHERE product_id = $1`,
+            [id]
         );
+
+        for (const url of images) {
+            await db.query(
+                `
+                INSERT INTO product_images (product_id, image_url)
+                VALUES ($1, $2)
+                `,
+                [id, url]
+            );
+        }
     }
 
     return productResult.rows[0];
 };
+
+// exports.updateProduct = async (id, data) => {
+//     const {
+//         title,
+//         author,
+//         price,
+//         category_id,
+//         stock,
+//         images = []
+//     } = data;
+
+//     // 1. Update product fields ONLY (no images here)
+//     const productResult = await db.query(
+//         `
+//         UPDATE products
+//         SET
+//             title = $1,
+//             author = $2,
+//             price = $3,
+//             category_id = $4,
+//             stock = $5
+//         WHERE id = $6
+//         RETURNING *
+//         `,
+//         [title, author, price, category_id, stock, id]
+//     );
+
+//     // 2. Replace images (safe approach)
+//     await db.query(
+//         `DELETE FROM product_images WHERE product_id = $1`,
+//         [id]
+//     );
+
+//     // 3. Insert new images
+//     for (const url of images) {
+//         await db.query(
+//             `INSERT INTO product_images (product_id, image_url)
+//              VALUES ($1, $2)`,
+//             [id, url]
+//         );
+//     }
+
+//     return productResult.rows[0];
+// };
