@@ -21,12 +21,17 @@ export default function ProductDetails() {
 
     }, [id]);
 
+    // useEffect(() => {
+
+    //     if (product?.images?.length) {
+    //         setMainImage(`${import.meta.env.VITE_API_URL}${product.images[0]}`);
+    //     }
+
+    // }, [product]);
     useEffect(() => {
-
         if (product?.images?.length) {
-            setMainImage(`${import.meta.env.VITE_API_URL}${product.images[0]}`);
+            setMainImage(product.images[0]);
         }
-
     }, [product]);
 
     if (!product) {
