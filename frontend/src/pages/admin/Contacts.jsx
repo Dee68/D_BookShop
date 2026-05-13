@@ -62,7 +62,9 @@ export default function Contacts() {
                                     </td>
 
                                     <td className="p-3 text-gray-500">
-                                        {new Date(msg.created_at).toLocaleString()}
+                                        {msg.created_at
+                                        ? new Date(msg.created_at).toLocaleString()
+                                        : "N/A"}
                                     </td>
                                     <td className="p-3">
                                         <span className={`px-2 py-1 rounded text-xs font-medium ${

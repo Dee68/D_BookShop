@@ -229,9 +229,9 @@ export default function Sidebar() {
                         {!collapsed && <span>Orders</span>}
                     </NavLink>
                     {/* CONTACTS */}
-                    <NavLink to="/admin/contacts">
-                        <Inbox className={linkClass} />
-                        Contacts
+                    <NavLink to="/admin/contacts" className={linkClass}>
+                        <Inbox size={18} />
+                        {!collapsed && <span>Contacts</span>}
                     </NavLink>
 
                 </nav>
