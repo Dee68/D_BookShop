@@ -115,11 +115,12 @@ export default function OrderDetails() {
 
                         <div className="space-y-4">
                             {(order.items || []).map((item, i) => {
-                                const imageUrl = item.image
-                                    ? item.image.startsWith("http")
-                                        ? item.image
-                                        : `${import.meta.env.VITE_API_URL}${item.image}`
-                                    : null;
+                                // const imageUrl = item.image
+                                //     ? item.image.startsWith("http")
+                                //         ? item.image
+                                //         : `${import.meta.env.VITE_API_URL}${item.image}`
+                                //     : null;
+                                const imageUrl = item.image || null;
 
                                 return (
                                     <div

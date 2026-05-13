@@ -82,9 +82,10 @@ export default function CartDrawer({ open, onClose }) {
 
                             {cart.map((item) => {
 
-                                const imageUrl = item.images?.[0]
-                                    ? `http://localhost:3000${item.images[0]}`
-                                    : null;
+                                // const imageUrl = item.images?.[0]
+                                //     ? `${import.meta.env.VITE_API_URL}${item.images[0]}`
+                                //     : null;
+                                const imageUrl = item.images?.[0] || null;
 
                                 return (
                                     <div
