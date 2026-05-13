@@ -459,13 +459,31 @@ exports.getAllProducts = async () => {
 
     return result.rows;
 };
-exports.getProductByIdSimple = async (id) => {
-    const result = await db.query(
+exports.getProductById = async (id) => {
+    const productRes = await db.query(
         `SELECT * FROM products WHERE id = $1`,
         [id]
     );
-    return result.rows[0];
+
+    if (productRes.rows.length === 0) return null;
+
+    const imagesRes = await db.query(
+        `SELECT image_url FROM product_images WHERE product_id = $1`,
+        [id]
+    );
+
+    return {
+        ...productRes.rows[0],
+        images: imagesRes.rows.map(r => r.image_url)
+    };
 };
+// exports.getProductByIdSimple = async (id) => {
+//     const result = await db.query(
+//         `SELECT * FROM products WHERE id = $1`,
+//         [id]
+//     );
+//     return result.rows[0];
+// };
 exports.restoreStock = async (product_id, quantity) => {
     await db.query(
         `UPDATE products SET stock = stock + $1 WHERE id = $2`,
