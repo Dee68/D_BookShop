@@ -125,13 +125,19 @@ export default function Home() {
                 <div id="products" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 px-4 py-6">
                     {Array.isArray(products) && products.map(p => {
                         
-                        const imagePath = p.images?.[0];
+                        //const imagePath = p.images?.[0];
+                        const imagePath = Array.isArray(p.images)
+                        ? p.images[0]
+                        : null;
 
+                        // const imageUrl = imagePath
+                        //     ? imagePath.startsWith("http")
+                        //         ? imagePath
+                        //         : `${import.meta.env.VITE_API_URL}${imagePath.startsWith("/") ? "" : "/"}${imagePath}`
+                        //     : null;
                         const imageUrl = imagePath
-                            ? imagePath.startsWith("http")
-                                ? imagePath
-                                : `${import.meta.env.VITE_API_URL}${imagePath.startsWith("/") ? "" : "/"}${imagePath}`
-                            : null;
+                        ? `${import.meta.env.VITE_API_URL}${imagePath}`
+                        : null;
                         
                         return (
                             <Link key={p.id} to={`/product/${p.id}`} className="block">
