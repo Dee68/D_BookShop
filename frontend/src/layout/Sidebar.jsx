@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import { AuthContext } from "../auth/AuthContext";
 import { NavLink } from "react-router-dom";
-
+import { Inbox } from "lucide-react";
 import {
     FiHome,
     FiBox,
@@ -227,6 +227,11 @@ export default function Sidebar() {
                         <FiShoppingCart size={18} />
 
                         {!collapsed && <span>Orders</span>}
+                    </NavLink>
+                    {/* CONTACTS */}
+                    <NavLink to="/admin/contacts">
+                        <Inbox className="w-5 h-5" />
+                        Contacts
                     </NavLink>
 
                 </nav>
