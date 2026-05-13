@@ -237,7 +237,7 @@ export default function Sidebar() {
                 </nav>
 
                 {/* FOOTER / LOGOUT */}
-                <div className="p-3 border-t border-gray-800">
+                <div className="p-1 border-t border-gray-800">
 
                     <button
                         onClick={logout}
