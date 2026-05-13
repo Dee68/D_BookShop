@@ -20,9 +20,6 @@ export default function Checkout() {
             quantity: item.quantity
         }));
 
-        useEffect(() => {
-            console.log("CHECKOUT MOUNTED");
-        }, []);
 
         try {
             const res = await fetch(`${import.meta.env.VITE_API_URL}api/orders`, {
