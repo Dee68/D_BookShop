@@ -1,6 +1,6 @@
 const contactModel = require("../models/contactModel");
 
-async function sendMessage(req, res) {
+exports.sendMessage = async (req, res)=> {
 
     try {
 
@@ -46,6 +46,17 @@ async function sendMessage(req, res) {
     }
 }
 
-module.exports = {
-    sendMessage
+
+
+exports.getAllMessages = async (req, res) => {
+    try {
+        const messages = await ContactModel.getAllMessages();
+
+        res.json({
+            data: messages
+        });
+
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 };

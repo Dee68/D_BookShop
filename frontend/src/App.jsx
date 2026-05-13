@@ -18,6 +18,7 @@ import CustomerOrders from "./pages/CustomerOrders";
 import ProductDetails from "./pages/ProductDetails";
 import Register from "./pages/Register";
 import Contact from "./pages/Contact";
+import Contacts from "./pages/admin/Contacts";
 import StoreLayout from "./layout/StoreLayout";
 import About from "./pages/About";
 
@@ -78,6 +79,7 @@ export default function App() {
                     <Route path="categories" element={<Categories />} />
                     <Route path="users" element={<Users />} />
                     <Route path="orders" element={<Orders />} />
+                    <Route path="contacts" element={<Contacts />} />
                 
                 
                 

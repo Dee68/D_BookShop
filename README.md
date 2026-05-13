@@ -290,7 +290,7 @@ Authentication and protected routes implemented
 Admin + customer flows separated
 ````
 ````
-### 📈 Future Improvements
+# 📈 Future Improvements
 - Refresh token authentication
 - Payment gateway integration (Stripe)
 - Email order confirmation
