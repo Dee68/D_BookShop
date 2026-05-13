@@ -26,7 +26,10 @@ export default function Home() {
         );
 
         const data = await res.json();
-        console.log(data);
+        //console.log(data);
+        console.log("RAW API RESPONSE:", data);
+        console.log("FIRST PRODUCT:", data.data?.[0]);
+        console.log("IMAGES FIELD:", data.data?.[0]?.images);
         setProducts(Array.isArray(data.data) ? data.data : []);
         setPagination(data.pagination || {});
        
