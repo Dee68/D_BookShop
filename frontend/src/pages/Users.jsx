@@ -47,7 +47,7 @@ export default function Users() {
     }, [pagination.pages]);
 
     async function changeRole(id, role) {
-        await fetch(`${import.meta.env.VITE_API_URL}/api/users/${id}/role`, {
+        await fetch(`${import.meta.env.VITE_API_URL}api/users/${id}/role`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
@@ -64,7 +64,7 @@ export default function Users() {
         setDeleting(true);
 
         try {
-            await fetch(`${import.meta.env.VITE_API_URL}/api/users/${id}`, {
+            await fetch(`${import.meta.env.VITE_API_URL}api/users/${id}`, {
                 method: "DELETE",
                 headers: { Authorization: `Bearer ${token}` }
             });

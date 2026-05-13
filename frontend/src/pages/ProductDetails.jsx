@@ -2,6 +2,8 @@ import { useEffect, useState, useContext } from "react";
 import { useParams, Link } from "react-router-dom";
 import { CartContext } from "../context/CartContext";
 import { FiArrowLeft } from "react-icons/fi";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 export default function ProductDetails() {
 
@@ -12,6 +14,7 @@ export default function ProductDetails() {
     const { addToCart } = useContext(CartContext);
 
     const [mainImage, setMainImage] = useState(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
 
@@ -285,14 +288,27 @@ export default function ProductDetails() {
 
                     </div>
 
-                    {/* CTA */}
+                    {/* CART */}
                     <button
-                        onClick={(e) => {
+                        // onClick={(e) => {
 
+                        //     e.preventDefault();
+
+                        //     addToCart(product);
+
+                        // }}
+                        onClick={(e) => {
                             e.preventDefault();
 
-                            addToCart(product);
+                            const token = localStorage.getItem("token");
 
+                            if (!token) {
+                                toast.error("Please login first");
+                                navigate("/login");
+                                return;
+                            }
+
+                            addToCart(product);
                         }}
 
                         disabled={product.stock <= 0}

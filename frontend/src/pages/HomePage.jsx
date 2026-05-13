@@ -5,6 +5,8 @@ import Navbar from "../components/Navbar";
 import HeroSlider from "../components/HeroSlider";
 import "../styles/global.css";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 export default function Home() {
     const [products, setProducts] = useState([]);
@@ -14,6 +16,7 @@ export default function Home() {
     const [pagination, setPagination] = useState({});
     const { addToCart } = useContext(CartContext);
     const [page, setPage] = useState(1);
+    const navigate = useNavigate();
     
 
     async function loadProducts() {
@@ -228,8 +231,21 @@ export default function Home() {
 
                                             {/* BUTTON */}
                                             <button
+                                                // onClick={(e) => {
+                                                //     e.preventDefault();
+                                                //     addToCart(p);
+                                                // }}
                                                 onClick={(e) => {
                                                     e.preventDefault();
+
+                                                    const token = localStorage.getItem("token");
+
+                                                    if (!token) {
+                                                        toast.error("Please login first");
+                                                        navigate("/login");
+                                                        return;
+                                                    }
+
                                                     addToCart(p);
                                                 }}
                                                 disabled={p.stock <= 0}
