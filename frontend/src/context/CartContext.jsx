@@ -14,7 +14,7 @@ export default function CartProvider({ children }) {
         setCart([]);
     }
 
-    // 🔥 persist cart
+    // persist cart
     useEffect(() => {
         localStorage.setItem("cart", JSON.stringify(cart));
     }, [cart]);
@@ -63,7 +63,7 @@ export default function CartProvider({ children }) {
         setCart(prev => prev.filter(p => p.id !== id));
     }
 
-    // 💰 TOTAL
+    //  TOTAL
     const total = cart.reduce(
         (sum, item) => sum + item.price * item.quantity,
         0

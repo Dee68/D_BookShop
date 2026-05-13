@@ -521,3 +521,32 @@ exports.countFilteredProducts = async (filters) => {
     const result = await db.query(sql, params);
     return result.rows[0].count;
 };
+
+exports.updateProduct = async (id, data) => {
+    const {
+        title,
+        author,
+        price,
+        category_id,
+        stock,
+        images
+    } = data;
+
+    const result = await db.query(
+        `
+        UPDATE products
+        SET
+            title = $1,
+            author = $2,
+            price = $3,
+            category_id = $4,
+            stock = $5,
+            images = $6
+        WHERE id = $7
+        RETURNING *
+        `,
+        [title, author, price, category_id, stock, images, id]
+    );
+
+    return result.rows[0];
+};

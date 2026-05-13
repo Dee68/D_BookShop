@@ -1,6 +1,8 @@
 import { useContext } from "react";
 import { CartContext } from "./CartContext";
 import { X, Minus, Plus, ShoppingBag } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export default function CartDrawer({ open, onClose }) {
 
@@ -11,6 +13,8 @@ export default function CartDrawer({ open, onClose }) {
         removeFromCart,
         total
     } = useContext(CartContext);
+    const navigate = useNavigate();
+    const token = localStorage.getItem("token");
 
     if (!open) return null;
 
@@ -215,9 +219,19 @@ export default function CartDrawer({ open, onClose }) {
                         </div>
 
                         <button
-                            onClick={() =>
-                                (window.location.href = "/checkout")
-                            }
+                            // onClick={() =>
+                            //     (window.location.href = "/checkout")
+                            // }
+                            onClick={() => {
+
+                                if (!token) {
+                                    toast.warning("Please login to continue checkout");
+                                    navigate("/login");
+                                    return;
+                                }
+
+                                navigate("/checkout");
+                            }}
                             className="
                                 w-full
                                 bg-black text-white
