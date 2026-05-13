@@ -31,6 +31,7 @@ export default function Login() {
             toast.success("Welcome back!");
 
             const decoded = jwtDecode(data.token);
+            console.log("name", decoded.user.email);
 
             setTimeout(() => {
                 decoded.role === "admin"
