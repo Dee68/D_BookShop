@@ -126,17 +126,26 @@ exports.updateProduct = async (req, res) => {
             return res.status(404).json({ error: "Product not found" });
         }
 
-        const newImages = req.files?.map(file => `/images/${file.filename}`) || [];
+        //const newImages = req.files?.map(file => `/images/${file.filename}`) || [];
+        const uploadedImages = [];
+
+        if (req.files?.length) {
+            for (const file of req.files) {
+                const result = await uploadToCloudinary(file.buffer, "products");
+                uploadedImages.push(result.secure_url);
+            }
+        }
 
         // update DB
-        const result = await Product.updateProduct(id, req.body, newImages);
+        //const result = await Product.updateProduct(id, req.body, newImages);
+        const result = await Product.updateProduct(id, req.body, uploadedImages);
 
-        // delete old images ONLY if new ones uploaded
-        if (newImages.length > 0) {
-            existingProduct.images.forEach(img => {
-                deleteFile(img);
-            });
-        }
+        // delete old images ONLY if new ones uploaded locally
+        // if (newImages.length > 0) {
+        //     existingProduct.images.forEach(img => {
+        //         deleteFile(img);
+        //     });
+        // }
 
         res.json({ message: "Product updated" });
         console.log("FILES RECEIVED:", req.files?.length);
