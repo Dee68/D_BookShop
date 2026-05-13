@@ -130,14 +130,11 @@ export default function Home() {
                         ? p.images[0]
                         : null;
 
-                        // const imageUrl = imagePath
-                        //     ? imagePath.startsWith("http")
-                        //         ? imagePath
-                        //         : `${import.meta.env.VITE_API_URL}${imagePath.startsWith("/") ? "" : "/"}${imagePath}`
-                        //     : null;
                         const imageUrl = imagePath
-                        ? `${import.meta.env.VITE_API_URL}${imagePath}`
-                        : null;
+                            ? imagePath.startsWith("http")
+                                ? imagePath
+                                : `${imagePath.startsWith("/") ? "" : "/"}${imagePath}`
+                            : null;
                         
                         return (
                             <Link key={p.id} to={`/product/${p.id}`} className="block">
