@@ -43,7 +43,7 @@ exports.auth = (req, res, next) => {
         const authHeader =
             req.headers.authorization ||
             req.headers["authorization"];
-
+        console.log("AUTH HEADER:", authHeader);
         if (!authHeader) {
             return res.status(401).json({ error: "No token provided" });
         }
