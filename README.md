@@ -51,14 +51,18 @@
 - SQLite3
 - JWT Authentication
 - bcryptjs
-- Multer
+- Multer + Cloudinary (image uploads)
 - dotenv
 - PDFKit (PDF report generation)
 - REST API Architecture
 
 ### Database
-- SQLite3 (current)
-- PostgreSQL ready for deployment
+- SQLite3 (started project)
+- PostgreSQL (current)
+
+### Deployment
+- Frontend: Vercel
+- Backend: Render (update if needed)
 
 ## 🎨 UI Features
 - Fully responsive design
@@ -275,6 +279,23 @@ A full Postman collection is included for testing all API endpoints.
 
 ![Home Page Dark Mode](./screenshots/Dhomepage.png)
 
+````
+````
+# 📌 Current Status
+
+This project is currently in MVP stage:
+Fully functional e-commerce flow
+Cloud image uploads working
+Authentication and protected routes implemented
+Admin + customer flows separated
+````
+````
+### 📈 Future Improvements
+- Refresh token authentication
+- Payment gateway integration (Stripe)
+- Email order confirmation
+- Advanced filtering (price range, sorting)
+- Unit & integration tests
 ````
 
 ````
