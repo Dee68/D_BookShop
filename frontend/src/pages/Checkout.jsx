@@ -20,6 +20,10 @@ export default function Checkout() {
             quantity: item.quantity
         }));
 
+        useEffect(() => {
+            console.log("CHECKOUT MOUNTED");
+        }, []);
+
         try {
             const res = await fetch(`${import.meta.env.VITE_API_URL}api/orders`, {
                 method: "POST",
@@ -31,6 +35,10 @@ export default function Checkout() {
             });
 
             const data = await res.json();
+
+            useEffect(() => {
+                console.log("CHECKOUT MOUNTED");
+            }, []);
 
             if (!res.ok) {
                 throw new Error(data.error || "Order failed");
