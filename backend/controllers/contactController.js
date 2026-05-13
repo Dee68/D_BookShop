@@ -16,7 +16,7 @@ exports.sendMessage = async (req, res)=> {
         const cleanMessage = message?.trim();
 
         // BASIC VALIDATION
-        if (!name || !email || !message) {
+        if (!CleanName || !cleanEmail || !cleanMessage) {
             return res.status(400).json({
                 error: "Name, email and message are required"
             });
@@ -50,7 +50,7 @@ exports.sendMessage = async (req, res)=> {
 
 exports.getAllMessages = async (req, res) => {
     try {
-        const messages = await ContactModel.getAllMessages();
+        const messages = await contactModel.getAllMessages();
 
         res.json({
             data: messages
