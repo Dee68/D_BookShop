@@ -230,7 +230,7 @@ export default function Sidebar() {
                     </NavLink>
                     {/* CONTACTS */}
                     <NavLink to="/admin/contacts">
-                        <Inbox className="w-5 h-5" />
+                        <Inbox className={linkClass} />
                         Contacts
                     </NavLink>
 
