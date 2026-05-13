@@ -222,16 +222,16 @@ export default function CartDrawer({ open, onClose }) {
                             // onClick={() =>
                             //     (window.location.href = "/checkout")
                             // }
-                            onClick={() => {
+                            onClick={() => 
 
-                                if (!token) {
-                                    toast.warning("Please login to continue checkout");
-                                    navigate("/login");
-                                    return;
-                                }
+                                // if (!token) {
+                                //     toast.warning("Please login to continue checkout");
+                                //     navigate("/login");
+                                //     return;
+                                // }
 
-                                navigate("/checkout");
-                            }}
+                                navigate("/checkout")
+                            }
                             className="
                                 w-full
                                 bg-black text-white
