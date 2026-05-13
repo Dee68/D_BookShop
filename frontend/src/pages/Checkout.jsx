@@ -10,6 +10,11 @@ export default function Checkout() {
     const navigate = useNavigate();
 
     const [loading, setLoading] = useState(false);
+    useEffect(() => {
+        console.log("CHECKOUT MOUNTED");
+        }, []
+    );
+
 
     async function placeOrder() {
 
@@ -33,10 +38,7 @@ export default function Checkout() {
 
             const data = await res.json();
 
-            useEffect(() => {
-                console.log("CHECKOUT MOUNTED");
-            }, []);
-
+            
             if (!res.ok) {
                 throw new Error(data.error || "Order failed");
             }
