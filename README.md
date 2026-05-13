@@ -284,10 +284,10 @@ A full Postman collection is included for testing all API endpoints.
 # 📌 Current Status
 
 This project is currently in MVP stage:
-Fully functional e-commerce flow
-Cloud image uploads working
-Authentication and protected routes implemented
-Admin + customer flows separated
+- Fully functional e-commerce flow
+- Cloud image uploads working
+- Authentication and protected routes implemented
+- Admin + customer flows separated
 ````
 ````
 # 📈 Future Improvements
