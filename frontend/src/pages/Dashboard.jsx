@@ -74,11 +74,7 @@ export default function Dashboard() {
     }, [token]);
 
     if (!data.system || !data.sales) {
-        return (
-            <div className="text-center py-20 text-gray-500">
-                Loading dashboard...
-            </div>
-        );
+        return <Loader text="Loading dashboard..." />;
     }
    // Getting reports from database
     async function downloadReport(type) {
@@ -124,9 +120,7 @@ export default function Dashboard() {
             console.error(err);
         }
     }
-    if (loading) {
-         return <Loader text="Loading data..." />;
-    }
+   
 
     return (
         <div className="space-y-8">

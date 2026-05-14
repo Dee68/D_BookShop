@@ -15,7 +15,8 @@ export default function Contacts() {
         })
         .then(res => res.json())
         .then(data => setMessages(data.data || []))
-        .catch(err => console.error(err));
+        .catch(err => console.error(err))
+        .finally(() => setLoading(false));
     }, []);
 
     if (loading) {
