@@ -15,36 +15,35 @@ export default function Orders() {
     };
     const [loading, setLoading] = useState(true);
 
-    // async function loadOrders() {
+    async function loadOrders() {
 
-    //     const res = await fetch(
-    //         `${import.meta.env.VITE_API_URL}api/orders`,
-    //         {
-    //             headers: {
-    //                 Authorization: `Bearer ${token}`
-    //             }
-    //         }
-    //     );
+        try {
 
-    //     const data = await res.json();
+            setLoading(true);
+            const res = await fetch(
+                `${import.meta.env.VITE_API_URL}api/orders`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
+            const data = await res.json();
+            setOrders(data.data || []);
 
-    //     setOrders(data);
-    // }
+        } catch (err) {
+
+            console.error(err);
+
+        } finally {
+
+            setLoading(false);
+        }
+    }
 
     useEffect(() => {
-        fetch(
-            `${import.meta.env.VITE_API_URL}api/orders`,
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            }
-        ).then(res=>res.json())
-         .then(data=>setOrders(data.data || []))
-         .catch(err => console.error(err))
-         .finally(() => setLoading(false));
-
-        //loadOrders();
+        
+        loadOrders();
     }, []);
 
     async function updateStatus(id, status) {
