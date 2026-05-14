@@ -17,28 +17,18 @@ export default function Orders() {
 
     async function loadOrders() {
 
-        try {
-
-            setLoading(true);
-            const res = await fetch(
-                `${import.meta.env.VITE_API_URL}api/orders`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
+        const res = await fetch(
+            `${import.meta.env.VITE_API_URL}api/orders`,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`
                 }
-            );
-            const data = await res.json();
-            setOrders(data.data || []);
+            }
+        );
 
-        } catch (err) {
-
-            console.error(err);
-
-        } finally {
-
-            setLoading(false);
-        }
+        const data = await res.json();
+        setLoading(false);
+        setOrders(data);
     }
 
     useEffect(() => {
