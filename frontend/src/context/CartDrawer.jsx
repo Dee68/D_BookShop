@@ -1,8 +1,9 @@
 import { useContext } from "react";
 import { CartContext } from "./CartContext";
 import { X, Minus, Plus, ShoppingBag } from "lucide-react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { AuthContext } from "../auth/AuthContext";
 
 export default function CartDrawer({ open, onClose }) {
 
@@ -14,7 +15,8 @@ export default function CartDrawer({ open, onClose }) {
         total
     } = useContext(CartContext);
     const navigate = useNavigate();
-    const token = localStorage.getItem("token");
+    //const token = localStorage.getItem("token");
+    const { token } = useContext(AuthContext);
 
     if (!open) return null;
 
@@ -218,20 +220,20 @@ export default function CartDrawer({ open, onClose }) {
                             </span>
                         </div>
 
-                        <Link to="/checkout"
+                        <button
                             // onClick={() =>
                             //     (window.location.href = "/checkout")
                             // }
-                            // onClick={() => 
+                            onClick={() => {
 
-                            //     // if (!token) {
-                            //     //     toast.warning("Please login to continue checkout");
-                            //     //     navigate("/login");
-                            //     //     return;
-                            //     // }
+                                if (!token) {
+                                    toast.warning("Please login to continue checkout");
+                                    navigate("/login");
+                                    return;
+                                }
 
-                            //     navigate("/checkout")
-                            // }
+                                navigate("/checkout");
+                            }}
                             className="
                                 w-full
                                 bg-black text-white
@@ -242,7 +244,7 @@ export default function CartDrawer({ open, onClose }) {
                             "
                         >
                             Proceed to Checkout
-                        </Link>
+                        </button>
                     </div>
                 )}
             </div>
