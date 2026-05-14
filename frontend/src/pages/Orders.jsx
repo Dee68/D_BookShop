@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Loader from "../components/Loader";
 
 export default function Orders() {
 
@@ -12,25 +13,38 @@ export default function Orders() {
         delivered: ["delivered"],
         cancelled: ["cancelled"]
     };
+    const [loading, setLoading] = useState(true);
 
-    async function loadOrders() {
+    // async function loadOrders() {
 
-        const res = await fetch(
+    //     const res = await fetch(
+    //         `${import.meta.env.VITE_API_URL}api/orders`,
+    //         {
+    //             headers: {
+    //                 Authorization: `Bearer ${token}`
+    //             }
+    //         }
+    //     );
+
+    //     const data = await res.json();
+
+    //     setOrders(data);
+    // }
+
+    useEffect(() => {
+        fetch(
             `${import.meta.env.VITE_API_URL}api/orders`,
             {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
             }
-        );
+        ).then(res=>res.json())
+         .then(data=>setOrders(data.data || []))
+         .catch(err => console.error(err))
+         .finally(() => setLoading(false));
 
-        const data = await res.json();
-
-        setOrders(data);
-    }
-
-    useEffect(() => {
-        loadOrders();
+        //loadOrders();
     }, []);
 
     async function updateStatus(id, status) {
@@ -100,6 +114,10 @@ export default function Orders() {
                     dark:bg-zinc-800 dark:text-gray-300
                 `;
         }
+    }
+
+    if (loading) {
+        return <Loader text="Loading messages..." />;
     }
 
     return (
