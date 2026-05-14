@@ -101,17 +101,111 @@ D-BookShop/
 
 ## ⚙️ Installation
 
+Clone the repository:
+
+```bash
+git clone <your-repo-url>
+cd d-bookshop
 ```
+
+Install backend dependencies:
+
+```bash
+cd backend
 npm install
-
-npm install pdfkit
-
-▶️ Run the project
-
-npm run dev
-
-
 ```
+
+Install frontend dependencies:
+
+```bash
+cd ../frontend
+npm install
+```
+
+---
+
+## 📦 Main Packages Used
+
+### Backend
+
+```bash
+npm install express cors dotenv pg bcrypt jsonwebtoken multer cloudinary multer-storage-cloudinary
+```
+
+Additional backend utilities:
+
+```bash
+npm install pdfkit
+```
+
+Development dependencies:
+
+```bash
+npm install --save-dev nodemon
+```
+
+---
+
+### Frontend
+
+```bash
+npm install react-router-dom react-toastify recharts lucide-react react-icons
+```
+
+---
+
+## 🔐 Environment Variables
+
+Create a `.env` file inside the backend folder:
+
+```env
+PORT=5000
+
+DATABASE_URL=your_postgresql_connection
+
+JWT_SECRET=your_secret_key
+
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
+
+CLIENT_URL=http://localhost:5173
+```
+
+Create a `.env` file inside the frontend folder:
+
+```env
+VITE_API_URL=http://localhost:5000/
+```
+
+---
+
+## ▶️ Run the Project
+
+### Backend
+
+```bash
+cd backend
+npm run dev
+```
+
+### Frontend
+
+```bash
+cd frontend
+npm run dev
+```
+
+---
+
+## ☁️ Deployment
+
+- Frontend deployed on Vercel
+- Backend deployed on Render
+- Database hosted on PostgreSQL
+- Images hosted on Cloudinary
+
+
 ## 📡 API Endpoints
 ```
 ````
