@@ -2,6 +2,8 @@ import { useEffect, useState, useContext } from "react";
 import { AuthContext } from "../auth/AuthContext";
 import { FileText, FileDown } from "lucide-react";
 import { adminCardClass } from "../styles/ui";
+import Loader from "../components/Loader";
+
 
 import {
     FiUsers,
@@ -35,6 +37,8 @@ export default function Dashboard() {
         cancelled:
             "bg-red-500/20 text-red-200 dark:bg-red-500/30 dark:text-red-100 border border-red-500/30"
     };
+
+    const [loading, setLoading] = useState(true);
 
     function formatStatus(status) {
         return status.charAt(0).toUpperCase() + status.slice(1);
@@ -119,6 +123,9 @@ export default function Dashboard() {
 
             console.error(err);
         }
+    }
+    if (loading) {
+         return <Loader text="Loading data..." />;
     }
 
     return (

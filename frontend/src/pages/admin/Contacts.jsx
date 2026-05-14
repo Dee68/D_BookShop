@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
+import Loader from "../../components/Loader";
 
 export default function Contacts() {
 
     const [messages, setMessages] = useState([]);
     const token = localStorage.getItem("token");
+    const [loading, setLoading] = useState(true)
 
     useEffect(() => {
         fetch(`${import.meta.env.VITE_API_URL}api/admin/contacts`, {
@@ -16,6 +18,9 @@ export default function Contacts() {
         .catch(err => console.error(err));
     }, []);
 
+    if (loading) {
+         return <Loader text="Loading messages..." />;
+    }
     return (
         <div className="p-6 bg-gray-50 dark:bg-zinc-950 min-h-screen transition-colors">
 
