@@ -221,18 +221,23 @@ export default function CartDrawer({ open, onClose }) {
                         </div>
 
                         <button
-                            // onClick={() =>
-                            //     (window.location.href = "/checkout")
-                            // }
                             onClick={() => {
+
+                                onClose();
 
                                 if (!token) {
                                     toast.warning("Please login to continue checkout");
-                                    navigate("/login");
+
+                                    setTimeout(() => {
+                                        navigate("/login");
+                                    }, 100);
+
                                     return;
                                 }
 
-                                navigate("/checkout");
+                                setTimeout(() => {
+                                    navigate("/checkout");
+                                }, 100);
                             }}
                             className="
                                 w-full
