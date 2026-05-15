@@ -101,57 +101,39 @@ exports.inventoryPdfReport = async (req, res) => {
 };
 
 exports.inventoryCsvReport = async (req, res) => {
-    try {
 
-        const { type } = req.params;
+    try {
 
         const products = await Product.getAllProducts();
 
-        // CSV REPORT
-        if (type === "csv") {
+        let csv = "";
 
-            const headers = [
-                "ID",
-                "Title",
-                "Author",
-                "Price",
-                "Stock"
-            ];
+        // HEADERS
+        csv += "ID,Title,Price,Stock,Category\n";
 
-            const rows = products.map(product => [
-                product.id,
-                product.title,
-                product.author,
-                product.price,
-                product.stock
-            ]);
+        // ROWS
+        products.forEach(product => {
 
-            const csvContent = [
-                headers.join(","),
-                ...rows.map(row => row.join(","))
-            ].join("\n");
+            csv += `${product.id},"${product.title}",${product.price},${product.stock},"${product.category_name || "N/A"}"\n`;
 
-            res.setHeader(
-                "Content-Disposition",
-                "attachment; filename=inventory-report.csv"
-            );
+        });
 
-            res.setHeader(
-                "Content-Type",
-                "text/csv"
-            );
+        res.setHeader(
+            "Content-Disposition",
+            "attachment; filename=inventory-report.csv"
+        );
 
-            return res.send(csvContent);
-        }
+        res.setHeader(
+            "Content-Type",
+            "text/csv"
+        );
 
-        // existing PDF/TXT logic below...
+        res.status(200).send(csv);
 
     } catch (err) {
 
-        console.error(err);
-
         res.status(500).json({
-            error: "Failed to generate report"
+            error: err.message
         });
     }
 };
