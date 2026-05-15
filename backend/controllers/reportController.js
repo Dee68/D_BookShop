@@ -100,7 +100,7 @@ exports.inventoryPdfReport = async (req, res) => {
     }
 };
 
-exports.InventoryCsvReport = async (req, res) => {
+exports.inventoryCsvReport = async (req, res) => {
     try {
 
         const { type } = req.params;
