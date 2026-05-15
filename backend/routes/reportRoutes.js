@@ -4,7 +4,8 @@ const router = express.Router();
 
 const {
     inventoryTextReport,
-    inventoryPdfReport
+    inventoryPdfReport,
+    inventoryCsvReport
 } = require("../controllers/reportController");
 
 const {
