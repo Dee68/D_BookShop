@@ -18,7 +18,7 @@ export default function Home() {
     const [page, setPage] = useState(1);
     const navigate = useNavigate();
     
-
+   //loads products by page limit
     async function loadProducts() {
         const limit = 8;
         const res = await fetch(
@@ -45,7 +45,7 @@ export default function Home() {
         return () => clearTimeout(delay);
     }, [search, category, page]);
 
-    
+    //Loads categories on dropdown
     useEffect(() => {
         async function loadCategories() {
             const res = await fetch(`${import.meta.env.VITE_API_URL}api/categories/store`);

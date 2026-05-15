@@ -99,3 +99,59 @@ exports.inventoryPdfReport = async (req, res) => {
         });
     }
 };
+
+exports.downloadInventoryReport = async (req, res) => {
+    try {
+
+        const { type } = req.params;
+
+        const products = await Product.getAllProducts();
+
+        // CSV REPORT
+        if (type === "csv") {
+
+            const headers = [
+                "ID",
+                "Title",
+                "Author",
+                "Price",
+                "Stock"
+            ];
+
+            const rows = products.map(product => [
+                product.id,
+                product.title,
+                product.author,
+                product.price,
+                product.stock
+            ]);
+
+            const csvContent = [
+                headers.join(","),
+                ...rows.map(row => row.join(","))
+            ].join("\n");
+
+            res.setHeader(
+                "Content-Disposition",
+                "attachment; filename=inventory-report.csv"
+            );
+
+            res.setHeader(
+                "Content-Type",
+                "text/csv"
+            );
+
+            return res.send(csvContent);
+        }
+
+        // existing PDF/TXT logic below...
+
+    } catch (err) {
+
+        console.error(err);
+
+        res.status(500).json({
+            error: "Failed to generate report"
+        });
+    }
+};

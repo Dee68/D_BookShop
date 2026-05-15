@@ -105,6 +105,8 @@ export default function Dashboard() {
             a.download =
                 type === "pdf"
                     ? "inventory-report.pdf"
+                    : type === "csv"
+                    ? "inventory-report.csv"
                     : "inventory-report.txt";
 
             document.body.appendChild(a);
@@ -278,6 +280,19 @@ export default function Dashboard() {
                         <FileDown size={18} />
 
                         PDF Report
+                    </button>
+                    <button 
+                        onClick={() => downloadReport("csv")}
+                        className="
+                            px-4 py-2
+                            rounded-xl
+                            bg-emerald-600
+                            hover:bg-emerald-700
+                            text-white
+                        ">
+                        <FileText size={18} />
+
+                        CSV REPORT
                     </button>
 
                 </div>
