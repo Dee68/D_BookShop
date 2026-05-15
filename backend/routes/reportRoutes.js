@@ -30,4 +30,12 @@ router.get(
     inventoryPdfReport
 );
 
+// CSV REPORT
+router.get(
+    "/inventory/csv",
+    auth,
+    requireAdmin,
+    inventoryCsvReport
+);
+
 module.exports = router;
