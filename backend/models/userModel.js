@@ -88,15 +88,15 @@
 const db = require("../config/db");
 
 exports.createUser = async (user) => {
-    const { name, email, password, role } = user;
+    const { name, email, password, role, email_verified, verification_token, verification_expires } = user;
 
     const result = await db.query(
         `
-        INSERT INTO users (name, email, password, role)
-        VALUES ($1, $2, $3, $4)
+        INSERT INTO users (name, email, password, role, email_verified, verification_token, verification_expires)
+        VALUES ($1, $2, $3, $4, $5, $6, $7)
         RETURNING id
         `,
-        [name, email, password, role]
+        [name, email, password, role, email_verified, verification_token, verification_expires]
     );
 
     return result.rows[0];

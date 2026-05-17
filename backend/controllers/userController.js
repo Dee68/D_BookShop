@@ -2,6 +2,9 @@ const User = require('../models/userModel');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const INVALID_CREDENTIALS = "Invalid credentials";
+const crypto = require("crypto");
+const tokenService = require("../services/tokenService");
+const emailService = require("../services/emailService");
 
 function validateEmail(email) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -40,14 +43,37 @@ exports.registerUser = async (req, res) => {
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
+
+
+        // const result = await User.createUser({
+        //     name,
+        //     email,
+        //     password: hashedPassword,
+        //     role: 'customer' // default 
+        // });
+        // =========================
+        // EMAIL VERIFICATION LOGIC
+        // =========================
+        const verificationToken = tokenService.generateToken();
+        const verificationExpires = tokenService.getExpiry();
+
         const result = await User.createUser({
             name,
             email,
             password: hashedPassword,
-            role: 'customer' // default 
+            role: 'customer',
+            email_verified: false,
+            verification_token: verificationToken,
+            verification_expires: verificationExpires
         });
 
-        res.status(201).json(result);
+        // send verification email AFTER user creation
+        await emailService.sendVerificationEmail(email, verificationToken);
+
+        return res.status(201).json({
+            message: "User created. Please verify your email.",
+            user: result
+        });
 
     } catch (error) {
         res.status(500).json({ error: error.message });

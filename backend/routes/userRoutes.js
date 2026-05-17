@@ -1,12 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
+const authController = require('../controllers/authController');
 const { auth, requireAdmin } = require('../middleware/authMiddleware');
 
 router.post('/register', userController.registerUser);
+router.get('/verify-email', authController.verifyEmail);
 router.post('/login', userController.loginUser);
 router.get('/', auth, requireAdmin,userController.getAllUsers);
-//router.get("/me", userController.getMe);
+
 router.patch("/:id/role", auth, requireAdmin, userController.updateUserRole);
 router.delete("/:id", auth, requireAdmin, userController.deleteUser);
 
