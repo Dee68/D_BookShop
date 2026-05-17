@@ -54,8 +54,8 @@ exports.registerUser = async (req, res) => {
         // =========================
         // EMAIL VERIFICATION LOGIC
         // =========================
-        const verificationToken = tokenService.generateToken();
-        const verificationExpires = tokenService.getExpiry();
+        const verificationToken = tokenService.generateVerificationToken();
+        const verificationExpires = tokenService.getExpiryTime();
 
         const result = await User.createUser({
             name,
