@@ -21,6 +21,7 @@ import Contact from "./pages/Contact";
 import Contacts from "./pages/admin/Contacts";
 import StoreLayout from "./layout/StoreLayout";
 import About from "./pages/About";
+import VerifyEmail from "./pages/VerifyEmail";
 
 export default function App() {
     const { token } = useContext(AuthContext);
@@ -36,6 +37,7 @@ export default function App() {
                     <Route path="/register" element={<Register />} />
                     <Route path="/contact" element={<Contact />} />
                     <Route path="/about" element={<About />} />
+                    <Route path="/verify-email" element={<VerifyEmail />} />
                     <Route
                         path="/my-orders"
                         element={
