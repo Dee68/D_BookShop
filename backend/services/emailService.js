@@ -1,9 +1,4 @@
-// const { Resend } = require("resend");
-// const resend = new Resend(process.env.RESEND_API_KEY);
 const { Resend } = require("resend");
-
-console.log("RESEND CHECK:", process.env.RESEND_API_KEY ? "FOUND" : "MISSING");
-
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 exports.sendVerificationEmail = async (email, token) => {
