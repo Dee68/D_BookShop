@@ -45,23 +45,56 @@ exports.getStoreCategories = async (req, res) => {
         });
     }
 };
+// exports.addCategory = async (req, res) => {
+//     try {
+//         const { name } = req.body;
+
+//         if (!name) {
+//             return res.status(400).json({ error: "Category name is required" });
+//         }
+
+//         const result = await Category.createCategory(name);
+//         res.status(201).json(result);
+//     } catch (error) {
+//         if (error.code === "23505") {
+//             return res.status(400).json({ error: "Category already exists" });
+// }
+//         res.status(500).json({ error: error.message });
+//     }
+// };
 exports.addCategory = async (req, res) => {
+
     try {
+
         const { name } = req.body;
 
         if (!name) {
-            return res.status(400).json({ error: "Category name is required" });
+            return res.status(400).json({
+                error: "Category name is required"
+            });
         }
 
         const result = await Category.createCategory(name);
+
         res.status(201).json(result);
+
     } catch (error) {
-        if (error.code === "23505") {
-            return res.status(400).json({ error: "Category already exists" });
-}
-        res.status(500).json({ error: error.message });
+
+        if (
+            error.code === "SQLITE_CONSTRAINT" &&
+            error.message.includes("UNIQUE constraint failed")
+        ) {
+            return res.status(400).json({
+                error: "Category already exists"
+            });
+        }
+
+        res.status(500).json({
+            error: error.message
+        });
     }
 };
+
 
 exports.getCategoryById = async (req, res) => {
     try {

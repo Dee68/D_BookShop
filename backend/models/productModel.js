@@ -1,211 +1,401 @@
 const db = require('../config/db');
  
-// function replaceImages(id, images) {
-//     return new Promise((resolve, reject) => {
-//         db.serialize(() => {
-//             db.run(`DELETE FROM product_images WHERE product_id = ?`, [id], (err) => {
-//                 if (err) return reject(err);
+exports.replaceImages = async (id, images) => {
+    await new Promise((resolve, reject) => {
+        db.run(
+            `DELETE FROM product_images WHERE product_id = ?`,
+            [id],
+            (err) => {
+                if (err) {
+                    return reject(err);
+                }
 
-//                 const stmt = db.prepare(
-//                     `INSERT INTO product_images (product_id, image_url)
-//                      VALUES (?, ?)`
-//                 );
+                resolve();
+            }
+        );
+    });
 
-//                 images.forEach(img => {
-//                     stmt.run(id, img);
-//                 });
+    for (const img of images) {
+        await new Promise((resolve, reject) => {
+            db.run(
+                `
+                INSERT INTO product_images (
+                    product_id,
+                    image_url
+                )
+                VALUES (?, ?)
+                `,
+                [id, img],
+                (err) => {
+                    if (err) {
+                        return reject(err);
+                    }
 
-//                 stmt.finalize(err => {
-//                     if (err) reject(err);
-//                     else resolve();
-//                 });
-//             });
-//         });
-//     });
-// };
-// exports.replaceImages = replaceImages;
+                    resolve();
+                }
+            );
+        });
+    }
+};
 
-// exports.createProduct = (product) => {
-//     const { title, author, price, category_id, stock, images } = product;
+exports.createProduct = async (product) => {
+    const {
+        title,
+        author,
+        price,
+        category_id,
+        stock,
+        images
+    } = product;
 
-//     return new Promise((resolve, reject) => {
-//         db.run(
-//             `INSERT INTO products (title, author, price, category_id, stock)
-//              VALUES (?, ?, ?, ?, ?)`,
-//             [title, author, price, category_id, stock],
-//             function (err) {
-//                 if (err) return reject(err);
+    const productId = await new Promise((resolve, reject) => {
+        db.run(
+            `
+            INSERT INTO products (
+                title,
+                author,
+                price,
+                category_id,
+                stock
+            )
+            VALUES (?, ?, ?, ?, ?)
+            `,
+            [
+                title,
+                author,
+                price,
+                category_id,
+                stock
+            ],
+            function (err) {
 
-//                 const productId = this.lastID;
+                if (err) {
+                    return reject(err);
+                }
 
-//                 // Insert images
-//                 if (images && images.length > 0) {
-//                     const stmt = db.prepare(
-//                         `INSERT INTO product_images (product_id, image_url) VALUES (?, ?)`
-//                     );
+                resolve(this.lastID);
+            }
+        );
+    });
 
-//                     images.forEach(img => {
-//                         stmt.run(productId, img);
-//                     });
+    if (images?.length) {
+        for (const img of images) {
+            await new Promise((resolve, reject) => {
+                db.run(
+                    `
+                    INSERT INTO product_images (
+                        product_id,
+                        image_url
+                    )
+                    VALUES (?, ?)
+                    `,
+                    [productId, img],
+                    (err) => {
 
-//                     stmt.finalize();
-//                 }
+                        if (err) {
+                            return reject(err);
+                        }
 
-//                 resolve({ id: productId });
-//             }
-//         );
-//     });
-// };
+                        resolve();
+                    }
+                );
+            });
+        }
+    }
+
+    return {
+        id: productId
+    };
+};
+
+exports.getProductById = async (id) => {
+
+    const product = await new Promise((resolve, reject) => {
+
+        db.get(
+            `
+            SELECT *
+            FROM products
+            WHERE id = ?
+            `,
+            [id],
+            (err, row) => {
+
+                if (err) {
+                    return reject(err);
+                }
+
+                resolve(row);
+            }
+        );
+
+    });
+
+    if (!product) {
+        return null;
+    }
+
+    const images = await new Promise((resolve, reject) => {
+
+        db.all(
+            `
+            SELECT image_url
+            FROM product_images
+            WHERE product_id = ?
+            `,
+            [id],
+            (err, rows) => {
+
+                if (err) {
+                    return reject(err);
+                }
+
+                resolve(rows);
+            }
+        );
+
+    });
+
+    return {
+        ...product,
+        images: images.map(row => row.image_url)
+    };
+};
  
-// exports.getFilteredProducts = (filters) => {
-//     const { search, category, minPrice, maxPrice, limit, offset } = filters;
+exports.getFilteredProducts = (filters) => {
+    const {
+        search,
+        category,
+        minPrice,
+        maxPrice,
+        limit,
+        offset
+    } = filters;
 
-//     let sql = `
-//     SELECT 
-//         p.id,
-//         p.title,
-//         p.author,
-//         p.price,
-//         p.category_id,
-//         p.stock,
-//         pi.image_url
-//     FROM (
-//         SELECT *
-//         FROM products
-//         WHERE 1=1
-//     `;
+    let sql = `
+        SELECT
+            p.id,
+            p.title,
+            p.author,
+            p.price,
+            p.category_id,
+            p.stock,
+            pi.image_url
+        FROM (
+            SELECT *
+            FROM products
+            WHERE 1=1
+    `;
 
-//     const params = [];
+    const params = [];
 
-//     if (search) {
-//         sql += ` AND (title LIKE ? OR author LIKE ?)`;
-//         params.push(`%${search}%`, `%${search}%`);
-//     }
+    if (search) {
+        sql += ` AND (title LIKE ? OR author LIKE ?)`;
+        params.push(`%${search}%`, `%${search}%`);
+    }
 
-//     if (category) {
-//         sql += ` AND category_id = ?`;
-//         params.push(category);
-//     }
+    if (category) {
+        sql += ` AND category_id = ?`;
+        params.push(category);
+    }
 
-//     if (minPrice) {
-//         sql += ` AND price >= ?`;
-//         params.push(minPrice);
-//     }
+    if (minPrice !== null && minPrice !== undefined) {
+        sql += ` AND price >= ?`;
+        params.push(minPrice);
+    }
 
-//     if (maxPrice) {
-//         sql += ` AND price <= ?`;
-//         params.push(maxPrice);
-//     }
+    if (maxPrice !== null && maxPrice !== undefined) {
+        sql += ` AND price <= ?`;
+        params.push(maxPrice);
+    }
 
-//     sql += `
-//         ORDER BY id DESC
-//         LIMIT ? OFFSET ?
-//     ) p
-//     LEFT JOIN product_images pi
-//     ON p.id = pi.product_id
-//     `;
+    sql += `
+            ORDER BY id DESC
+            LIMIT ? OFFSET ?
+        ) p
+        LEFT JOIN product_images pi
+            ON p.id = pi.product_id
+    `;
 
-//     params.push(limit, offset);
+    params.push(limit, offset);
 
-//     return new Promise((resolve, reject) => {
-//         db.all(sql, params, (err, rows) => {
-//             if (err) return reject(err);
+    return new Promise((resolve, reject) => {
 
-//             const products = {};
+        db.all(sql, params, (err, rows) => {
 
-//             rows.forEach(row => {
-//                 if (!products[row.id]) {
-//                     products[row.id] = {
-//                         id: row.id,
-//                         title: row.title,
-//                         author: row.author,
-//                         price: row.price,
-//                         category_id: row.category_id,
-//                         stock: row.stock,
-//                         images: []
-//                     };
-//                 }
+            if (err) {
+                return reject(err);
+            }
 
-//                 if (row.image_url) {
-//                     products[row.id].images.push(row.image_url);
-//                 }
-//             });
+            const products = {};
 
-//             resolve(Object.values(products));
-//         });
-//     });
-// };
+            rows.forEach(row => {
 
-// exports.getProductById = (id) => {
-//     return new Promise((resolve, reject) => {
-//         const sql = `
-//         SELECT p.*, pi.image_url
-//         FROM products p
-//         LEFT JOIN product_images pi ON p.id = pi.product_id
-//         WHERE p.id = ?
-//         `;
+                if (!products[row.id]) {
+                    products[row.id] = {
+                        id: row.id,
+                        title: row.title,
+                        author: row.author,
+                        price: row.price,
+                        category_id: row.category_id,
+                        stock: row.stock,
+                        images: []
+                    };
+                }
 
-//         db.all(sql, [id], (err, rows) => {
-//             if (err) return reject(err);
+                if (row.image_url) {
+                    products[row.id].images.push(row.image_url);
+                }
+            });
 
-//             if (rows.length === 0) return resolve(null);
+            resolve(Object.values(products));
+        });
+    });
+};
 
-//             const product = {
-//                 id: rows[0].id,
-//                 title: rows[0].title,
-//                 author: rows[0].author,
-//                 price: rows[0].price,
-//                 category_id: rows[0].category_id,
-//                 stock: rows[0].stock,
-//                 images: []
-//             };
 
-//             rows.forEach(r => {
-//                 if (r.image_url) product.images.push(r.image_url);
-//             });
+exports.getAllProducts = () => {
 
-//             resolve(product);
-//         });
-//     });
-// };
+    return new Promise((resolve, reject) => {
 
-// exports.getAllProducts = () => {
+        db.all(
+            `
+            SELECT
+                p.id,
+                p.title,
+                p.price,
+                p.stock,
+                c.name AS category_name
+            FROM products p
+            LEFT JOIN categories c
+                ON p.category_id = c.id
+            ORDER BY p.id DESC
+            `,
+            [],
+            (err, rows) => {
 
-//     return new Promise((resolve, reject) => {
+                if (err) {
+                    return reject(err);
+                }
 
-//         const sql = `
-//             SELECT
-//                 p.id,
-//                 p.title,
-//                 p.price,
-//                 p.stock,
-//                 c.name AS category_name
-//             FROM products p
-//             LEFT JOIN categories c
-//                 ON p.category_id = c.id
-//             ORDER BY p.id DESC
-//         `;
+                resolve(rows);
+            }
+        );
 
-//         db.all(sql, [], (err, rows) => {
+    });
+};
 
-//             if (err) reject(err);
-//             else resolve(rows);
-//         });
-//     });
-// };
+exports.countFilteredProducts = (filters) => {
 
-// exports.getProductByIdSimple = (id) => {
-//     return new Promise((resolve, reject) => {
-//         db.get(
-//             `SELECT * FROM products WHERE id = ?`,
-//             [id],
-//             (err, row) => {
-//                 if (err) reject(err);
-//                 else resolve(row);
-//             }
-//         );
-//     });
-// };
+    const {
+        search,
+        category,
+        minPrice,
+        maxPrice
+    } = filters;
+
+    let sql = `
+        SELECT COUNT(DISTINCT p.id) AS count
+        FROM products p
+        WHERE 1=1
+    `;
+
+    const params = [];
+
+    if (search) {
+        sql += ` AND (p.title LIKE ? OR p.author LIKE ?)`;
+        params.push(`%${search}%`, `%${search}%`);
+    }
+
+    if (category) {
+        sql += ` AND p.category_id = ?`;
+        params.push(category);
+    }
+
+    if (minPrice !== null && minPrice !== undefined) {
+        sql += ` AND p.price >= ?`;
+        params.push(minPrice);
+    }
+
+    if (maxPrice !== null && maxPrice !== undefined) {
+        sql += ` AND p.price <= ?`;
+        params.push(maxPrice);
+    }
+
+    return new Promise((resolve, reject) => {
+
+        db.get(
+            sql,
+            params,
+            (err, row) => {
+
+                if (err) {
+                    return reject(err);
+                }
+
+                resolve(row.count);
+            }
+        );
+
+    });
+};
+
+exports.updateProduct = async (id, data, images = []) => {
+
+    const allowedFields = [
+        'title',
+        'author',
+        'price',
+        'category_id',
+        'stock'
+    ];
+
+    const fields = [];
+    const values = [];
+
+    for (const field of allowedFields) {
+        if (data[field] !== undefined) {
+            fields.push(`${field} = ?`);
+            values.push(data[field]);
+        }
+    }
+
+    // Update product fields only if fields were supplied
+    if (fields.length > 0) {
+
+        values.push(id);
+
+        await new Promise((resolve, reject) => {
+
+            db.run(
+                `
+                UPDATE products
+                SET ${fields.join(', ')}
+                WHERE id = ?
+                `,
+                values,
+                function (err) {
+
+                    if (err) {
+                        return reject(err);
+                    }
+
+                    resolve();
+                }
+            );
+
+        });
+    }
+
+    // Replace images only when new images were uploaded
+    if (images.length > 0) {
+        await exports.replaceImages(id, images);
+    }
+
+    // Return the updated product
+    return await exports.getProductById(id);
+};
+
 // exports.restoreStock = (product_id, quantity) => {
 //     return new Promise((resolve, reject) => {
 //         db.run(
@@ -235,28 +425,7 @@ const db = require('../config/db');
 //     });
 // };
 
-// exports.updateProduct = (id, product, images) => {
-//     const { title, author, price, category_id, stock } = product;
 
-//     return new Promise((resolve, reject) => {
-//         db.run(
-//             `UPDATE products
-//              SET title=?, author=?, price=?, category_id=?, stock=?
-//              WHERE id=?`,
-//             [title, author, price, category_id, stock, id],
-//             function (err) {
-//                 if (err) return reject(err);
-
-//                 // OPTIONAL: replace images
-//                 if (images && images.length > 0) {
-//                   replaceImages(id, images).then(()=>{resolve({changes:this.changes});}).catch(reject);
-//                 }
-
-//                 resolve({ changes: this.changes });
-//             }
-//         );
-//     });
-// };
 
 // exports.deleteProduct = (id) => {
 //     return new Promise((resolve, reject) => {
@@ -271,212 +440,182 @@ const db = require('../config/db');
 //     });
 // };
 
-// exports.countFilteredProducts = (filters) => {
-//     const { search, category, minPrice, maxPrice } = filters;
 
-//     let sql = `SELECT COUNT(DISTINCT p.id) as count FROM products p WHERE 1=1`;
+//== PostgrSql ==
+// exports.replaceImages = async (id, images) => {
+//     // delete old images
+//     await db.query(
+//         `DELETE FROM product_images WHERE product_id = $1`,
+//         [id]
+//     );
+
+//     // insert new images
+//     for (const img of images) {
+//         await db.query(
+//             `INSERT INTO product_images (product_id, image_url)
+//              VALUES ($1, $2)`,
+//             [id, img]
+//         );
+//     }
+// };
+// exports.createProduct = async (product) => {
+//     const { title, author, price, category_id, stock, images } = product;
+
+//     const result = await db.query(
+//         `INSERT INTO products (title, author, price, category_id, stock)
+//          VALUES ($1, $2, $3, $4, $5)
+//          RETURNING id`,
+//         [title, author, price, category_id, stock]
+//     );
+
+//     const productId = result.rows[0].id;
+
+//     if (images?.length) {
+//         for (const img of images) {
+//             await db.query(
+//                 `INSERT INTO product_images (product_id, image_url)
+//                  VALUES ($1, $2)`,
+//                 [productId, img]
+//             );
+//         }
+//     }
+
+//     return { id: productId };
+// };
+
+// exports.getFilteredProducts = async (filters) => {
+//     const { search, category, minPrice, maxPrice, limit, offset } = filters;
+
+//     // 1. Base product query FIRST (no join)
+//     let sql = `
+//         SELECT p.*
+//         FROM products p
+//         WHERE 1=1
+//     `;
+
 //     const params = [];
+//     let i = 1;
 
 //     if (search) {
-//         sql += ` AND (p.title LIKE ? OR p.author LIKE ?)`;
+//         sql += ` AND (p.title ILIKE $${i} OR p.author ILIKE $${i + 1})`;
 //         params.push(`%${search}%`, `%${search}%`);
+//         i += 2;
 //     }
 
 //     if (category) {
-//         sql += ` AND p.category_id = ?`;
+//         sql += ` AND p.category_id = $${i}`;
 //         params.push(category);
+//         i++;
 //     }
 
 //     if (minPrice) {
-//         sql += ` AND p.price >= ?`;
+//         sql += ` AND p.price >= $${i}`;
 //         params.push(minPrice);
+//         i++;
 //     }
 
 //     if (maxPrice) {
-//         sql += ` AND p.price <= ?`;
+//         sql += ` AND p.price <= $${i}`;
 //         params.push(maxPrice);
+//         i++;
 //     }
 
-//     return new Promise((resolve, reject) => {
-//         db.get(sql, params, (err, row) => {
-//             if (err) reject(err);
-//             else resolve(row.count);
-//         });
-//     });
+//     sql += ` ORDER BY p.id DESC LIMIT $${i} OFFSET $${i + 1}`;
+//     params.push(limit, offset);
+
+//     const productsResult = await db.query(sql, params);
+//     const products = productsResult.rows;
+
+//     const productIds = products.map(p => p.id);
+
+//     if (productIds.length === 0) return [];
+
+//     // 2. Fetch images separately (clean + deterministic)
+//     const imagesResult = await db.query(
+//         `
+//         SELECT product_id, image_url
+//         FROM product_images
+//         WHERE product_id = ANY($1)
+//         `,
+//         [productIds]
+//     );
+
+//     // 3. Map images
+//     const imageMap = {};
+
+//     for (const img of imagesResult.rows) {
+//         if (!imageMap[img.product_id]) {
+//             imageMap[img.product_id] = [];
+//         }
+//         imageMap[img.product_id].push(img.image_url);
+//     }
+
+//     // 4. Attach images
+//     return products.map(p => ({
+//         ...p,
+//         images: imageMap[p.id] || []
+//     }));
 // };
-exports.replaceImages = async (id, images) => {
-    // delete old images
-    await db.query(
-        `DELETE FROM product_images WHERE product_id = $1`,
-        [id]
-    );
+// exports.getProductById = async (id) => {
+//     const result = await db.query(
+//         `SELECT p.*, pi.image_url
+//          FROM products p
+//          LEFT JOIN product_images pi ON p.id = pi.product_id
+//          WHERE p.id = $1`,
+//         [id]
+//     );
 
-    // insert new images
-    for (const img of images) {
-        await db.query(
-            `INSERT INTO product_images (product_id, image_url)
-             VALUES ($1, $2)`,
-            [id, img]
-        );
-    }
-};
-exports.createProduct = async (product) => {
-    const { title, author, price, category_id, stock, images } = product;
+//     if (result.rows.length === 0) return null;
 
-    const result = await db.query(
-        `INSERT INTO products (title, author, price, category_id, stock)
-         VALUES ($1, $2, $3, $4, $5)
-         RETURNING id`,
-        [title, author, price, category_id, stock]
-    );
+//     const product = {
+//         id: result.rows[0].id,
+//         title: result.rows[0].title,
+//         author: result.rows[0].author,
+//         price: result.rows[0].price,
+//         category_id: result.rows[0].category_id,
+//         stock: result.rows[0].stock,
+//         images: []
+//     };
 
-    const productId = result.rows[0].id;
+//     result.rows.forEach(r => {
+//         if (r.image_url) product.images.push(r.image_url);
+//     });
 
-    if (images?.length) {
-        for (const img of images) {
-            await db.query(
-                `INSERT INTO product_images (product_id, image_url)
-                 VALUES ($1, $2)`,
-                [productId, img]
-            );
-        }
-    }
+//     return product;
+// };
+// exports.getAllProducts = async () => {
+//     const result = await db.query(`
+//         SELECT
+//             p.id,
+//             p.title,
+//             p.price,
+//             p.stock,
+//             c.name AS category_name
+//         FROM products p
+//         LEFT JOIN categories c ON p.category_id = c.id
+//         ORDER BY p.id DESC
+//     `);
 
-    return { id: productId };
-};
-exports.getFilteredProducts = async (filters) => {
-    const { search, category, minPrice, maxPrice, limit, offset } = filters;
+//     return result.rows;
+// };
+// exports.getProductById = async (id) => {
+//     const productRes = await db.query(
+//         `SELECT * FROM products WHERE id = $1`,
+//         [id]
+//     );
 
-    // 1. Base product query FIRST (no join)
-    let sql = `
-        SELECT p.*
-        FROM products p
-        WHERE 1=1
-    `;
+//     if (productRes.rows.length === 0) return null;
 
-    const params = [];
-    let i = 1;
+//     const imagesRes = await db.query(
+//         `SELECT image_url FROM product_images WHERE product_id = $1`,
+//         [id]
+//     );
 
-    if (search) {
-        sql += ` AND (p.title ILIKE $${i} OR p.author ILIKE $${i + 1})`;
-        params.push(`%${search}%`, `%${search}%`);
-        i += 2;
-    }
-
-    if (category) {
-        sql += ` AND p.category_id = $${i}`;
-        params.push(category);
-        i++;
-    }
-
-    if (minPrice) {
-        sql += ` AND p.price >= $${i}`;
-        params.push(minPrice);
-        i++;
-    }
-
-    if (maxPrice) {
-        sql += ` AND p.price <= $${i}`;
-        params.push(maxPrice);
-        i++;
-    }
-
-    sql += ` ORDER BY p.id DESC LIMIT $${i} OFFSET $${i + 1}`;
-    params.push(limit, offset);
-
-    const productsResult = await db.query(sql, params);
-    const products = productsResult.rows;
-
-    const productIds = products.map(p => p.id);
-
-    if (productIds.length === 0) return [];
-
-    // 2. Fetch images separately (clean + deterministic)
-    const imagesResult = await db.query(
-        `
-        SELECT product_id, image_url
-        FROM product_images
-        WHERE product_id = ANY($1)
-        `,
-        [productIds]
-    );
-
-    // 3. Map images
-    const imageMap = {};
-
-    for (const img of imagesResult.rows) {
-        if (!imageMap[img.product_id]) {
-            imageMap[img.product_id] = [];
-        }
-        imageMap[img.product_id].push(img.image_url);
-    }
-
-    // 4. Attach images
-    return products.map(p => ({
-        ...p,
-        images: imageMap[p.id] || []
-    }));
-};
-exports.getProductById = async (id) => {
-    const result = await db.query(
-        `SELECT p.*, pi.image_url
-         FROM products p
-         LEFT JOIN product_images pi ON p.id = pi.product_id
-         WHERE p.id = $1`,
-        [id]
-    );
-
-    if (result.rows.length === 0) return null;
-
-    const product = {
-        id: result.rows[0].id,
-        title: result.rows[0].title,
-        author: result.rows[0].author,
-        price: result.rows[0].price,
-        category_id: result.rows[0].category_id,
-        stock: result.rows[0].stock,
-        images: []
-    };
-
-    result.rows.forEach(r => {
-        if (r.image_url) product.images.push(r.image_url);
-    });
-
-    return product;
-};
-exports.getAllProducts = async () => {
-    const result = await db.query(`
-        SELECT
-            p.id,
-            p.title,
-            p.price,
-            p.stock,
-            c.name AS category_name
-        FROM products p
-        LEFT JOIN categories c ON p.category_id = c.id
-        ORDER BY p.id DESC
-    `);
-
-    return result.rows;
-};
-exports.getProductById = async (id) => {
-    const productRes = await db.query(
-        `SELECT * FROM products WHERE id = $1`,
-        [id]
-    );
-
-    if (productRes.rows.length === 0) return null;
-
-    const imagesRes = await db.query(
-        `SELECT image_url FROM product_images WHERE product_id = $1`,
-        [id]
-    );
-
-    return {
-        ...productRes.rows[0],
-        images: imagesRes.rows.map(r => r.image_url)
-    };
-};
+//     return {
+//         ...productRes.rows[0],
+//         images: imagesRes.rows.map(r => r.image_url)
+//     };
+// };
 // exports.getProductByIdSimple = async (id) => {
 //     const result = await db.query(
 //         `SELECT * FROM products WHERE id = $1`,
@@ -505,98 +644,50 @@ exports.deleteProduct = async (id) => {
 
     return { changes: result.rowCount };
 };
-exports.countFilteredProducts = async (filters) => {
-    const { search, category, minPrice, maxPrice } = filters;
+// exports.countFilteredProducts = async (filters) => {
+//     const { search, category, minPrice, maxPrice } = filters;
 
-    let sql = `SELECT COUNT(DISTINCT p.id) as count FROM products p WHERE 1=1`;
-    const params = [];
-    let i = 1;
+//     let sql = `SELECT COUNT(DISTINCT p.id) as count FROM products p WHERE 1=1`;
+//     const params = [];
+//     let i = 1;
 
-    if (search) {
-        sql += ` AND (p.title ILIKE $${i} OR p.author ILIKE $${i + 1})`;
-        params.push(`%${search}%`, `%${search}%`);
-        i += 2;
-    }
+//     if (search) {
+//         sql += ` AND (p.title ILIKE $${i} OR p.author ILIKE $${i + 1})`;
+//         params.push(`%${search}%`, `%${search}%`);
+//         i += 2;
+//     }
 
-    if (category) {
-        sql += ` AND p.category_id = $${i}`;
-        params.push(category);
-        i++;
-    }
+//     if (category) {
+//         sql += ` AND p.category_id = $${i}`;
+//         params.push(category);
+//         i++;
+//     }
 
-    if (minPrice) {
-        sql += ` AND p.price >= $${i}`;
-        params.push(minPrice);
-        i++;
-    }
+//     if (minPrice) {
+//         sql += ` AND p.price >= $${i}`;
+//         params.push(minPrice);
+//         i++;
+//     }
 
-    if (maxPrice) {
-        sql += ` AND p.price <= $${i}`;
-        params.push(maxPrice);
-        i++;
-    }
+//     if (maxPrice) {
+//         sql += ` AND p.price <= $${i}`;
+//         params.push(maxPrice);
+//         i++;
+//     }
 
-    const result = await db.query(sql, params);
-    return result.rows[0].count;
-};
+//     const result = await db.query(sql, params);
+//     return result.rows[0].count;
+// };
 
-exports.updateProduct = async (id, data, images = []) => {
-    const {
-        title,
-        author,
-        price,
-        category_id,
-        stock
-    } = data;
-
-    const productResult = await db.query(
-        `
-        UPDATE products
-        SET
-            title = $1,
-            author = $2,
-            price = $3,
-            category_id = $4,
-            stock = $5
-        WHERE id = $6
-        RETURNING *
-        `,
-        [title, author, price, category_id, stock, id]
-    );
-
-    // ONLY replace images if new ones uploaded
-    if (images.length > 0) {
-
-        await db.query(
-            `DELETE FROM product_images WHERE product_id = $1`,
-            [id]
-        );
-
-        for (const url of images) {
-            await db.query(
-                `
-                INSERT INTO product_images (product_id, image_url)
-                VALUES ($1, $2)
-                `,
-                [id, url]
-            );
-        }
-    }
-
-    return productResult.rows[0];
-};
-
-// exports.updateProduct = async (id, data) => {
+// exports.updateProduct = async (id, data, images = []) => {
 //     const {
 //         title,
 //         author,
 //         price,
 //         category_id,
-//         stock,
-//         images = []
+//         stock
 //     } = data;
 
-//     // 1. Update product fields ONLY (no images here)
 //     const productResult = await db.query(
 //         `
 //         UPDATE products
@@ -612,19 +703,23 @@ exports.updateProduct = async (id, data, images = []) => {
 //         [title, author, price, category_id, stock, id]
 //     );
 
-//     // 2. Replace images (safe approach)
-//     await db.query(
-//         `DELETE FROM product_images WHERE product_id = $1`,
-//         [id]
-//     );
+//     // ONLY replace images if new ones uploaded
+//     if (images.length > 0) {
 
-//     // 3. Insert new images
-//     for (const url of images) {
 //         await db.query(
-//             `INSERT INTO product_images (product_id, image_url)
-//              VALUES ($1, $2)`,
-//             [id, url]
+//             `DELETE FROM product_images WHERE product_id = $1`,
+//             [id]
 //         );
+
+//         for (const url of images) {
+//             await db.query(
+//                 `
+//                 INSERT INTO product_images (product_id, image_url)
+//                 VALUES ($1, $2)
+//                 `,
+//                 [id, url]
+//             );
+//         }
 //     }
 
 //     return productResult.rows[0];

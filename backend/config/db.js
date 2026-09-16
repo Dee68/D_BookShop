@@ -1,15 +1,17 @@
-// const sqlite3 = require('sqlite3').verbose();
-// require('dotenv').config();
+const sqlite3 = require('sqlite3').verbose();
+require('dotenv').config();
 
-// const db = new sqlite3.Database(process.env.DB_PATH, (err) => {
-//     if (err) {
-//         console.error('Database connection error:', err.message);
-//     } else {
-//         console.log('Connected to SQLite database');
-//     }
-// });
+const db = new sqlite3.Database(process.env.DB_PATH, (err) => {
+    if (err) {
+        console.error('Database connection error:', err.message);
+    } else {
+        console.log('Connected to SQLite database');
+    }
+});
 
-// module.exports = db;
+module.exports = db;
+
+//=============================
 // const { Pool } = require("pg");
 // require("dotenv").config();
 
@@ -40,12 +42,13 @@
 // });
 
 // module.exports = pool;
-const { Pool } = require("pg");
-require("dotenv").config();
+//PostgreSql
+// const { Pool } = require("pg");
+// require("dotenv").config();
 
-const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: { rejectUnauthorized: false }
-});
+// const pool = new Pool({
+//     connectionString: process.env.DATABASE_URL,
+//     ssl: { rejectUnauthorized: false }
+// });
 
-module.exports = pool;
+// module.exports = pool;

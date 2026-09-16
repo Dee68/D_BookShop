@@ -62,7 +62,7 @@ exports.registerUser = async (req, res) => {
             email,
             password: hashedPassword,
             role: 'customer',
-            email_verified: false,
+            email_verified: 0,
             verification_token: verificationToken,
             verification_expires: verificationExpires
         });
@@ -102,7 +102,9 @@ exports.loginUser = async (req, res) => {
         if (!isMatch) {
             return res.status(401).json({ error: INVALID_CREDENTIALS });
         }
-
+        if (!user.email_verified) {
+            return res.status(401).json({error: INVALID_CREDENTIALS});
+        }
         // create token
         const token = jwt.sign(
             { id: user.id, email: user.email, role: user.role },
