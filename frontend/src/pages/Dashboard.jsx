@@ -53,9 +53,9 @@ export default function Dashboard() {
             };
 
             const [systemRes, salesRes, ordersRes] = await Promise.all([
-                fetch(`${import.meta.env.VITE_API_URL}api/admin/stats/system`, { headers }),
-                fetch(`${import.meta.env.VITE_API_URL}api/admin/stats/sales`, { headers }),
-                fetch(`${import.meta.env.VITE_API_URL}api/admin/stats/orders`, { headers })
+                fetch(`${import.meta.env.VITE_API_URL}/api/admin/stats/system`, { headers }),
+                fetch(`${import.meta.env.VITE_API_URL}/api/admin/stats/sales`, { headers }),
+                fetch(`${import.meta.env.VITE_API_URL}/api/admin/stats/orders`, { headers })
             ]);
 
             const system = await systemRes.json();
@@ -82,7 +82,7 @@ export default function Dashboard() {
         try {
 
             const res = await fetch(
-                `${import.meta.env.VITE_API_URL}api/reports/inventory/${type}`,
+                `${import.meta.env.VITE_API_URL}/api/reports/inventory/${type}`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`
@@ -243,7 +243,6 @@ export default function Dashboard() {
                 </div>
 
             </div>
-
             {/* REPORT SECTION */}
             <div className={`${adminCardClass} p-6 space-y-4`}>
 
@@ -251,12 +250,13 @@ export default function Dashboard() {
                     Inventory Reports
                 </h2>
 
-                <div className="flex gap-4">
+                <div className="flex flex-col sm:flex-row gap-4 w-full">
 
                     <button
                         onClick={() => downloadReport("txt")}
                         className="
-                            flex items-center gap-2
+                            flex items-center justify-center gap-2
+                            w-full sm:w-auto
                             px-4 py-2 rounded-xl
                             text-white
                             bg-emerald-600 hover:bg-emerald-700
@@ -264,41 +264,41 @@ export default function Dashboard() {
                         "
                     >
                         <FileText size={18} />
-
                         TXT Report
                     </button>
 
                     <button
                         onClick={() => downloadReport("pdf")}
                         className="
-                            flex items-center gap-2
+                            flex items-center justify-center gap-2
+                            w-full sm:w-auto
                             px-4 py-2 rounded-xl
                             bg-red-600 text-white
                             hover:bg-red-500 transition
                         "
                     >
                         <FileDown size={18} />
-
                         PDF Report
                     </button>
-                    <button 
+
+                    <button
                         onClick={() => downloadReport("csv")}
                         className="
-                            px-4 py-2
-                            rounded-xl
+                            flex items-center justify-center gap-2
+                            w-full sm:w-auto
+                            px-4 py-2 rounded-xl
                             bg-emerald-600
                             hover:bg-emerald-700
                             text-white
-                        ">
+                        "
+                    >
                         <FileText size={18} />
-
-                        CSV REPORT
+                        CSV Report
                     </button>
 
                 </div>
 
             </div>
-
         </div>
     );
 }

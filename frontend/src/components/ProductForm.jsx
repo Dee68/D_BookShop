@@ -28,7 +28,7 @@ export default function ProductForm({ onCreated, editingProduct, clearEdit }) {
         try {
 
             const res = await fetch(
-                `${import.meta.env.VITE_API_URL}api/categories/store`
+                `${import.meta.env.VITE_API_URL}/api/categories/store`
             );
 
             const data = await res.json();
@@ -130,13 +130,13 @@ export default function ProductForm({ onCreated, editingProduct, clearEdit }) {
             const isEditing = Boolean(editingProduct?.id);
             if (isEditing) {
                 res = await apiUpload(
-                    `api/products/${editingProduct.id}`,
+                    `/api/products/${editingProduct.id}`,
                     formData,
                     token,
                     "PUT"
                 );
             } else {
-                res = await apiUpload("api/products", formData, token,"POST");
+                res = await apiUpload("/api/products", formData, token,"POST");
             }
 
             if (!res || res.error) {

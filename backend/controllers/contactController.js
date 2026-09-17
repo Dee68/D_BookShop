@@ -16,7 +16,7 @@ exports.sendMessage = async (req, res)=> {
         const cleanMessage = message?.trim();
 
         // BASIC VALIDATION
-        if (!CleanName || !cleanEmail || !cleanMessage) {
+        if (!cleanName || !cleanEmail || !cleanMessage) {
             return res.status(400).json({
                 error: "Name, email and message are required"
             });

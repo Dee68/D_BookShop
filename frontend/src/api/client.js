@@ -1,22 +1,12 @@
 import { toast } from "react-toastify";
-const BASE_URL = `${import.meta.env.VITE_API_URL}`;
 
-// function handleAuth(res) {
-//     if (res.status === 401) {
-//         localStorage.removeItem("token");
-//         toast.error("Session expired. Please log in again.");
-//         window.location.href = "/login";
-//         return true;
-//     }
-//     return false;
-// }
+const BASE_URL = import.meta.env.VITE_API_URL;
+
 async function handleAuth(res) {
 
-    // Only handle protected-route auth failures
-    // NOT login/register failures
-
-    const isLoginRequest =
-        res.url.includes("/login");
+    // Login failures should be handled by the login component,
+    // not treated as an expired session.
+    const isLoginRequest = res.url.includes("/login");
 
     if (res.status === 401 && !isLoginRequest) {
 
@@ -32,62 +22,55 @@ async function handleAuth(res) {
     return false;
 }
 
-// export async function apiRequest(endpoint, method = "GET", body, token) {
-//     const res = await fetch(`${BASE_URL}${endpoint}`, {
-//         method,
-//         headers: {
-//             "Content-Type": "application/json",
-//             Authorization: token ? `Bearer ${token}` : ""
-//         },
-//         body: body ? JSON.stringify(body) : undefined
-//     });
+export async function apiRequest(
+    endpoint,
+    method = "GET",
+    body,
+    token
+) {
 
-//     if (handleAuth(res)) return;
-
-//     return res.json();
-// }
-
-export async function apiRequest(endpoint, method = "GET", body, token) {
-
-    const res = await fetch(BASE_URL + endpoint, {
+    const res = await fetch(`${BASE_URL}${endpoint}`, {
         method,
         headers: {
             "Content-Type": "application/json",
-            Authorization: token ? `Bearer ${token}` : ""
+            ...(token && {
+                Authorization: `Bearer ${token}`
+            })
         },
         body: body ? JSON.stringify(body) : undefined
     });
 
-    const data = await res.json();
+    if (await handleAuth(res)) {
+        return;
+    }
 
-    if (await handleAuth(res)) return;
+    const data = await res.json();
 
     return data;
 }
 
-// export async function apiUpload(endpoint, formData, token, method="POST") {
-//     const res = await fetch("http://localhost:3000/api" + endpoint, {
-//         method,
-//         headers: {
-//             Authorization: `Bearer ${token}`
-            
-//         },
-//         body: formData
-//     });
+export async function apiUpload(
+    endpoint,
+    formData,
+    token,
+    method = "POST"
+) {
 
-//     if (handleAuth(res)) return;
-//     return res.json();
-// }
-export async function apiUpload(endpoint, formData, token, method = "POST") {
     const res = await fetch(`${BASE_URL}${endpoint}`, {
         method,
         headers: {
-            Authorization: `Bearer ${token}`
+            ...(token && {
+                Authorization: `Bearer ${token}`
+            })
         },
         body: formData
     });
 
-    const data = await res.text(); // for debugging
+    if (await handleAuth(res)) {
+        return;
+    }
+
+    const data = await res.text();
 
     if (!res.ok) {
         console.error("UPLOAD ERROR:", data);

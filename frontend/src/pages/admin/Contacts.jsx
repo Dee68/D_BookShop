@@ -8,7 +8,7 @@ export default function Contacts() {
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        fetch(`${import.meta.env.VITE_API_URL}api/admin/contacts`, {
+        fetch(`${import.meta.env.VITE_API_URL}/api/admin/contacts`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -40,6 +40,7 @@ export default function Contacts() {
                         <tr>
                             <th className="p-4 text-gray-700 dark:text-gray-300">Name</th>
                             <th className="p-4 text-gray-700 dark:text-gray-300">Email</th>
+                            <th className="p-4 text-gray-700 dark:text-gray-300">Subject</th>
                             <th className="p-4 text-gray-700 dark:text-gray-300">Message</th>
                             <th className="p-4 text-gray-700 dark:text-gray-300">Date</th>
                             <th className="p-4 text-gray-700 dark:text-gray-300">Status</th>
@@ -73,6 +74,10 @@ export default function Contacts() {
                                     {/* EMAIL */}
                                     <td className="p-4 text-gray-600 dark:text-gray-300">
                                         {msg.email}
+                                    </td>
+                                    {/* SUBJECT */}
+                                    <td className="p-4 text-gray-600 dark:text-gray-300">
+                                        {msg.subject}
                                     </td>
 
                                     {/* MESSAGE */}

@@ -8,17 +8,17 @@ export default function Orders() {
     const token = localStorage.getItem("token");
 
     const statusFlow = {
-        pending: ["pending", "shipped"],
-        shipped: ["shipped", "delivered", "cancelled"],
-        delivered: ["delivered"],
-        cancelled: ["cancelled"]
+        pending: ["shipped"],
+        shipped: ["delivered"],
+        delivered: [],
+        cancelled: []
     };
     const [loading, setLoading] = useState(true);
 
     async function loadOrders() {
 
         const res = await fetch(
-            `${import.meta.env.VITE_API_URL}api/orders`,
+            `${import.meta.env.VITE_API_URL}/api/orders`,
             {
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -36,10 +36,71 @@ export default function Orders() {
         loadOrders();
     }, []);
 
+    // async function loadOrders() {
+
+    //     const res = await fetch(
+    //         `${import.meta.env.VITE_API_URL}/api/admin/orders`,
+    //         {
+    //             headers: {
+    //                 Authorization: `Bearer ${token}`
+    //             }
+    //         }
+    //     );
+
+    //     const data = await res.json();
+
+    //     if (!res.ok) {
+    //         console.error("LOAD ORDERS ERROR:", data);
+    //         setLoading(false);
+    //         return;
+    //     }
+
+    //     setLoading(false);
+    //     setOrders(data.data || []);
+    // }
+    // async function loadOrders() {
+
+    //     try {
+
+    //         const res = await fetch(
+    //             `${import.meta.env.VITE_API_URL}/api/admin/orders`,
+    //             {
+    //                 headers: {
+    //                     Authorization: `Bearer ${token}`
+    //                 }
+    //             }
+    //         );
+
+    //         const data = await res.json();
+
+    //         console.log("ADMIN ORDERS RESPONSE:", data);
+
+    //         if (!res.ok) {
+    //             console.error("LOAD ORDERS ERROR:", data);
+
+    //             setOrders([]);
+    //             return;
+    //         }
+
+    //         setOrders(data.data || []);
+
+    //     } catch (error) {
+
+    //         console.error("LOAD ORDERS FETCH ERROR:", error);
+
+    //         setOrders([]);
+
+    //     } finally {
+
+    //         setLoading(false);
+
+    //     }
+    // }
+
     async function updateStatus(id, status) {
 
-        await fetch(
-            `${import.meta.env.VITE_API_URL}api/orders/${id}/status`,
+        const res = await fetch(
+            `${import.meta.env.VITE_API_URL}/api/admin/orders/${id}/status`,
             {
                 method: "PATCH",
                 headers: {
@@ -49,6 +110,16 @@ export default function Orders() {
                 body: JSON.stringify({ status })
             }
         );
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            console.error("UPDATE STATUS ERROR:", data);
+            alert(data.error || "Failed to update order status");
+            return;
+        }
+
+        console.log("STATUS UPDATED:", data);
 
         loadOrders();
     }

@@ -8,6 +8,7 @@ export default function Contact() {
     const [form, setForm] = useState({
         name: "",
         email: "",
+        subject: "",
         message: ""
     });
 
@@ -20,7 +21,7 @@ export default function Contact() {
     async function handleSubmit(e) {
         e.preventDefault();
 
-        const res = await fetch(`${import.meta.env.VITE_API_URL}api/contact`, {
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/contact`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(form)
@@ -43,7 +44,7 @@ export default function Contact() {
             `Message received successfully on ${formatDate(data.receivedAt)}`
         );
 
-        setForm({ name: "", email: "", message: "" });
+        setForm({ name: "", email: "", subject: "", message: "" });
 
         setTimeout(() => navigate("/"), 1200);
     }
@@ -105,6 +106,24 @@ export default function Contact() {
                     name="email"
                     placeholder="Your email"
                     value={form.email}
+                    onChange={handleChange}
+                    required
+                    className="
+                        w-full p-3
+                        rounded-xl
+                        border border-gray-200 dark:border-zinc-700
+                        bg-gray-50 dark:bg-zinc-800
+                        text-gray-900 dark:text-white
+                        focus:outline-none
+                        focus:ring-2 focus:ring-emerald-500
+                    "
+                />
+                {/* SUBJECT */}
+                <input
+                    type="text"
+                    name="subject"
+                    placeholder="Subject"
+                    value={form.subject}
                     onChange={handleChange}
                     required
                     className="

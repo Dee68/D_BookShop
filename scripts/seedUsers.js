@@ -4,12 +4,6 @@ const bcrypt = require('bcrypt');
 async function seedUsers() {
     const users = [
         {
-            name: 'Admin',
-            email: 'admin@bookshop.com',
-            password: 'admin123',
-            role: 'admin'
-        },
-        {
             name: 'John Doe',
             email: 'john@example.com',
             password: 'user123',
@@ -28,13 +22,33 @@ async function seedUsers() {
 
         await new Promise((resolve, reject) => {
             db.run(
-                `INSERT INTO users (name, email, password, role)
-                 VALUES (?, ?, ?, ?)`,
-                [user.name, user.email, hashedPassword, user.role],
+                `
+                INSERT INTO users (
+                    name,
+                    email,
+                    password,
+                    role,
+                    email_verified
+                )
+                VALUES (?, ?, ?, ?, ?)
+                `,
+                [
+                    user.name,
+                    user.email,
+                    hashedPassword,
+                    user.role,
+                    1
+                ],
                 (err) => {
+
                     if (err) {
-                        console.log(`Error inserting ${user.email}:`, err.message);
-                        resolve(); // continue even if duplicate
+                        console.log(
+                            `Error inserting ${user.email}:`,
+                            err.message
+                        );
+
+                        // Continue if the user already exists
+                        resolve();
                     } else {
                         console.log(`Inserted user: ${user.email}`);
                         resolve();

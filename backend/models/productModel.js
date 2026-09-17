@@ -396,49 +396,55 @@ exports.updateProduct = async (id, data, images = []) => {
     return await exports.getProductById(id);
 };
 
-// exports.restoreStock = (product_id, quantity) => {
-//     return new Promise((resolve, reject) => {
-//         db.run(
-//             `UPDATE products
-//              SET stock = stock + ?
-//              WHERE id = ?`,
-//             [quantity, product_id],
-//             function (err) {
-//                 if (err) reject(err);
-//                 else resolve();
-//             }
-//         );
-//     });
-// };
-// exports.reduceStock = (product_id, quantity) => {
-//     return new Promise((resolve, reject) => {
-//         db.run(
-//             `UPDATE products
-//              SET stock = stock - ?
-//              WHERE id = ?`,
-//             [quantity, product_id],
-//             function (err) {
-//                 if (err) reject(err);
-//                 else resolve();
-//             }
-//         );
-//     });
-// };
+exports.restoreStock = (product_id, quantity) => {
+    return new Promise((resolve, reject) => {
+        db.run(
+            `
+            UPDATE products
+            SET stock = stock + ?
+            WHERE id = ?
+            `,
+            [quantity, product_id],
+            function (err) {
+                if (err) {
+                    return reject(err);
+                }
+
+                resolve();
+            }
+        );
+    });
+};
+
+exports.reduceStock = (product_id, quantity) => {
+    return new Promise((resolve, reject) => {
+        db.run(
+            `UPDATE products
+             SET stock = stock - ?
+             WHERE id = ?`,
+            [quantity, product_id],
+            function (err) {
+                if (err) reject(err);
+                else resolve();
+            }
+        );
+    });
+};
 
 
 
-// exports.deleteProduct = (id) => {
-//     return new Promise((resolve, reject) => {
-//         db.run(
-//             `DELETE FROM products WHERE id = ?`,
-//             [id],
-//             function (err) {
-//                 if (err) reject(err);
-//                 else resolve({ changes: this.changes });
-//             }
-//         );
-//     });
-// };
+exports.deleteProduct = (id) => {
+    return new Promise((resolve, reject) => {
+        db.run(
+            `DELETE FROM products WHERE id = ?`,
+            [id],
+            function (err) {
+                if (err) reject(err);
+                else resolve({ changes: this.changes });
+            }
+        );
+    });
+};
 
 
 //== PostgrSql ==
@@ -623,27 +629,27 @@ exports.updateProduct = async (id, data, images = []) => {
 //     );
 //     return result.rows[0];
 // };
-exports.restoreStock = async (product_id, quantity) => {
-    await db.query(
-        `UPDATE products SET stock = stock + $1 WHERE id = $2`,
-        [quantity, product_id]
-    );
-};
+// exports.restoreStock = async (product_id, quantity) => {
+//     await db.query(
+//         `UPDATE products SET stock = stock + $1 WHERE id = $2`,
+//         [quantity, product_id]
+//     );
+// };
 
-exports.reduceStock = async (product_id, quantity) => {
-    await db.query(
-        `UPDATE products SET stock = stock - $1 WHERE id = $2`,
-        [quantity, product_id]
-    );
-};
-exports.deleteProduct = async (id) => {
-    const result = await db.query(
-        `DELETE FROM products WHERE id = $1`,
-        [id]
-    );
+// exports.reduceStock = async (product_id, quantity) => {
+//     await db.query(
+//         `UPDATE products SET stock = stock - $1 WHERE id = $2`,
+//         [quantity, product_id]
+//     );
+// };
+// exports.deleteProduct = async (id) => {
+//     const result = await db.query(
+//         `DELETE FROM products WHERE id = $1`,
+//         [id]
+//     );
 
-    return { changes: result.rowCount };
-};
+//     return { changes: result.rowCount };
+// };
 // exports.countFilteredProducts = async (filters) => {
 //     const { search, category, minPrice, maxPrice } = filters;
 
