@@ -9,7 +9,7 @@ export default function VerifyEmail() {
 
     const [status, setStatus] = useState("loading");
     const [message, setMessage] = useState("");
-
+ 
     useEffect(() => {
         const verifyEmail = async () => {
             try {
@@ -20,7 +20,7 @@ export default function VerifyEmail() {
                 }
 
                 const res = await fetch(
-                    `${import.meta.env.VITE_API_URL}api/users/verify-email?token=${token}`
+                    `${import.meta.env.VITE_API_URL}/api/users/verify-email?token=${token}`
                 );
 
                 const data = await res.json();

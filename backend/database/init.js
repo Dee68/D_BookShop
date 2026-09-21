@@ -1,4 +1,4 @@
-const db = require('../config/db');
+//const db = require('../config/db');
 // const RESET_DB = process.env.RESET_DB === "true";
 // if (RESET_DB) {
 //     db.serialize(() => {
@@ -12,207 +12,79 @@ const db = require('../config/db');
 //     });
 // }
 
-function run(sql) {
-    return new Promise((resolve, reject) => {
-        db.run(sql, function (err) {
-            if (err) {
-                reject(err);
-            } else {
-                resolve(this);
-            }
-        });
-    });
-}
-
-async function initDb() {
-    try {
-        // Enable foreign keys
-        await run(`PRAGMA foreign_keys = ON`);
-
-        // Categories
-        await run(`
-            CREATE TABLE IF NOT EXISTS categories (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT NOT NULL UNIQUE
-            )
-        `);
-
-        // Products
-        await run(`
-            CREATE TABLE IF NOT EXISTS products (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                title TEXT NOT NULL,
-                author TEXT,
-                description TEXT,
-                price REAL NOT NULL,
-                category_id INTEGER,
-                stock INTEGER DEFAULT 0,
-                FOREIGN KEY (category_id)
-                    REFERENCES categories(id)
-                    ON DELETE SET NULL
-            )
-        `);
-
-        // Product Images
-        await run(`
-            CREATE TABLE IF NOT EXISTS product_images (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                product_id INTEGER NOT NULL,
-                image_url TEXT NOT NULL,
-                FOREIGN KEY (product_id)
-                    REFERENCES products(id)
-                    ON DELETE CASCADE
-            )
-        `);
-
-        // Users
-        await run(`
-            CREATE TABLE IF NOT EXISTS users (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT,
-                email TEXT UNIQUE,
-                password TEXT NOT NULL,
-                role TEXT DEFAULT 'customer',
-                email_verified INTEGER DEFAULT 0,
-                verification_token TEXT,
-                verification_expires DATETIME
-            )
-        `);
-
-        // Orders
-        await run(`
-            CREATE TABLE IF NOT EXISTS orders (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                user_id INTEGER NOT NULL,
-                total REAL NOT NULL,
-                status TEXT DEFAULT 'pending'
-                CHECK (
-                    status IN (
-                        'pending',
-                        'shipped',
-                        'delivered',
-                        'cancelled'
-                    )
-                ),
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY (user_id)
-                    REFERENCES users(id)
-                    ON DELETE CASCADE
-            )
-        `);
-
-        // Order Items
-        await run(`
-            CREATE TABLE IF NOT EXISTS order_items (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                order_id INTEGER,
-                product_id INTEGER,
-                quantity INTEGER,
-                price REAL NOT NULL,
-                FOREIGN KEY (order_id)
-                    REFERENCES orders(id)
-                    ON DELETE CASCADE,
-                FOREIGN KEY (product_id)
-                    REFERENCES products(id)
-                    ON DELETE CASCADE
-            )
-        `);
-
-        // Contact Messages
-        await run(`
-            CREATE TABLE IF NOT EXISTS contact_messages (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT NOT NULL,
-                email TEXT NOT NULL,
-                subject TEXT,
-                message TEXT NOT NULL,
-                status TEXT DEFAULT 'new'
-                CHECK (
-                    status IN (
-                        'new',
-                        'read',
-                        'replied'
-                    )
-                ),
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-            )
-        `);
-
-        console.log("SQLite tables created successfully");
-
-    } catch (err) {
-        console.error("Database initialization error:", err);
-        throw err;
-    }
-}
-
-module.exports = initDb;
-//==========================================
-//PostgreSql
-// const db = require("../config/db");
+// function run(sql) {
+//     return new Promise((resolve, reject) => {
+//         db.run(sql, function (err) {
+//             if (err) {
+//                 reject(err);
+//             } else {
+//                 resolve(this);
+//             }
+//         });
+//     });
+// }
 
 // async function initDb() {
-
 //     try {
+//         // Enable foreign keys
+//         await run(`PRAGMA foreign_keys = ON`);
 
-//         // USERS
-//         await db.query(`
-//             CREATE TABLE IF NOT EXISTS users (
-//                 id SERIAL PRIMARY KEY,
-//                 name TEXT,
-//                 email TEXT UNIQUE,
-//                 password TEXT NOT NULL,
-//                 role TEXT DEFAULT 'customer'
-//             )
-//         `);
-
-//         // CATEGORIES
-//         await db.query(`
+//         // Categories
+//         await run(`
 //             CREATE TABLE IF NOT EXISTS categories (
-//                 id SERIAL PRIMARY KEY,
+//                 id INTEGER PRIMARY KEY AUTOINCREMENT,
 //                 name TEXT NOT NULL UNIQUE
 //             )
 //         `);
 
-//         // PRODUCTS
-//         await db.query(`
+//         // Products
+//         await run(`
 //             CREATE TABLE IF NOT EXISTS products (
-//                 id SERIAL PRIMARY KEY,
+//                 id INTEGER PRIMARY KEY AUTOINCREMENT,
 //                 title TEXT NOT NULL,
 //                 author TEXT,
 //                 description TEXT,
-//                 price NUMERIC(10,2) NOT NULL,
+//                 price REAL NOT NULL,
 //                 category_id INTEGER,
 //                 stock INTEGER DEFAULT 0,
-
-//                 CONSTRAINT fk_category
-//                     FOREIGN KEY(category_id)
+//                 FOREIGN KEY (category_id)
 //                     REFERENCES categories(id)
 //                     ON DELETE SET NULL
 //             )
 //         `);
 
-//         // PRODUCT IMAGES
-//         await db.query(`
+//         // Product Images
+//         await run(`
 //             CREATE TABLE IF NOT EXISTS product_images (
-//                 id SERIAL PRIMARY KEY,
+//                 id INTEGER PRIMARY KEY AUTOINCREMENT,
 //                 product_id INTEGER NOT NULL,
 //                 image_url TEXT NOT NULL,
-
-//                 CONSTRAINT fk_product
-//                     FOREIGN KEY(product_id)
+//                 FOREIGN KEY (product_id)
 //                     REFERENCES products(id)
 //                     ON DELETE CASCADE
 //             )
 //         `);
 
-//         // ORDERS
-//         await db.query(`
-//             CREATE TABLE IF NOT EXISTS orders (
-//                 id SERIAL PRIMARY KEY,
-//                 user_id INTEGER NOT NULL,
-//                 total NUMERIC(10,2) NOT NULL,
+//         // Users
+//         await run(`
+//             CREATE TABLE IF NOT EXISTS users (
+//                 id INTEGER PRIMARY KEY AUTOINCREMENT,
+//                 name TEXT,
+//                 email TEXT UNIQUE,
+//                 password TEXT NOT NULL,
+//                 role TEXT DEFAULT 'customer',
+//                 email_verified INTEGER DEFAULT 0,
+//                 verification_token TEXT,
+//                 verification_expires DATETIME
+//             )
+//         `);
 
+//         // Orders
+//         await run(`
+//             CREATE TABLE IF NOT EXISTS orders (
+//                 id INTEGER PRIMARY KEY AUTOINCREMENT,
+//                 user_id INTEGER NOT NULL,
+//                 total REAL NOT NULL,
 //                 status TEXT DEFAULT 'pending'
 //                 CHECK (
 //                     status IN (
@@ -222,47 +94,38 @@ module.exports = initDb;
 //                         'cancelled'
 //                     )
 //                 ),
-
-//                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
-//                 CONSTRAINT fk_user
-//                     FOREIGN KEY(user_id)
+//                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+//                 FOREIGN KEY (user_id)
 //                     REFERENCES users(id)
 //                     ON DELETE CASCADE
 //             )
 //         `);
 
-//         // ORDER ITEMS
-//         await db.query(`
+//         // Order Items
+//         await run(`
 //             CREATE TABLE IF NOT EXISTS order_items (
-//                 id SERIAL PRIMARY KEY,
+//                 id INTEGER PRIMARY KEY AUTOINCREMENT,
 //                 order_id INTEGER,
 //                 product_id INTEGER,
 //                 quantity INTEGER,
-//                 price NUMERIC(10,2) NOT NULL,
-
-//                 CONSTRAINT fk_order
-//                     FOREIGN KEY(order_id)
+//                 price REAL NOT NULL,
+//                 FOREIGN KEY (order_id)
 //                     REFERENCES orders(id)
 //                     ON DELETE CASCADE,
-
-//                 CONSTRAINT fk_product_item
-//                     FOREIGN KEY(product_id)
+//                 FOREIGN KEY (product_id)
 //                     REFERENCES products(id)
 //                     ON DELETE CASCADE
 //             )
 //         `);
 
-//         // CONTACT MESSAGES
-//         await db.query(`
+//         // Contact Messages
+//         await run(`
 //             CREATE TABLE IF NOT EXISTS contact_messages (
-//                 id SERIAL PRIMARY KEY,
+//                 id INTEGER PRIMARY KEY AUTOINCREMENT,
 //                 name TEXT NOT NULL,
 //                 email TEXT NOT NULL,
 //                 subject TEXT,
-
 //                 message TEXT NOT NULL,
-
 //                 status TEXT DEFAULT 'new'
 //                 CHECK (
 //                     status IN (
@@ -271,17 +134,123 @@ module.exports = initDb;
 //                         'replied'
 //                     )
 //                 ),
-
-//                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+//                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 //             )
 //         `);
 
-//         console.log("PostgreSQL tables created successfully");
+//         console.log("SQLite tables created successfully");
 
 //     } catch (err) {
-
 //         console.error("Database initialization error:", err);
+//         throw err;
 //     }
 // }
 
 // module.exports = initDb;
+//==========================================
+//PostgreSql
+const db = require('../config/db');
+
+// const RESET_DB = process.env.RESET_DB === "true";
+// if (RESET_DB) {
+//     await db.query(`DROP TABLE IF EXISTS order_items CASCADE`);
+//     await db.query(`DROP TABLE IF EXISTS orders CASCADE`);
+//     await db.query(`DROP TABLE IF EXISTS product_images CASCADE`);
+//     await db.query(`DROP TABLE IF EXISTS products CASCADE`);
+//     await db.query(`DROP TABLE IF EXISTS categories CASCADE`);
+//     await db.query(`DROP TABLE IF EXISTS users CASCADE`);
+//     await db.query(`DROP TABLE IF EXISTS contact_messages CASCADE`);
+// }
+
+async function initDb() {
+    try {
+        // Categories
+        await db.query(`
+            CREATE TABLE IF NOT EXISTS categories (
+                id SERIAL PRIMARY KEY,
+                name TEXT NOT NULL UNIQUE
+            )
+        `);
+
+        // Products
+        await db.query(`
+            CREATE TABLE IF NOT EXISTS products (
+                id SERIAL PRIMARY KEY,
+                title TEXT NOT NULL,
+                author TEXT,
+                description TEXT,
+                price NUMERIC(10, 2) NOT NULL,
+                category_id INTEGER REFERENCES categories(id) ON DELETE SET NULL,
+                stock INTEGER DEFAULT 0
+            )
+        `);
+
+        // Product Images
+        await db.query(`
+            CREATE TABLE IF NOT EXISTS product_images (
+                id SERIAL PRIMARY KEY,
+                product_id INTEGER NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+                image_url TEXT NOT NULL
+            )
+        `);
+
+        // Users
+        await db.query(`
+            CREATE TABLE IF NOT EXISTS users (
+                id SERIAL PRIMARY KEY,
+                name TEXT,
+                email TEXT UNIQUE,
+                password TEXT NOT NULL,
+                role TEXT DEFAULT 'customer',
+                email_verified BOOLEAN DEFAULT FALSE,
+                verification_token TEXT,
+                verification_expires TIMESTAMP
+            )
+        `);
+
+        // Orders
+        await db.query(`
+            CREATE TABLE IF NOT EXISTS orders (
+                id SERIAL PRIMARY KEY,
+                user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+                total NUMERIC(10, 2) NOT NULL,
+                status TEXT DEFAULT 'pending'
+                    CHECK (status IN ('pending','shipped','delivered','cancelled')),
+                created_at TIMESTAMP DEFAULT NOW()
+            )
+        `);
+
+        // Order Items
+        await db.query(`
+            CREATE TABLE IF NOT EXISTS order_items (
+                id SERIAL PRIMARY KEY,
+                order_id INTEGER REFERENCES orders(id) ON DELETE CASCADE,
+                product_id INTEGER REFERENCES products(id) ON DELETE CASCADE,
+                quantity INTEGER,
+                price NUMERIC(10, 2) NOT NULL
+            )
+        `);
+
+        // Contact Messages
+        await db.query(`
+            CREATE TABLE IF NOT EXISTS contact_messages (
+                id SERIAL PRIMARY KEY,
+                name TEXT NOT NULL,
+                email TEXT NOT NULL,
+                subject TEXT,
+                message TEXT NOT NULL,
+                status TEXT DEFAULT 'new'
+                    CHECK (status IN ('new','read','replied')),
+                created_at TIMESTAMP DEFAULT NOW()
+            )
+        `);
+
+        console.log("PostgreSQL tables created successfully");
+
+    } catch (err) {
+        console.error("Database initialization error:", err);
+        throw err;
+    }
+}
+
+module.exports = initDb;

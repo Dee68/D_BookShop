@@ -6,6 +6,47 @@ export default function Contacts() {
     const [messages, setMessages] = useState([]);
     const token = localStorage.getItem("token");
     const [loading, setLoading] = useState(true)
+    
+    const [updatingId, setUpdatingId] = useState(null);
+
+    async function toggleStatus(id) {
+        if (updatingId === id) return;
+        setUpdatingId(id);
+
+        try {
+            const res = await fetch(
+                `${import.meta.env.VITE_API_URL}/api/admin/contacts/${id}/status`,
+                {
+                    method: "PATCH",
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                console.error("TOGGLE STATUS ERROR:", data);
+            
+                return;
+            }
+
+            setMessages(prev =>
+                prev.map(msg =>
+                    msg.id === id
+                        ? { ...msg, status: msg.status === "read" ? "new" : "read" }
+                        : msg
+                )
+            );
+
+        } catch (error) {
+            console.error("TOGGLE STATUS FETCH ERROR:", error);
+            
+        } finally {
+            setUpdatingId(null);
+        }
+    }
 
     useEffect(() => {
         fetch(`${import.meta.env.VITE_API_URL}/api/admin/contacts`, {
@@ -96,19 +137,29 @@ export default function Contacts() {
 
                                     {/* STATUS */}
                                     <td className="p-4">
-                                        <span
+                                        <button
+                                            onClick={() => toggleStatus(msg.id)}
+                                            disabled={updatingId === msg.id}
+                                            title={msg.status === "read" ? "Mark as new" : "Mark as read"}
                                             className={`
                                                 px-3 py-1 rounded-full text-xs font-medium
+                                                transition
+                                                cursor-pointer
+                                                hover:opacity-80
+                                                disabled:opacity-50
+                                                disabled:cursor-not-allowed
                                                 ${
-                                                    msg.is_read
+                                                    msg.status === "read"
                                                         ? "bg-gray-200 text-gray-700 dark:bg-zinc-700 dark:text-gray-300"
                                                         : "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300"
                                                 }
                                             `}
                                         >
-                                            {msg.is_read ? "Read" : "New"}
-                                        </span>
+                                            {msg.status === "read" ? "Read" : "New"}
+                                        </button>
+                                    
                                     </td>
+                                   
 
                                 </tr>
                             ))

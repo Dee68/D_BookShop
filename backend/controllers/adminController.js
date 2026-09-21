@@ -48,45 +48,30 @@ exports.getStats = async (req, res) => {
 };
 
 exports.getAllOrders = async (req, res) => {
+
     try {
-        const { page, limit, offset } = getPagination(req);
 
-        let sql = `
-        SELECT o.*, u.name as user_name, u.email
-        FROM orders o
-        LEFT JOIN users u ON o.user_id = u.id
-        WHERE 1=1
-        `;
+        const { page, limit } = getPagination(req);
 
-        const params = [];
+        const status = req.query.status || null;
+        const user = req.query.user || null;
 
-        if (req.query.status) {
-            sql += ` AND o.status = ?`;
-            params.push(req.query.status);
-        }
+        const result = await Order.getAllOrders(
+            page,
+            limit,
+            status,
+            user
+        );
 
-        if (req.query.user) {
-            sql += ` AND o.user_id = ?`;
-            params.push(req.query.user);
-        }
-
-        sql += ` ORDER BY o.id DESC LIMIT ? OFFSET ?`;
-        params.push(limit, offset);
-
-        db.all(sql, params, (err, rows) => {
-            if (err) return res.status(500).json({ error: err.message });
-
-            res.json({
-                data: rows,
-                pagination: {
-                    page,
-                    limit
-                }
-            });
-        });
+        res.json(result);
 
     } catch (error) {
-        res.status(500).json({ error: error.message });
+
+        console.error("GET ALL ORDERS ERROR:", error);
+
+        res.status(500).json({
+            error: error.message
+        });
     }
 };
 
@@ -131,7 +116,21 @@ exports.updateOrderStatus = async (req, res) => {
         const { id } = req.params;
         const { status } = req.body;
 
-        const result = await Order.updateOrderStatus(id, status);
+        // Fetch the current status from the DB — do NOT trust the caller
+        // const order = await Order.getOrderById(id);//too heavy for a small query.
+        // if (!order) {
+        //     return res.status(404).json({ error: "Order not found" });
+        // }
+        const currentStatus = await Order.getOrderStatus(id);
+        if (currentStatus === null) {
+            return res.status(404).json({ error: "Order not found" });
+        }
+
+        const result = await Order.updateOrderStatus(
+            id,
+            status,
+            currentStatus
+        );
 
         if (result.changes === 0) {
             return res.status(404).json({ error: "Order not found" });
@@ -140,7 +139,9 @@ exports.updateOrderStatus = async (req, res) => {
         res.json({ message: "Order status updated" });
 
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        // "Invalid status transition" → 400, not 500
+        const code = /invalid status transition/i.test(error.message) ? 400 : 500;
+        res.status(code).json({ error: error.message });
     }
 };
 
@@ -148,28 +149,24 @@ exports.cancelOrder = async (req, res) => {
     try {
         const { id } = req.params;
 
-        // get items
-        const items = await Order.getOrderItems(id);
+        // Delegate entirely to the model — it enforces the rules
+        // (delivered cannot be cancelled, stock restore, transaction)
+        const result = await Order.cancelOrderWithRestore(id);
 
-        if (!items.length) {
-            return res.status(404).json({ error: "Order not found" });
+        if (result.changes === 0) {
+            return res.status(400).json({
+                error: "Order cannot be cancelled (already cancelled or not found)"
+            });
         }
-
-        // restore stock
-        for (const item of items) {
-            await Product.restoreStock(item.product_id, item.quantity);
-        }
-
-        // update status
-        await Order.updateOrderStatus(id, 'cancelled');
 
         res.json({ message: "Order cancelled and stock restored" });
 
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        // "Cannot cancel order in status 'delivered'" → 400, not 500
+        const code = /cannot cancel|invalid/i.test(error.message) ? 400 : 500;
+        res.status(code).json({ error: error.message });
     }
 };
-
 exports.promoteUser = async (req, res) => {
     try {
         const { id } = req.params;

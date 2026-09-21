@@ -19,7 +19,7 @@ export default function Products() {
     const [products, setProducts] = useState([]);
     const [search, setSearch] = useState("");
     const [page, setPage] = useState(1);
-    const [limit] = useState(5);
+    const [limit] = useState(3);
     const [pagination, setPagination] = useState({});
     const [editingProduct, setEditingProduct] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);

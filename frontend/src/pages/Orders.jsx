@@ -1,128 +1,130 @@
 import { useEffect, useState } from "react";
+import {
+    FiChevronLeft,
+FiChevronRight
+} from "react-icons/fi";
 import Loader from "../components/Loader";
+import { toast } from "react-toastify";
 
 export default function Orders() {
 
     const [orders, setOrders] = useState([]);
 
     const token = localStorage.getItem("token");
+    const [page, setPage] = useState(1);
+    const [limit] = useState(3);
 
     const statusFlow = {
-        pending: ["shipped"],
-        shipped: ["delivered"],
-        delivered: [],
+        pending:   ["shipped", "cancelled"],
+        shipped:   ["delivered", "cancelled"],
+        delivered: [],              // cannot be cancelled
         cancelled: []
     };
+    const [updatingId, setUpdatingId] = useState(null);
+    const [pagination, setPagination] = useState({
+        page: 1,
+        limit: 3,
+        total: 0,
+        totalPages: 0
+    });
     const [loading, setLoading] = useState(true);
 
+   
+
+
+    
     async function loadOrders() {
 
-        const res = await fetch(
-            `${import.meta.env.VITE_API_URL}/api/orders`,
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            }
-        );
+        try {
 
-        const data = await res.json();
-        setLoading(false);
-        setOrders(data);
+            const res = await fetch(
+                `${import.meta.env.VITE_API_URL}/api/admin/orders?page=${page}&limit=${limit}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
+
+            const data = await res.json();
+
+            //console.log("ADMIN ORDERS RESPONSE:", data);
+
+            if (!res.ok) {
+                console.error("LOAD ORDERS ERROR:", data);
+
+                setOrders([]);
+                return;
+            }
+
+            setOrders(data.data || []);
+            setPagination(data);
+
+        } catch (error) {
+
+            //console.error("LOAD ORDERS FETCH ERROR:", error);
+            toast.error(error.message || "Loading Orders error!")
+
+            setOrders([]);
+
+        } finally {
+
+            setLoading(false);
+
+        }
     }
 
     useEffect(() => {
         
         loadOrders();
-    }, []);
+    }, [page,limit]);
 
-    // async function loadOrders() {
-
-    //     const res = await fetch(
-    //         `${import.meta.env.VITE_API_URL}/api/admin/orders`,
-    //         {
-    //             headers: {
-    //                 Authorization: `Bearer ${token}`
-    //             }
-    //         }
-    //     );
-
-    //     const data = await res.json();
-
-    //     if (!res.ok) {
-    //         console.error("LOAD ORDERS ERROR:", data);
-    //         setLoading(false);
-    //         return;
-    //     }
-
-    //     setLoading(false);
-    //     setOrders(data.data || []);
-    // }
-    // async function loadOrders() {
-
-    //     try {
-
-    //         const res = await fetch(
-    //             `${import.meta.env.VITE_API_URL}/api/admin/orders`,
-    //             {
-    //                 headers: {
-    //                     Authorization: `Bearer ${token}`
-    //                 }
-    //             }
-    //         );
-
-    //         const data = await res.json();
-
-    //         console.log("ADMIN ORDERS RESPONSE:", data);
-
-    //         if (!res.ok) {
-    //             console.error("LOAD ORDERS ERROR:", data);
-
-    //             setOrders([]);
-    //             return;
-    //         }
-
-    //         setOrders(data.data || []);
-
-    //     } catch (error) {
-
-    //         console.error("LOAD ORDERS FETCH ERROR:", error);
-
-    //         setOrders([]);
-
-    //     } finally {
-
-    //         setLoading(false);
-
-    //     }
-    // }
+    useEffect(() => {
+        if (pagination.totalPages && page > pagination.totalPages) {
+            setPage(pagination.totalPages);
+        }
+    }, [pagination.totalPages]);
 
     async function updateStatus(id, status) {
+    // guard: if this order is already being updated, ignore
+    if (updatingId === id) return;
 
-        const res = await fetch(
-            `${import.meta.env.VITE_API_URL}/api/admin/orders/${id}/status`,
-            {
-                method: "PATCH",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`
-                },
-                body: JSON.stringify({ status })
-            }
-        );
+    setUpdatingId(id);
+
+    try {
+        const isCancel = status === "cancelled";
+        const url = isCancel
+            ? `${import.meta.env.VITE_API_URL}/api/admin/orders/${id}/cancel`
+            : `${import.meta.env.VITE_API_URL}/api/admin/orders/${id}/status`;
+
+        const res = await fetch(url, {
+            method: isCancel ? "POST" : "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`
+            },
+            body: isCancel ? undefined : JSON.stringify({ status })
+        });
 
         const data = await res.json();
 
         if (!res.ok) {
             console.error("UPDATE STATUS ERROR:", data);
-            alert(data.error || "Failed to update order status");
+            toast.error("Failed to update order status");;
             return;
         }
+        toast.success("Order status updated successfully!");
+        await loadOrders();
 
-        console.log("STATUS UPDATED:", data);
-
-        loadOrders();
+    } catch (error) {
+        //console.error("UPDATE STATUS FETCH ERROR:", error);
+        
+        toast.error(error.message || "UPDATE STATUS FETCH ERROR");
+    } finally {
+        setUpdatingId(null);
     }
+}
+
 
     function formatDate(dateString) {
 
@@ -177,11 +179,11 @@ export default function Orders() {
     }
 
     if (loading) {
-        return <Loader text="Loading messages..." />;
+        return <Loader text="Loading orders..." />;
     }
 
     return (
-
+        <>
         <div className="
             min-h-screen
             bg-emerald-50 dark:bg-zinc-950
@@ -411,35 +413,43 @@ export default function Orders() {
 
                                 </div>
 
-                                <select
-                                    value={order.status}
-                                    onChange={(e) =>
-                                        updateStatus(order.id, e.target.value)
-                                    }
-                                    className="
-                                        px-4 py-3
-                                        rounded-xl
-                                        border border-emerald-200 dark:border-zinc-700
-                                        bg-white dark:bg-zinc-800
-                                        text-gray-900 dark:text-white
-                                        focus:outline-none
-                                        focus:ring-2 focus:ring-emerald-500
-                                    "
-                                >
+                              {statusFlow[order.status]?.length ? (
 
-                                    {(statusFlow[order.status] || []).map(status => (
+    <select
+        value={order.status}
+        disabled={updatingId === order.id}
+        onChange={(e) => updateStatus(order.id, e.target.value)}
+        className="
+            px-4 py-3
+            rounded-xl
+            border border-emerald-200 dark:border-zinc-700
+            bg-white dark:bg-zinc-800
+            text-gray-900 dark:text-white
+            focus:outline-none
+            focus:ring-2 focus:ring-emerald-500
+        "
+    >
+        <option value={order.status} disabled>
+            {order.status} (current)
+        </option>
+        {statusFlow[order.status].map(status => (
+            <option key={status} value={status}>
+                {status}
+            </option>
+        ))}
+    </select>
 
-                                        <option
-                                            key={status}
-                                            value={status}
-                                        >
-                                            {status}
-                                        </option>
+) : (
 
-                                    ))}
+    <span className="
+        px-4 py-3
+        text-sm font-medium
+        text-gray-500 dark:text-gray-400
+    ">
+        No actions available
+    </span>
 
-                                </select>
-
+)}
                             </div>
 
                         </div>
@@ -449,7 +459,73 @@ export default function Orders() {
                 ))}
 
             </div>
-
+                        
         </div>
+         {/* PAGINATION */}
+            <div className="flex items-center justify-center gap-4">
+            
+                            {/* PREV */}
+                            <button
+                                disabled={page === 1}
+                                onClick={() => setPage(prev => Math.max(prev - 1, 1))}
+                                className="
+                                    flex items-center gap-1
+                                    px-4 py-2
+                                    rounded-xl
+                                    bg-gray-200
+                                    bg-emerald-700
+                                    hover:bg-emerald-800
+                                    dark:bg-emerald-600
+                                    dark:hover:bg-emerald-500
+                                    text-white
+                                    transition
+                                    disabled:opacity-50
+                                    disabled:cursor-not-allowed
+                                "
+                            >
+                                <FiChevronLeft />
+                                Prev
+                            </button>
+            
+                            {/* PAGE */}
+                            <div
+                                className="
+                                    px-4 py-2
+                                    rounded-xl
+                                    text-gray-700 dark:text-white font-medium
+                                "
+                            >
+                                Page {page}
+                            </div>
+            
+                            {/* NEXT */}
+                            <button
+                                disabled={page >= (pagination.totalPages || 1)}
+                                onClick={() => {
+                                    if (page < pagination.totalPages) {
+                                        setPage(prev => prev + 1);
+                                        }
+                                }}
+                                className="
+                                    flex items-center gap-1
+                                    px-4 py-2
+                                    rounded-xl
+                                    bg-gray-200
+                                    bg-emerald-700
+                                    hover:bg-emerald-800
+                                    dark:bg-emerald-600
+                                    dark:hover:bg-emerald-500
+                                    text-white
+                                    disabled:opacity-50
+                                    transition
+                                "
+                            >
+                                Next
+                                <FiChevronRight />
+                            </button>
+            
+            </div>
+        </>
+        
     );
 }

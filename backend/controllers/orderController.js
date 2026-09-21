@@ -77,70 +77,7 @@ exports.cancelOrder = async (req, res) => {
     }
 };
 
-// exports.updateStatus = async (req, res) => {
 
-//     try {
-
-//         const { status } = req.body;
-//         const orderId = req.params.id;
-
-//         const order = await Order.getOrderById(orderId);
-
-//         if (!order) {
-//             return res.status(404).json({ error: "Order not found" });
-//         }
-
-//         if (status === "cancelled") {
-//             await Order.cancelOrderWithRestore(orderId);
-//             return res.json({ message: "Order cancelled" });
-//         }
-
-//         const result = await Order.updateOrderStatus(
-//             orderId,
-//             status,
-//             order.status
-//         );
-
-//         res.json(result);
-
-//     } catch (err) {
-//         res.status(400).json({ error: err.message });
-//     }
-// };
-
-// exports.updateStatus = async (req, res) => {
-//     try {
-//         const { status } = req.body;
-//         const orderId = req.params.id;
-
-//         const order = await Order.getOrderById(orderId);
-
-//         if (!order) {
-//             return res.status(404).json({ error: "Order not found" });
-//         }
-
-//         if (req.user.role !== "admin" && order.user_id !== req.user.id) {
-//             return res.status(403).json({ error: "Forbidden" });
-//         }
-
-//         // cancellation is a special atomic operation
-//         if (status === "cancelled") {
-//             await Order.cancelOrderWithRestore(orderId);
-//             return res.json({ message: "Order cancelled and stock restored" });
-//         }
-
-//         const result = await Order.updateOrderStatus(
-//             orderId,
-//             status,
-//             order.status
-//         );
-
-//         res.json(result);
-
-//     } catch (err) {
-//         res.status(400).json({ error: err.message });
-//     }
-// };
 exports.updateStatus = async (req, res) => {
     try {
         const { status } = req.body;

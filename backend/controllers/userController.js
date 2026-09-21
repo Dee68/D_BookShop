@@ -2,7 +2,11 @@ const User = require('../models/userModel');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const INVALID_CREDENTIALS = "Invalid credentials";
-const crypto = require("crypto");
+const VERIFY_EMAIL = "Verify your email";
+// A valid bcrypt hash used purely to equalize login timing
+// when the user does not exist (prevents user enumeration via timing).
+const DUMMY_HASH = "$2b$10$CwTycUXWue0Thq9StjUM0uJ8Qj1zFZ2h4k6p5w5sYhZ0m3a2bX1yK";
+//const crypto = require("crypto");
 const tokenService = require("../services/tokenService");
 const emailService = require("../services/emailService");
 
@@ -91,20 +95,22 @@ exports.loginUser = async (req, res) => {
         }
 
         const user = await User.getUserByEmail(email);
-        //console.log("LOGIN USER:", user);
-        //console.log("PASSWORD MATCH:", await bcrypt.compare(password, user.password));
-        if (!user) {
+       
+        // Always run bcrypt.compare, even when user doesn't exist,
+        // so response time doesn't leak whether the email is registered.
+        const isMatch = await bcrypt.compare(
+            password,
+            user ? user.password : DUMMY_HASH
+        );
+
+        if (!user || !isMatch) {
             return res.status(401).json({ error: INVALID_CREDENTIALS });
         }
-
-        const isMatch = await bcrypt.compare(password, user.password);
-
-        if (!isMatch) {
-            return res.status(401).json({ error: INVALID_CREDENTIALS });
-        }
+        
         if (!user.email_verified) {
-            return res.status(401).json({error: INVALID_CREDENTIALS});
+            return res.status(401).json({ error: VERIFY_EMAIL });
         }
+       
         // create token
         const token = jwt.sign(
             { id: user.id, email: user.email, role: user.role },

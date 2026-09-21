@@ -15,6 +15,7 @@ router.get('/users', auth, requireAdmin, adminController.getAllUsers);
 
 // GET all contact messages (admin inbox)
 router.get("/contacts", auth, requireAdmin, contactController.getAllMessages);
+router.patch("/contacts/:id/status", auth, requireAdmin, contactController.toggleStatus);
 
 
 //analytic
