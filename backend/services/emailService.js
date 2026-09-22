@@ -7,7 +7,7 @@ exports.sendVerificationEmail = async (email, token) => {
     const verificationLink = `${baseUrl}/verify-email?token=${token}`;
 
     await resend.emails.send({
-        from: "D-BookShop <onboarding@resend.dev>",
+        from: "D-BookShop <noreply@dbookshop.com>",
         to: email,
         subject: "Verify your email",
         html: `
