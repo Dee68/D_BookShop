@@ -1,6 +1,7 @@
 import { toast } from "react-toastify";
 
-const BASE_URL = import.meta.env.VITE_API_URL;
+//const BASE_URL = import.meta.env.VITE_API_URL;
+const BASE_URL = (import.meta.env.VITE_API_URL || "").replace(/\/+$/, "");
 
 async function handleAuth(res) {
 
