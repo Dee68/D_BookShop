@@ -78,6 +78,7 @@
 
 //==PostgreSql ==
 const db = require("../config/db");
+const bcrypt = require('bcrypt');
 
 exports.verifyEmail = async (req, res) => {
     try {

@@ -233,6 +233,11 @@ export default function Sidebar() {
                         <Inbox size={18} />
                         {!collapsed && <span>Contacts</span>}
                     </NavLink>
+                    {/* CHANGE PASSWORD */}
+                    <NavLink to="/admin/change-password" className={linkClass}>
+                    <Inbox size={18} />
+                    {!collapsed && <span>Change Password</span>}
+                    </NavLink>
 
                 </nav>
 
