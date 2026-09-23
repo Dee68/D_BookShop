@@ -12,8 +12,11 @@ const path = require('path');
 const allowedOrigins = [
     "http://localhost:5173",
     "http://localhost:5000",
+    "https://dbookshop.com",
+    "https://www.dbookshop.com",
     "https://d-book-shop.vercel.app",
     "https://dbookshop-production.up.railway.app",
+
     ...(process.env.CLIENT_URL ? process.env.CLIENT_URL.split(",").map(s => s.trim()) : [])
 ];
 app.use(cors({
