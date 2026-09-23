@@ -59,7 +59,7 @@ export default function UserMenu() {
                         </Link>
                     )}
 
-                    <Link to="/change-password"
+                    <Link to="/account/change-password"
                         className="block px-4 py-3 text-gray-800 dark:text-white hover:bg-gray-100 dark:hover:bg-zinc-700"
                         onClick={() => setOpen(false)}>
                         Change Password
