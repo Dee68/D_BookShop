@@ -8,6 +8,7 @@ import { AuthContext } from "../auth/AuthContext";
 import CartDrawer from "../context/CartDrawer";
 import NavItem from "./navbar/NavItem";
 import NavButton from "./navbar/NavButton";
+import UserMenu from "./UserMenu";
 
 export default function Navbar() {
 
@@ -108,12 +109,13 @@ export default function Navbar() {
 
                             </div>
                         ) : (
-                            <NavButton
-                                onClick={handleLogout}
-                                icon={FiLogOut}
-                            >
-                                Logout
-                            </NavButton>
+                            <UserMenu />
+                            // <NavButton
+                            //     onClick={handleLogout}
+                            //     icon={FiLogOut}
+                            // >
+                            //     Logout
+                            // </NavButton>
                         )}
                            {/* CART */}
                         <button
@@ -228,6 +230,18 @@ export default function Navbar() {
                 </button>
 
                 {/* LOGIN / LOGOUT */}
+                {/* USER LINKS (only when logged in) */}
+                {token && (
+                    <>
+                        <Link
+                            to="/account/change-password"
+                            onClick={() => setMenuOpen(false)}
+                            className="p-3 rounded-lg bg-gray-100 hover:bg-gray-200"
+                        >
+                            Change Password
+                        </Link>
+                    </>
+                )}
                 {!token ? (
                     <Link
                         to="/login"
