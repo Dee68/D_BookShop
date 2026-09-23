@@ -10,6 +10,7 @@ import {
     FiFolder,
     FiLogOut,
     FiMenu,
+    FiKey,
     FiX
 } from "react-icons/fi";
 
@@ -235,7 +236,7 @@ export default function Sidebar() {
                     </NavLink>
                     {/* CHANGE PASSWORD */}
                     <NavLink to="/admin/change-password" className={linkClass}>
-                    <Inbox size={18} />
+                    <FiKey size={18} />
                     {!collapsed && <span>Change Password</span>}
                     </NavLink>
 
