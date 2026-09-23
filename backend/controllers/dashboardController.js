@@ -145,9 +145,9 @@ exports.getOrderStatusStats = async (req, res) => {
 exports.getSystemStats = async (req, res) => {
     try {
         const [usersRes, productsRes, lowStockRes] = await Promise.all([
-            db.query(`SELECT COUNT(*) AS totalUsers FROM users`),
-            db.query(`SELECT COUNT(*) AS totalProducts FROM products`),
-            db.query(`SELECT COUNT(*) AS lowStock FROM products WHERE stock < 5`)
+            db.query(`SELECT COUNT(*) AS "totalUsers" FROM users`),
+            db.query(`SELECT COUNT(*) AS "totalProducts" FROM products`),
+            db.query(`SELECT COUNT(*) AS "lowStock" FROM products WHERE stock < 5`)
         ]);
 
         res.json({
