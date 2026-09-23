@@ -125,3 +125,43 @@ exports.verifyEmail = async (req, res) => {
         return res.status(500).json({ error: "Server error" });
     }
 };
+
+exports.changePassword = async (req, res) => {
+    try {
+        const { currentPassword, newPassword } = req.body;
+        const userId = req.user.id;   // set by your auth middleware
+
+        if (!currentPassword || !newPassword) {
+            return res.status(400).json({ error: "Both fields are required" });
+        }
+        if (newPassword.length < 8) {
+            return res.status(400).json({ error: "Password must be at least 8 characters" });
+        }
+
+        const result = await db.query(
+            `SELECT password FROM users WHERE id = $1`,
+            [userId]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        const isMatch = await bcrypt.compare(currentPassword, result.rows[0].password);
+        if (!isMatch) {
+            return res.status(401).json({ error: "Current password is incorrect" });
+        }
+
+        const hashed = await bcrypt.hash(newPassword, 10);
+        await db.query(
+            `UPDATE users SET password = $1 WHERE id = $2`,
+            [hashed, userId]
+        );
+
+        res.json({ success: true, message: "Password updated" });
+
+    } catch (err) {
+        console.error("changePassword error:", err);
+        res.status(500).json({ error: "Server error" });
+    }
+};
