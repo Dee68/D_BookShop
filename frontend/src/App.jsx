@@ -64,6 +64,12 @@ export default function App() {
                         </ProtectedRoute>} 
                     />
                 </Route>
+
+                <Route path="/change-password" element={
+                    <ProtectedRoute>
+                        <ChangePassword />
+                    </ProtectedRoute>
+                } />
                 
 
                 {/* ADMIN (protected UI still controlled inside layout) */}
