@@ -22,6 +22,7 @@ import Contacts from "./pages/admin/Contacts";
 import StoreLayout from "./layout/StoreLayout";
 import About from "./pages/About";
 import VerifyEmail from "./pages/VerifyEmail";
+import ChangePassword from "./pages/ChangePassword";
 
 export default function App() {
     const { token } = useContext(AuthContext);
