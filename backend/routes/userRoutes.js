@@ -8,7 +8,7 @@ router.post('/register', userController.registerUser);
 router.get('/verify-email', authController.verifyEmail);
 router.post('/login', userController.loginUser);
 router.get('/', auth, requireAdmin,userController.getAllUsers);
-router.put('/change-password', auth, authController.changePassword);
+router.put('/admin/change-password', auth, authController.changePassword);
 
 router.patch("/:id/role", auth, requireAdmin, userController.updateUserRole);
 router.delete("/:id", auth, requireAdmin, userController.deleteUser);

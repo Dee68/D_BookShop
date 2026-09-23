@@ -66,11 +66,7 @@ export default function App() {
                     />
                 </Route>
 
-                <Route path="/change-password" element={
-                    <ProtectedRoute>
-                        <ChangePassword />
-                    </ProtectedRoute>
-                } />
+                
                 
 
                 {/* ADMIN (protected UI still controlled inside layout) */}
@@ -89,6 +85,7 @@ export default function App() {
                     <Route path="users" element={<Users />} />
                     <Route path="orders" element={<Orders />} />
                     <Route path="contacts" element={<Contacts />} />
+                    <Route path="change-password" element={<ChangePassword />} />
                 
                 
                 
