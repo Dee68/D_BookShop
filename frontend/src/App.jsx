@@ -23,14 +23,14 @@ import StoreLayout from "./layout/StoreLayout";
 import About from "./pages/About";
 import VerifyEmail from "./pages/VerifyEmail";
 import ChangePassword from "./pages/ChangePassword";
-import DemoBanner from "./components/Demobanner";
+//import DemoBanner from "./components/DemoBanner";
 
 export default function App() {
     const { token } = useContext(AuthContext);
     
     return (
             <>
-            <DemoBanner />
+            {/* <DemoBanner /> */}
             <Routes>
 
                 {/* PUBLIC STORE */}
