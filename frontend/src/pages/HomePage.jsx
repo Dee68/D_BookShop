@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useContext } from "react";
 import { CartContext } from "../context/CartContext";
-import Navbar from "../components/Navbar";
 import HeroSlider from "../components/HeroSlider";
 import "../styles/global.css";
 import { Link } from "react-router-dom";
@@ -26,10 +25,6 @@ export default function Home() {
         );
 
         const data = await res.json();
-        //console.log(data);
-        console.log("RAW API RESPONSE:", data);
-        console.log("FIRST PRODUCT:", data.data?.[0]);
-        console.log("IMAGES FIELD:", data.data?.[0]?.images);
         setProducts(Array.isArray(data.data) ? data.data : []);
         setPagination(data.pagination || {});
        
@@ -63,7 +58,6 @@ export default function Home() {
 
     return (
         <>
-        {/* <Navbar /> */}
             <div className="min-h-screen
                 bg-emerald-50
                 text-gray-900
@@ -167,7 +161,7 @@ export default function Home() {
 
                                             <img
                                                 src={imageUrl || "/images/no-image.png"}
-                                                alt={p.title}
+                                                alt={`Cover of ${p.title} by ${p.author || 'unknown author'}`}
                                                 className="
                                                     w-full
                                                     h-48

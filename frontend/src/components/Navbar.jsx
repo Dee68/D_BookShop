@@ -7,7 +7,6 @@ import { CartContext } from "../context/CartContext";
 import { AuthContext } from "../auth/AuthContext";
 import CartDrawer from "../context/CartDrawer";
 import NavItem from "./navbar/NavItem";
-import NavButton from "./navbar/NavButton";
 import UserMenu from "./UserMenu";
 
 export default function Navbar() {

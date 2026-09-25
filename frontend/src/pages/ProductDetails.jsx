@@ -10,6 +10,8 @@ export default function ProductDetails() {
     const { id } = useParams();
 
     const [product, setProduct] = useState(null);
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState(null)
 
     const { addToCart } = useContext(CartContext);
 
@@ -17,38 +19,44 @@ export default function ProductDetails() {
     const navigate = useNavigate();
 
     useEffect(() => {
+        setLoading(true)
+        setError(null)
 
         fetch(`${import.meta.env.VITE_API_URL}/api/products/${id}`)
-            .then(res => res.json())
-            .then(setProduct);
+            .then((res) => {
+            if (!res.ok) throw new Error('Product not found')
+            return res.json()
+            })
+            .then(setProduct)
+            .catch((err) => setError(err.message))
+            .finally(() => setLoading(false))
+        }, [id])
 
-    }, [id]);
-
-    // useEffect(() => {
-
-    //     if (product?.images?.length) {
-    //         setMainImage(`${import.meta.env.VITE_API_URL}${product.images[0]}`);
-    //     }
-
-    // }, [product]);
+  
     useEffect(() => {
         if (product?.images?.length) {
             setMainImage(product.images[0]);
         }
     }, [product]);
 
-    if (!product) {
+   
 
-        return (
-            <div className="
-                min-h-[60vh]
+    if (loading) return <div className="min-h-[60vh]
                 flex items-center justify-center
-                text-gray-500 dark:text-gray-400
-            ">
-                Loading product...
+                text-gray-500 dark:text-gray-400">Loading product...</div>
+    if (error) {
+        return (
+            <div className="min-h-[60vh] flex flex-col items-center justify-center gap-4">
+            <p className="text-gray-500 dark:text-gray-400">{error}</p>
+            <Link to="/" className="text-emerald-600 hover:underline">
+                Back to store
+            </Link>
             </div>
-        );
-    }
+        )
+        }
+
+    if (!product) return null;
+    
 
     return (
 
@@ -113,7 +121,7 @@ export default function ProductDetails() {
                     ">
                         <img
                             src={mainImage}
-                            alt={product.title}
+                            alt={`Cover of ${product.title} by ${product.author || 'unknown author'}`}
                             className="
                                 w-full
                                 h-[500px]
@@ -290,13 +298,7 @@ export default function ProductDetails() {
 
                     {/* CART */}
                     <button
-                        // onClick={(e) => {
-
-                        //     e.preventDefault();
-
-                        //     addToCart(product);
-
-                        // }}
+                       
                         onClick={(e) => {
                             e.preventDefault();
 

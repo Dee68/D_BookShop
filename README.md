@@ -62,7 +62,7 @@
 
 ### Deployment
 - Frontend: Vercel
-- Backend: Render (update if needed)
+- Backend: Railway 
 
 ## 🎨 UI Features
 - Fully responsive design
@@ -201,7 +201,7 @@ npm run dev
 ## ☁️ Deployment
 
 - Frontend deployed on Vercel
-- Backend deployed on Render
+- Backend deployed on Railway
 - Database hosted on PostgreSQL
 - Images hosted on Cloudinary
 
@@ -278,7 +278,7 @@ Reports are dynamically generated from inventory data.
 Product image uploads are handled using:
 
 - Multer
-- Local uploads directory
+- Cloudinary
 - Product gallery support
 ````
 
@@ -330,10 +330,9 @@ A full Postman collection is included for testing all API endpoints.
 
 ````
 ### 📦 Future Improvements
-- PostgreSQL migration
-- Render deployment
 - Stripe payments
-- Email notifications
+- Email order notifications
+- Allow editing individual product images in place, rather than removing and re-uploading
 - Wishlist system
 - Advanced analytics
 - Docker support
